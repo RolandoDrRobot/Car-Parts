@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { simulateAIIdentification, fakePartsDatabase } from '../data/fakeData';
+import { simulateAIIdentification } from '../data/fakeData';
 
 const PhotoUploadScreen = ({ carData }) => {
   const [selectedFile, setSelectedFile] = useState(null);
