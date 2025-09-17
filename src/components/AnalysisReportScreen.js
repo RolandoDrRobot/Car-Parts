@@ -1,11 +1,15 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { motion } from 'framer-motion';
+import { useCart } from '../contexts/CartContext';
+import Modal from './Modal';
 
 const AnalysisReportScreen = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const { carData, analysisResult } = location.state || {};
+  const { addItem } = useCart();
+  const [showCartModal, setShowCartModal] = useState(false);
 
   const handleStartOver = () => {
     navigate('/');
@@ -13,6 +17,21 @@ const AnalysisReportScreen = () => {
 
   const handleNewAnalysis = () => {
     navigate('/photo-upload', { state: { carData } });
+  };
+
+  const handleAddToCart = () => {
+    if (analysisResult && analysisResult.identifiedPart) {
+      addItem(analysisResult.identifiedPart);
+      setShowCartModal(true);
+    }
+  };
+
+  const handleViewCart = () => {
+    navigate('/cart');
+  };
+
+  const handleCloseCartModal = () => {
+    setShowCartModal(false);
   };
 
   if (!analysisResult || !carData) {
@@ -208,6 +227,50 @@ const AnalysisReportScreen = () => {
           </motion.div>
         </motion.div>
 
+        {/* Add to Cart Section */}
+        {analysisResult.identifiedPart.stock > 0 && (
+          <motion.div
+            style={{ marginTop: '30px', textAlign: 'center' }}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 1.3 }}
+          >
+            <div style={{ 
+              background: 'rgba(34, 197, 94, 0.1)', 
+              border: '2px solid rgba(34, 197, 94, 0.3)',
+              borderRadius: '12px',
+              padding: '20px',
+              marginBottom: '20px'
+            }}>
+              <h4 style={{ margin: '0 0 10px 0', color: '#22c55e' }}>Ready to Purchase?</h4>
+              <p style={{ margin: '0', color: '#a0aec0' }}>
+                Add this part to your cart and continue shopping or proceed to checkout.
+              </p>
+            </div>
+            <div style={{ display: 'flex', gap: '15px', flexWrap: 'wrap', justifyContent: 'center' }}>
+              <motion.button 
+                className="btn"
+                onClick={handleAddToCart}
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+                transition={{ duration: 0.2 }}
+                style={{ background: '#22c55e', borderColor: '#22c55e' }}
+              >
+                🛒 Add to Cart
+              </motion.button>
+              <motion.button 
+                className="btn btn-secondary"
+                onClick={handleViewCart}
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+                transition={{ duration: 0.2 }}
+              >
+                View Cart
+              </motion.button>
+            </div>
+          </motion.div>
+        )}
+
         {/* Action Buttons */}
         <motion.div
           style={{ marginTop: '30px', display: 'flex', gap: '15px', flexWrap: 'wrap', justifyContent: 'center' }}
@@ -245,6 +308,26 @@ const AnalysisReportScreen = () => {
           <p><strong>Analysis completed on:</strong> {new Date().toLocaleString()}</p>
           <p><strong>AI Model:</strong> CarFix Part Identifier v2.1</p>
         </motion.div>
+
+        {/* Cart Success Modal */}
+        <Modal
+          isOpen={showCartModal}
+          onClose={handleCloseCartModal}
+          title="¡Agregado al Carrito!"
+          type="success"
+          autoClose={true}
+          autoCloseDelay={3000}
+        >
+          <p style={{ marginBottom: '15px' }}>
+            <strong>{analysisResult?.identifiedPart?.name}</strong> ha sido agregado a tu carrito.
+          </p>
+          <p style={{ marginBottom: '15px' }}>
+            Precio: <span style={{ color: '#22c55e', fontWeight: 'bold' }}>${analysisResult?.identifiedPart?.price}</span>
+          </p>
+          <p style={{ fontSize: '0.9rem', color: '#a0aec0' }}>
+            Puedes continuar agregando más piezas o proceder al checkout.
+          </p>
+        </Modal>
       </motion.div>
     </div>
   );
