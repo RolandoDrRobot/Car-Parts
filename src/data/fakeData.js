@@ -490,7 +490,7 @@ export const analyzeImageWithChatGPT = async (imageFile, carData) => {
     
     // Preparar el request a ChatGPT
     const requestBody = {
-      model: "gpt-4-vision-preview",
+      model: "gpt-4o",
       messages: [
         {
           role: "user",
@@ -529,8 +529,29 @@ export const analyzeImageWithChatGPT = async (imageFile, carData) => {
     const data = await response.json();
     const chatGPTResponse = data.choices[0].message.content;
     
+    // Verificar si ChatGPT indica que no puede analizar la imagen
+    if (chatGPTResponse.includes("no puedo analizar") || 
+        chatGPTResponse.includes("paisaje") || 
+        chatGPTResponse.includes("no es un sistema de frenos") ||
+        !chatGPTResponse.includes("{")) {
+      return {
+        error: true,
+        message: chatGPTResponse,
+        type: "invalid_image"
+      };
+    }
+    
+    // Extraer JSON de la respuesta si está envuelto en markdown
+    let jsonString = chatGPTResponse;
+    if (chatGPTResponse.includes("```json")) {
+      const jsonMatch = chatGPTResponse.match(/```json\n([\s\S]*?)\n```/);
+      if (jsonMatch) {
+        jsonString = jsonMatch[1];
+      }
+    }
+    
     // Parsear la respuesta JSON de ChatGPT
-    const chatGPTAnalysis = JSON.parse(chatGPTResponse);
+    const chatGPTAnalysis = JSON.parse(jsonString);
     
     return chatGPTAnalysis;
     
@@ -646,6 +667,29 @@ export const simulateAIIdentification = async (imageFile, carData) => {
   try {
     // Obtener análisis de ChatGPT
     const chatGPTAnalysis = await analyzeImageWithChatGPT(imageFile, carData);
+    
+    // Verificar si la imagen es inválida
+    if (chatGPTAnalysis.error && chatGPTAnalysis.type === "invalid_image") {
+      return {
+        error: true,
+        message: chatGPTAnalysis.message,
+        type: "invalid_image",
+        identifiedPart: null,
+        confidence: 0,
+        imageAnalysis: "La imagen proporcionada no parece ser de un sistema de frenos automotriz. Por favor, suba una foto clara del sistema de frenos que desea analizar.",
+        urgency: "N/A",
+        safetyWarning: "No se puede realizar análisis de seguridad sin una imagen válida del sistema de frenos.",
+        stockStatus: "N/A",
+        stockQuantity: 0,
+        location: "N/A",
+        supplier: "N/A",
+        warranty: "N/A",
+        condition: "N/A",
+        chatGPTAnalysis: null,
+        partsAnalysis: [],
+        alternativeParts: []
+      };
+    }
     
     // Buscar repuestos compatibles con el vehículo basado en el análisis
     const compatibleParts = fakePartsDatabase.filter(part => 

@@ -35,6 +35,64 @@ const AnalysisReportScreen = () => {
     setShowCartModal(false);
   };
 
+  // Manejar caso de imagen inválida
+  if (analysisResult && analysisResult.error && analysisResult.type === "invalid_image") {
+    return (
+      <div className="container">
+        <motion.div 
+          className="card card-centered"
+          initial={{ opacity: 0, y: 50 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, ease: "easeOut" }}
+        >
+          <div style={{ textAlign: 'center', marginBottom: '20px' }}>
+            <div style={{ fontSize: '4rem', marginBottom: '15px' }}>⚠️</div>
+            <h2 style={{ color: '#f59e0b', marginBottom: '15px' }}>Imagen No Válida</h2>
+            <p style={{ color: '#6b7280', marginBottom: '20px', lineHeight: '1.6' }}>
+              {analysisResult.imageAnalysis}
+            </p>
+            <div style={{ 
+              background: '#fef3c7', 
+              border: '1px solid #f59e0b', 
+              borderRadius: '8px', 
+              padding: '15px', 
+              marginBottom: '20px',
+              textAlign: 'left'
+            }}>
+              <p style={{ margin: 0, fontSize: '0.9rem', color: '#92400e' }}>
+                <strong>Recomendaciones:</strong>
+              </p>
+              <ul style={{ margin: '10px 0 0 0', paddingLeft: '20px', color: '#92400e' }}>
+                <li>Asegúrate de que la foto sea del sistema de frenos del vehículo</li>
+                <li>La imagen debe ser clara y bien iluminada</li>
+                <li>Evita fotos de paisajes, personas u otros objetos</li>
+                <li>Enfócate en las piezas del sistema de frenos</li>
+              </ul>
+            </div>
+          </div>
+          <div style={{ display: 'flex', gap: '15px', justifyContent: 'center' }}>
+            <motion.button 
+              className="btn btn-secondary"
+              onClick={handleNewAnalysis}
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+            >
+              Intentar Nuevamente
+            </motion.button>
+            <motion.button 
+              className="btn"
+              onClick={handleStartOver}
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+            >
+              Volver al Inicio
+            </motion.button>
+          </div>
+        </motion.div>
+      </div>
+    );
+  }
+
   if (!analysisResult || !carData) {
     return (
       <div className="container">
