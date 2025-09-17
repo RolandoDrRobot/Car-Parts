@@ -20,7 +20,7 @@ const PhotoUploadScreen = ({ carData }) => {
 
   const handleAnalyze = async () => {
     if (!selectedFile) {
-      setError('Por favor selecciona una imagen primero');
+      setError('Please select an image first');
       return;
     }
 
@@ -31,7 +31,7 @@ const PhotoUploadScreen = ({ carData }) => {
       const result = await simulateAIIdentification(selectedFile);
       setAnalysisResult(result);
     } catch (err) {
-      setError('Error al analizar la imagen. Intenta de nuevo.');
+      setError('Error analyzing the image. Please try again.');
     } finally {
       setIsAnalyzing(false);
     }
@@ -52,26 +52,86 @@ const PhotoUploadScreen = ({ carData }) => {
   return (
     <div className="container">
       <div className="card">
-        <h1 className="title">📸 Análisis con IA</h1>
         <p className="subtitle">
-          Sube una foto de la parte del vehículo que necesitas identificar
+          Upload a photo of the vehicle part you need to identify
         </p>
 
         <div className="car-info">
-          <h3>🚗 Vehículo Seleccionado</h3>
-          <div className="info-row">
-            <span className="info-label">Vehículo:</span>
-            <span className="info-value">{carData.brand} {carData.model} {carData.year}</span>
+          <h3>🚗 Selected Vehicle</h3>
+          
+          {/* Desktop Grid Layout */}
+          <div className="info-grid">
+            <div className="info-card">
+              <div className="info-card-header">
+                <span className="info-card-icon">🚗</span>
+                <h4 className="info-card-title">Vehicle Details</h4>
+              </div>
+              <div className="info-row">
+                <span className="info-label">Vehicle:</span>
+                <span className="info-value">{carData.brand} {carData.model} {carData.year}</span>
+              </div>
+              <div className="info-row">
+                <span className="info-label">License Plate:</span>
+                <span className="info-value">{carData.plate}</span>
+              </div>
+              <div className="info-row">
+                <span className="info-label">Color:</span>
+                <span className="info-value">{carData.color}</span>
+              </div>
+            </div>
+            
+            <div className="info-card">
+              <div className="info-card-header">
+                <span className="info-card-icon">⚙️</span>
+                <h4 className="info-card-title">Technical Specs</h4>
+              </div>
+              <div className="info-row">
+                <span className="info-label">Engine:</span>
+                <span className="info-value">{carData.engine}</span>
+              </div>
+              <div className="info-row">
+                <span className="info-label">Transmission:</span>
+                <span className="info-value">{carData.transmission}</span>
+              </div>
+              <div className="info-row">
+                <span className="info-label">Fuel Type:</span>
+                <span className="info-value">{carData.fuelType}</span>
+              </div>
+            </div>
           </div>
-          <div className="info-row">
-            <span className="info-label">Placa:</span>
-            <span className="info-value">{carData.plate}</span>
+          
+          {/* Mobile Compact Layout */}
+          <div className="info-compact">
+            <div className="info-item">
+              <div className="info-item-label">Vehicle</div>
+              <div className="info-item-value">{carData.brand} {carData.model}</div>
+            </div>
+            <div className="info-item">
+              <div className="info-item-label">Year</div>
+              <div className="info-item-value">{carData.year}</div>
+            </div>
+            <div className="info-item">
+              <div className="info-item-label">License Plate</div>
+              <div className="info-item-value">{carData.plate}</div>
+            </div>
+            <div className="info-item">
+              <div className="info-item-label">Color</div>
+              <div className="info-item-value">{carData.color}</div>
+            </div>
+            <div className="info-item">
+              <div className="info-item-label">Engine</div>
+              <div className="info-item-value">{carData.engine}</div>
+            </div>
+            <div className="info-item">
+              <div className="info-item-label">Transmission</div>
+              <div className="info-item-value">{carData.transmission}</div>
+            </div>
           </div>
         </div>
 
         <div className="input-group">
           <label htmlFor="photo" className="label">
-            Seleccionar Imagen
+            Select Image
           </label>
           <input
             type="file"
@@ -85,7 +145,7 @@ const PhotoUploadScreen = ({ carData }) => {
 
         {selectedFile && (
           <div className="success">
-            ✅ Archivo seleccionado: {selectedFile.name} ({formatFileSize(selectedFile.size)})
+            ✅ File selected: {selectedFile.name} ({formatFileSize(selectedFile.size)})
           </div>
         )}
 
@@ -99,50 +159,99 @@ const PhotoUploadScreen = ({ carData }) => {
           {isAnalyzing ? (
             <>
               <span className="loading"></span>
-              Analizando con IA...
+              Analyzing with AI...
             </>
           ) : (
-            'Analizar Imagen'
+            'Analyze Image'
           )}
         </button>
 
         {analysisResult && (
           <div className="part-result">
-            <h3>🤖 Resultado del Análisis</h3>
-            <div className="info-row">
-              <span className="info-label">Parte Identificada:</span>
-              <span className="info-value">{analysisResult.identifiedPart.name}</span>
+            <h3>🤖 Analysis Result</h3>
+            
+            {/* Desktop Grid Layout */}
+            <div className="info-grid">
+              <div className="info-card">
+                <div className="info-card-header">
+                  <span className="info-card-icon">🔍</span>
+                  <h4 className="info-card-title">Part Identification</h4>
+                </div>
+                <div className="info-row">
+                  <span className="info-label">Identified Part:</span>
+                  <span className="info-value">{analysisResult.identifiedPart.name}</span>
+                </div>
+                <div className="info-row">
+                  <span className="info-label">Part Number:</span>
+                  <span className="info-value">{analysisResult.identifiedPart.partNumber}</span>
+                </div>
+                <div className="info-row">
+                  <span className="info-label">AI Confidence:</span>
+                  <span className="info-value">{analysisResult.confidence}%</span>
+                </div>
+              </div>
+              
+              <div className="info-card">
+                <div className="info-card-header">
+                  <span className="info-card-icon">💰</span>
+                  <h4 className="info-card-title">Pricing & Availability</h4>
+                </div>
+                <div className="info-row">
+                  <span className="info-label">Price:</span>
+                  <span className="info-value">${analysisResult.identifiedPart.price}</span>
+                </div>
+                <div className="info-row">
+                  <span className="info-label">Location:</span>
+                  <span className="info-value">{analysisResult.identifiedPart.location}</span>
+                </div>
+                <div style={{ marginTop: '15px' }}>
+                  <span className={`stock-status ${
+                    analysisResult.identifiedPart.stock > 0 ? 'stock-available' : 'stock-unavailable'
+                  }`}>
+                    {analysisResult.identifiedPart.stock > 0 
+                      ? `✅ Available (${analysisResult.identifiedPart.stock} units)`
+                      : '❌ Out of Stock'
+                    }
+                  </span>
+                </div>
+              </div>
             </div>
-            <div className="info-row">
-              <span className="info-label">Número de Parte:</span>
-              <span className="info-value">{analysisResult.identifiedPart.partNumber}</span>
-            </div>
-            <div className="info-row">
-              <span className="info-label">Precio:</span>
-              <span className="info-value">${analysisResult.identifiedPart.price}</span>
-            </div>
-            <div className="info-row">
-              <span className="info-label">Confianza IA:</span>
-              <span className="info-value">{analysisResult.confidence}%</span>
-            </div>
-            <div className="info-row">
-              <span className="info-label">Ubicación:</span>
-              <span className="info-value">{analysisResult.identifiedPart.location}</span>
-            </div>
-
-            <div style={{ marginTop: '15px' }}>
-              <span className={`stock-status ${
-                analysisResult.identifiedPart.stock > 0 ? 'stock-available' : 'stock-unavailable'
-              }`}>
-                {analysisResult.identifiedPart.stock > 0 
-                  ? `✅ Disponible (${analysisResult.identifiedPart.stock} unidades)`
-                  : '❌ Agotado'
-                }
-              </span>
+            
+            {/* Mobile Compact Layout */}
+            <div className="info-compact">
+              <div className="info-item">
+                <div className="info-item-label">Part Name</div>
+                <div className="info-item-value">{analysisResult.identifiedPart.name}</div>
+              </div>
+              <div className="info-item">
+                <div className="info-item-label">Part Number</div>
+                <div className="info-item-value">{analysisResult.identifiedPart.partNumber}</div>
+              </div>
+              <div className="info-item">
+                <div className="info-item-label">Price</div>
+                <div className="info-item-value">${analysisResult.identifiedPart.price}</div>
+              </div>
+              <div className="info-item">
+                <div className="info-item-label">AI Confidence</div>
+                <div className="info-item-value">{analysisResult.confidence}%</div>
+              </div>
+              <div className="info-item">
+                <div className="info-item-label">Location</div>
+                <div className="info-item-value">{analysisResult.identifiedPart.location}</div>
+              </div>
+              <div className="info-item">
+                <div className="info-item-label">Stock</div>
+                <div className="info-item-value">
+                  {analysisResult.identifiedPart.stock > 0 
+                    ? `${analysisResult.identifiedPart.stock} units`
+                    : 'Out of Stock'
+                  }
+                </div>
+              </div>
             </div>
 
             <div style={{ marginTop: '20px' }}>
-              <h4>💡 Recomendaciones:</h4>
+              <h4>💡 Recommendations:</h4>
               <ul style={{ textAlign: 'left', marginTop: '10px' }}>
                 {analysisResult.recommendations.map((rec, index) => (
                   <li key={index} style={{ marginBottom: '5px' }}>{rec}</li>
@@ -157,14 +266,14 @@ const PhotoUploadScreen = ({ carData }) => {
           onClick={handleStartOver}
           style={{ marginTop: '20px' }}
         >
-          Buscar Otro Vehículo
+          Search Another Vehicle
         </button>
 
-        <div style={{ marginTop: '30px', fontSize: '0.9rem', color: '#666' }}>
-          <p><strong>💡 Consejos para mejores resultados:</strong></p>
-          <p>• Toma la foto con buena iluminación</p>
-          <p>• Enfoca bien la parte específica</p>
-          <p>• Evita sombras y reflejos</p>
+        <div style={{ marginTop: '30px', fontSize: '0.9rem', color: '#a0aec0' }}>
+          <p><strong>💡 Tips for better results:</strong></p>
+          <p>• Take the photo with good lighting</p>
+          <p>• Focus well on the specific part</p>
+          <p>• Avoid shadows and reflections</p>
         </div>
       </div>
     </div>

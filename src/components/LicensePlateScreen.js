@@ -11,14 +11,14 @@ const LicensePlateScreen = ({ onSubmit, carData }) => {
     e.preventDefault();
     
     if (!plate.trim()) {
-      setError('Por favor ingresa una placa válida');
+      setError('Please enter a valid license plate');
       return;
     }
 
     setLoading(true);
     setError('');
 
-    // Simular delay de API
+    // Simulate API delay
     setTimeout(() => {
       const found = onSubmit(plate);
       setLoading(false);
@@ -26,7 +26,7 @@ const LicensePlateScreen = ({ onSubmit, carData }) => {
       if (found) {
         navigate('/car-info');
       } else {
-        setError('No se encontró información para esta placa. Verifica que esté correcta.');
+        setError('No information found for this license plate. Please verify it is correct.');
       }
     }, 1500);
   };
@@ -36,19 +36,19 @@ const LicensePlateScreen = ({ onSubmit, carData }) => {
       <div className="card">
         <h1 className="title">🚗 CarFix</h1>
         <p className="subtitle">
-          Ingresa la placa de tu vehículo para identificar repuestos con inteligencia artificial
+          Enter your vehicle's license plate to identify parts with artificial intelligence
         </p>
         
         <form onSubmit={handleSubmit}>
           <div className="input-group">
             <label htmlFor="plate" className="label">
-              Placa del Vehículo
+              Vehicle License Plate
             </label>
             <input
               type="text"
               id="plate"
               className="input"
-              placeholder="Ej: ABC123"
+              placeholder="Ex: ABC123"
               value={plate}
               onChange={(e) => setPlate(e.target.value.toUpperCase())}
               maxLength="8"
@@ -66,16 +66,16 @@ const LicensePlateScreen = ({ onSubmit, carData }) => {
             {loading ? (
               <>
                 <span className="loading"></span>
-                Buscando vehículo...
+                Searching vehicle...
               </>
             ) : (
-              'Buscar Vehículo'
+              'Search Vehicle'
             )}
           </button>
         </form>
 
-        <div style={{ marginTop: '30px', fontSize: '0.9rem', color: '#666' }}>
-          <p><strong>Placas de prueba:</strong></p>
+        <div style={{ marginTop: '30px', fontSize: '0.9rem', color: '#a0aec0' }}>
+          <p><strong>Test License Plates:</strong></p>
           <p>ABC123 - Toyota Corolla 2020</p>
           <p>XYZ789 - Honda Civic 2019</p>
           <p>DEF456 - Ford Focus 2021</p>
