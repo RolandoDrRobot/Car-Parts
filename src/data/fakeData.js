@@ -4,16 +4,16 @@ export const fakeCarData = [
     id: 1,
     plate: "ABC123",
     brand: "Toyota",
-    model: "Corolla",
+    model: "Rush",
     year: 2020,
-    color: "White",
-    engine: "1.8L 4-Cylinder",
+    color: "Silver",
+    engine: "1.5L 4-Cylinder",
     transmission: "Automatic",
     fuelType: "Gasoline",
     vin: "1HGBH41JXMN109186",
     owner: "John Smith",
     lastService: "2024-01-15",
-    imageUrl: "https://images.unsplash.com/photo-1621007947382-bb3c3994e3fb?w=400&h=300&fit=crop&auto=format"
+    imageUrl: "https://www.toyotacr.com/360/rush-prueba/images/pc/D14N_SILVER%20M.M.(1E7)_02.jpg"
   },
   {
     id: 2,
@@ -51,53 +51,58 @@ export const fakeCarData = [
 export const fakePartsDatabase = [
   {
     id: 1,
-    name: "Oil Filter",
-    partNumber: "TOY-12345",
-    compatibleCars: ["Toyota Corolla 2018-2022"],
-    price: 25.99,
-    stock: 15,
-    location: "Shelf A-1",
-    imageUrl: "https://autorecambiosltda.com/wp-content/uploads/2022/10/Lo-que-debes-saber-sobre-los-repuestos-homologados.png"
+    name: "Pastillas de Freno Delanteras",
+    partNumber: "TOY-RUSH-FB001",
+    compatibleCars: ["Toyota Rush 2018-2023"],
+    price: 95.99,
+    stock: 12,
+    location: "Estante A-2",
+    imageUrl: "https://autorecambiosltda.com/wp-content/uploads/2022/10/Lo-que-debes-saber-sobre-los-repuestos-homologados.png",
+    description: "Pastillas de freno delanteras originales Toyota Rush. Material cerámico de alta calidad para mayor durabilidad y rendimiento."
   },
   {
     id: 2,
-    name: "Front Brake Pads",
-    partNumber: "HON-67890",
-    compatibleCars: ["Honda Civic 2016-2021"],
-    price: 89.99,
-    stock: 8,
-    location: "Shelf B-3",
-    imageUrl: "https://autorecambiosltda.com/wp-content/uploads/2022/10/Lo-que-debes-saber-sobre-los-repuestos-homologados.png"
+    name: "Discos de Freno Delanteros",
+    partNumber: "TOY-RUSH-FD002",
+    compatibleCars: ["Toyota Rush 2018-2023"],
+    price: 145.99,
+    stock: 6,
+    location: "Estante A-3",
+    imageUrl: "https://autorecambiosltda.com/wp-content/uploads/2022/10/Lo-que-debes-saber-sobre-los-repuestos-homologados.png",
+    description: "Discos de freno delanteros ventilados para Toyota Rush. Diseño optimizado para disipación de calor y resistencia al desgaste."
   },
   {
     id: 3,
-    name: "12V Battery",
-    partNumber: "BAT-55555",
-    compatibleCars: ["Toyota Corolla", "Honda Civic", "Ford Focus"],
-    price: 149.99,
-    stock: 12,
-    location: "Shelf C-2",
-    imageUrl: "https://autorecambiosltda.com/wp-content/uploads/2022/10/Lo-que-debes-saber-sobre-los-repuestos-homologados.png"
+    name: "Pastillas de Freno Traseras",
+    partNumber: "TOY-RUSH-RB003",
+    compatibleCars: ["Toyota Rush 2018-2023"],
+    price: 78.99,
+    stock: 8,
+    location: "Estante A-4",
+    imageUrl: "https://autorecambiosltda.com/wp-content/uploads/2022/10/Lo-que-debes-saber-sobre-los-repuestos-homologados.png",
+    description: "Pastillas de freno traseras para Toyota Rush. Freno de mano integrado y excelente rendimiento en condiciones húmedas."
   },
   {
     id: 4,
-    name: "Air Filter",
-    partNumber: "FOR-99999",
-    compatibleCars: ["Ford Focus 2019-2023"],
-    price: 18.50,
-    stock: 0,
-    location: "Out of Stock",
-    imageUrl: "https://autorecambiosltda.com/wp-content/uploads/2022/10/Lo-que-debes-saber-sobre-los-repuestos-homologados.png"
+    name: "Líquido de Freno DOT 4",
+    partNumber: "TOY-RUSH-BF004",
+    compatibleCars: ["Toyota Rush 2018-2023"],
+    price: 24.99,
+    stock: 15,
+    location: "Estante B-1",
+    imageUrl: "https://autorecambiosltda.com/wp-content/uploads/2022/10/Lo-que-debes-saber-sobre-los-repuestos-homologados.png",
+    description: "Líquido de freno DOT 4 de alta calidad. Punto de ebullición superior para mayor seguridad en condiciones extremas."
   },
   {
     id: 5,
-    name: "5W-30 Motor Oil",
-    partNumber: "OIL-11111",
-    compatibleCars: ["Toyota Corolla", "Honda Civic", "Ford Focus"],
-    price: 34.99,
-    stock: 25,
-    location: "Shelf D-1",
-    imageUrl: "https://autorecambiosltda.com/wp-content/uploads/2022/10/Lo-que-debes-saber-sobre-los-repuestos-homologados.png"
+    name: "Kit de Frenos Completo",
+    partNumber: "TOY-RUSH-FK005",
+    compatibleCars: ["Toyota Rush 2018-2023"],
+    price: 285.99,
+    stock: 4,
+    location: "Estante A-1",
+    imageUrl: "https://autorecambiosltda.com/wp-content/uploads/2022/10/Lo-que-debes-saber-sobre-los-repuestos-homologados.png",
+    description: "Kit completo de frenos delanteros: pastillas, discos, líquido de freno y tornillos. Todo lo necesario para el mantenimiento completo."
   }
 ];
 
@@ -106,16 +111,27 @@ export const simulateAIIdentification = (imageFile) => {
   // Simulate processing delay
   return new Promise((resolve) => {
     setTimeout(() => {
-      const randomPart = fakePartsDatabase[Math.floor(Math.random() * fakePartsDatabase.length)];
+      // Always return brake-related parts for Toyota Rush
+      const brakeParts = fakePartsDatabase.filter(part => 
+        part.name.toLowerCase().includes('freno') || 
+        part.name.toLowerCase().includes('brake')
+      );
+      
+      const identifiedPart = brakeParts[Math.floor(Math.random() * brakeParts.length)];
+      
       resolve({
-        identifiedPart: randomPart,
-        confidence: Math.floor(Math.random() * 30) + 70, // 70-100%
-        imageAnalysis: "Part identified: " + randomPart.name,
+        identifiedPart: identifiedPart,
+        confidence: Math.floor(Math.random() * 20) + 80, // 80-100% for brake parts
+        imageAnalysis: `Sistema de frenos identificado: ${identifiedPart.name}. Componente crítico para la seguridad del vehículo.`,
         recommendations: [
-          "Verify compatibility with the model",
-          "Check current part condition",
-          "Consider preventive replacement"
-        ]
+          "Verificar el desgaste de las pastillas de freno",
+          "Revisar el grosor de los discos de freno",
+          "Comprobar el nivel del líquido de frenos",
+          "Considerar reemplazo preventivo por seguridad",
+          "Realizar prueba de frenado después del reemplazo"
+        ],
+        urgency: "Alta",
+        safetyWarning: "Los frenos son componentes críticos de seguridad. No conduzca si detecta problemas en el sistema de frenado."
       });
     }, 2000);
   });

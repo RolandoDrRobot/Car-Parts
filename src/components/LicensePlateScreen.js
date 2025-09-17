@@ -104,7 +104,7 @@ const LicensePlateScreen = ({ onSubmit, carData }) => {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.4 }}
         >
-          Identify your vehicle's parts with artificial intelligence
+          Identifica las piezas de tu vehículo con inteligencia artificial
         </motion.p>
 
         {/* Search Type Tabs */}
@@ -119,14 +119,14 @@ const LicensePlateScreen = ({ onSubmit, carData }) => {
             className={`tab-button ${searchType === 'plate' ? 'active' : ''}`}
             onClick={() => setSearchType('plate')}
           >
-            License Plate
+            Placa de Matrícula
           </button>
           <button
             type="button"
             className={`tab-button ${searchType === 'manual' ? 'active' : ''}`}
             onClick={() => setSearchType('manual')}
           >
-            Manual Search
+            Búsqueda Manual
           </button>
         </motion.div>
         
@@ -139,13 +139,13 @@ const LicensePlateScreen = ({ onSubmit, carData }) => {
           {searchType === 'plate' ? (
             <div className="input-group">
               <label htmlFor="plate" className="label">
-                Vehicle License Plate
+                Placa de Matrícula del Vehículo
               </label>
               <input
                 type="text"
                 id="plate"
                 className="input"
-                placeholder="Ex: ABC123"
+                placeholder="Ej: ABC123"
                 value={plate}
                 onChange={(e) => setPlate(e.target.value.toUpperCase())}
                 maxLength="8"
@@ -157,13 +157,13 @@ const LicensePlateScreen = ({ onSubmit, carData }) => {
               <div className="input-row">
                 <div className="input-group">
                   <label htmlFor="brand" className="label">
-                    Brand *
+                    Marca *
                   </label>
                   <input
                     type="text"
                     id="brand"
                     className="input"
-                    placeholder="Ex: Toyota"
+                    placeholder="Ej: Toyota"
                     value={manualSearch.brand}
                     onChange={(e) => handleManualSearchChange('brand', e.target.value)}
                     disabled={loading}
@@ -171,13 +171,13 @@ const LicensePlateScreen = ({ onSubmit, carData }) => {
                 </div>
                 <div className="input-group">
                   <label htmlFor="model" className="label">
-                    Model *
+                    Modelo *
                   </label>
                   <input
                     type="text"
                     id="model"
                     className="input"
-                    placeholder="Ex: Corolla"
+                    placeholder="Ej: Corolla"
                     value={manualSearch.model}
                     onChange={(e) => handleManualSearchChange('model', e.target.value)}
                     disabled={loading}
@@ -187,13 +187,13 @@ const LicensePlateScreen = ({ onSubmit, carData }) => {
               <div className="input-row">
                 <div className="input-group">
                   <label htmlFor="year" className="label">
-                    Year *
+                    Año *
                   </label>
                   <input
                     type="number"
                     id="year"
                     className="input"
-                    placeholder="Ex: 2020"
+                    placeholder="Ej: 2020"
                     value={manualSearch.year}
                     onChange={(e) => handleManualSearchChange('year', e.target.value)}
                     min="1990"
@@ -209,7 +209,7 @@ const LicensePlateScreen = ({ onSubmit, carData }) => {
                     type="text"
                     id="color"
                     className="input"
-                    placeholder="Ex: White"
+                    placeholder="Ej: Blanco"
                     value={manualSearch.color}
                     onChange={(e) => handleManualSearchChange('color', e.target.value)}
                     disabled={loading}
@@ -241,10 +241,10 @@ const LicensePlateScreen = ({ onSubmit, carData }) => {
             {loading ? (
               <>
                 <span className="loading"></span>
-                {searchType === 'plate' ? 'Searching vehicle...' : 'Creating vehicle profile...'}
+                {searchType === 'plate' ? 'Buscando vehículo...' : 'Creando perfil del vehículo...'}
               </>
             ) : (
-              searchType === 'plate' ? 'Search Vehicle' : 'Create Vehicle Profile'
+              searchType === 'plate' ? 'Buscar Vehículo' : 'Crear Perfil del Vehículo'
             )}
           </motion.button>
         </motion.form>
@@ -252,17 +252,17 @@ const LicensePlateScreen = ({ onSubmit, carData }) => {
         <div style={{ marginTop: '30px', fontSize: '0.9rem', color: '#a0aec0' }}>
           {searchType === 'plate' ? (
             <>
-              <p><strong>Test License Plates:</strong></p>
+              <p><strong>Placas de Prueba:</strong></p>
               <p>ABC123 - Toyota Corolla 2020</p>
               <p>XYZ789 - Honda Civic 2019</p>
               <p>DEF456 - Ford Focus 2021</p>
             </>
           ) : (
             <>
-              <p><strong>Manual Search Tips:</strong></p>
-              <p>• Fill in at least Brand, Model, and Year</p>
-              <p>• Color is optional but recommended</p>
-              <p>• You can search any vehicle make and model</p>
+              <p><strong>Consejos de Búsqueda Manual:</strong></p>
+              <p>• Completa al menos Marca, Modelo y Año</p>
+              <p>• El color es opcional pero recomendado</p>
+              <p>• Puedes buscar cualquier marca y modelo de vehículo</p>
             </>
           )}
         </div>

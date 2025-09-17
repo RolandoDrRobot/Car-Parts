@@ -52,7 +52,7 @@ const AnalysisReportScreen = () => {
             whileTap={{ scale: 0.98 }}
             transition={{ duration: 0.2 }}
           >
-            Start Over
+            Empezar de Nuevo
           </motion.button>
         </motion.div>
       </div>
@@ -73,7 +73,7 @@ const AnalysisReportScreen = () => {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.4 }}
         >
-          AI-powered part identification results
+          Resultados de identificación de piezas con IA
         </motion.p>
 
         {/* Vehicle Information */}
@@ -83,18 +83,18 @@ const AnalysisReportScreen = () => {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.6 }}
         >
-          <h3>Vehicle Information</h3>
+          <h3>Información del Vehículo</h3>
           <div className="info-grid">
             <div className="info-card">
               <div className="info-card-header">
-                <h4 className="info-card-title">Vehicle Details</h4>
+                <h4 className="info-card-title">Detalles del Vehículo</h4>
               </div>
               <div className="info-row">
-                <span className="info-label">Vehicle:</span>
+                <span className="info-label">Vehículo:</span>
                 <span className="info-value">{carData.brand} {carData.model} {carData.year}</span>
               </div>
               <div className="info-row">
-                <span className="info-label">License Plate:</span>
+                <span className="info-label">Placa de Matrícula:</span>
                 <span className="info-value">{carData.plate}</span>
               </div>
               <div className="info-row">
@@ -112,37 +112,37 @@ const AnalysisReportScreen = () => {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.8 }}
         >
-          <h3>Analysis Results</h3>
+          <h3>Resultados del Análisis</h3>
           
           <div className="info-grid">
             <div className="info-card">
               <div className="info-card-header">
-                <h4 className="info-card-title">Part Identification</h4>
+                <h4 className="info-card-title">Identificación de Pieza</h4>
               </div>
               <div className="info-row">
-                <span className="info-label">Identified Part:</span>
+                <span className="info-label">Pieza Identificada:</span>
                 <span className="info-value">{analysisResult.identifiedPart.name}</span>
               </div>
               <div className="info-row">
-                <span className="info-label">Part Number:</span>
+                <span className="info-label">Número de Pieza:</span>
                 <span className="info-value">{analysisResult.identifiedPart.partNumber}</span>
               </div>
               <div className="info-row">
-                <span className="info-label">AI Confidence:</span>
+                <span className="info-label">Confianza de IA:</span>
                 <span className="info-value">{analysisResult.confidence}%</span>
               </div>
             </div>
             
             <div className="info-card">
               <div className="info-card-header">
-                <h4 className="info-card-title">Pricing & Availability</h4>
+                <h4 className="info-card-title">Precios y Disponibilidad</h4>
               </div>
               <div className="info-row">
-                <span className="info-label">Price:</span>
+                <span className="info-label">Precio:</span>
                 <span className="info-value">${analysisResult.identifiedPart.price}</span>
               </div>
               <div className="info-row">
-                <span className="info-label">Location:</span>
+                <span className="info-label">Ubicación:</span>
                 <span className="info-value">{analysisResult.identifiedPart.location}</span>
               </div>
               <div style={{ marginTop: '15px' }}>
@@ -256,7 +256,7 @@ const AnalysisReportScreen = () => {
                 transition={{ duration: 0.2 }}
                 style={{ background: '#22c55e', borderColor: '#22c55e' }}
               >
-                🛒 Add to Cart
+                🛒 Agregar al Carrito
               </motion.button>
               <motion.button 
                 className="btn btn-secondary"
@@ -265,7 +265,7 @@ const AnalysisReportScreen = () => {
                 whileTap={{ scale: 0.98 }}
                 transition={{ duration: 0.2 }}
               >
-                View Cart
+                Ver Carrito
               </motion.button>
             </div>
           </motion.div>
@@ -285,7 +285,7 @@ const AnalysisReportScreen = () => {
             whileTap={{ scale: 0.98 }}
             transition={{ duration: 0.2 }}
           >
-            Analyze Another Part
+            Analizar Otra Pieza
           </motion.button>
           <motion.button 
             className="btn btn-secondary"
@@ -294,7 +294,7 @@ const AnalysisReportScreen = () => {
             whileTap={{ scale: 0.98 }}
             transition={{ duration: 0.2 }}
           >
-            Search Another Vehicle
+            Buscar Otro Vehículo
           </motion.button>
         </motion.div>
 
@@ -305,8 +305,8 @@ const AnalysisReportScreen = () => {
           animate={{ opacity: 1 }}
           transition={{ duration: 0.5, delay: 1.6 }}
         >
-          <p><strong>Analysis completed on:</strong> {new Date().toLocaleString()}</p>
-          <p><strong>AI Model:</strong> CarFix Part Identifier v2.1</p>
+          <p><strong>Análisis completado el:</strong> {new Date().toLocaleString()}</p>
+          <p><strong>Modelo de IA:</strong> CarFix Part Identifier v2.1</p>
         </motion.div>
 
         {/* Cart Success Modal */}

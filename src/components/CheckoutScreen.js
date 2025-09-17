@@ -82,9 +82,9 @@ const CheckoutScreen = () => {
         >
           <div style={{ textAlign: 'center' }}>
             <div style={{ fontSize: '4rem', marginBottom: '20px' }}>🛒</div>
-            <h2>No Items to Checkout</h2>
+            <h2>No Hay Artículos para Checkout</h2>
             <p style={{ color: '#a0aec0', marginBottom: '30px' }}>
-              Your cart is empty. Add some items before proceeding to checkout.
+              Tu carrito está vacío. Agrega algunos artículos antes de proceder al checkout.
             </p>
             <motion.button 
               className="btn"
@@ -93,7 +93,7 @@ const CheckoutScreen = () => {
               whileTap={{ scale: 0.98 }}
               transition={{ duration: 0.2 }}
             >
-              Continue Shopping
+              Continuar Comprando
             </motion.button>
           </div>
         </motion.div>
@@ -110,7 +110,7 @@ const CheckoutScreen = () => {
         transition={{ duration: 0.6, ease: "easeOut" }}
       >
         <div style={{ marginBottom: '30px' }}>
-          <h2>Checkout</h2>
+          <h2>Finalizar Compra</h2>
         </div>
 
         <div style={{ gap: '40px', alignItems: 'start' }}>
@@ -121,7 +121,7 @@ const CheckoutScreen = () => {
             transition={{ duration: 0.5, delay: 0.2 }}
             style={{ marginBottom: '24px' }}
           >
-            <h3 style={{ marginBottom: '20px', color: '#fff' }}>Order Summary</h3>
+            <h3 style={{ marginBottom: '20px', color: '#fff' }}>Resumen del Pedido</h3>
             
             {/* Items List */}
             <div style={{ marginBottom: '20px' }}>
@@ -204,13 +204,13 @@ const CheckoutScreen = () => {
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.5, delay: 0.3 }}
           >
-            <h3 style={{ marginBottom: '20px', color: '#fff' }}>Customer Information</h3>
+            <h3 style={{ marginBottom: '20px', color: '#fff' }}>Información del Cliente</h3>
             
             <form onSubmit={handleSubmit}>
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '15px', marginBottom: '15px' }}>
                 <div>
                   <label style={{ display: 'block', marginBottom: '5px', color: '#a0aec0', fontSize: '0.9rem' }}>
-                    First Name *
+                    Nombre *
                   </label>
                   <input
                     type="text"
@@ -227,12 +227,12 @@ const CheckoutScreen = () => {
                       color: '#fff',
                       fontSize: '1rem'
                     }}
-                    placeholder="John"
+                    placeholder="Juan"
                   />
                 </div>
                 <div>
                   <label style={{ display: 'block', marginBottom: '5px', color: '#a0aec0', fontSize: '0.9rem' }}>
-                    Last Name *
+                    Apellido *
                   </label>
                   <input
                     type="text"
@@ -249,7 +249,7 @@ const CheckoutScreen = () => {
                       color: '#fff',
                       fontSize: '1rem'
                     }}
-                    placeholder="Doe"
+                    placeholder="Pérez"
                   />
                 </div>
               </div>
@@ -273,13 +273,13 @@ const CheckoutScreen = () => {
                     color: '#fff',
                     fontSize: '1rem'
                   }}
-                  placeholder="john.doe@example.com"
+                  placeholder="juan.perez@ejemplo.com"
                 />
               </div>
 
               <div style={{ marginBottom: '15px' }}>
                 <label style={{ display: 'block', marginBottom: '5px', color: '#a0aec0', fontSize: '0.9rem' }}>
-                  Phone Number *
+                  Número de Teléfono *
                 </label>
                 <input
                   type="tel"
@@ -302,7 +302,7 @@ const CheckoutScreen = () => {
 
               <div style={{ marginBottom: '15px' }}>
                 <label style={{ display: 'block', marginBottom: '5px', color: '#a0aec0', fontSize: '0.9rem' }}>
-                  Address *
+                  Dirección *
                 </label>
                 <input
                   type="text"
@@ -319,14 +319,14 @@ const CheckoutScreen = () => {
                     color: '#fff',
                     fontSize: '1rem'
                   }}
-                  placeholder="123 Main Street"
+                  placeholder="123 Calle Principal"
                 />
               </div>
 
               <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: '15px', marginBottom: '15px' }}>
                 <div>
                   <label style={{ display: 'block', marginBottom: '5px', color: '#a0aec0', fontSize: '0.9rem' }}>
-                    City *
+                    Ciudad *
                   </label>
                   <input
                     type="text"
@@ -343,12 +343,12 @@ const CheckoutScreen = () => {
                       color: '#fff',
                       fontSize: '1rem'
                     }}
-                    placeholder="New York"
+                    placeholder="Nueva York"
                   />
                 </div>
                 <div>
                   <label style={{ display: 'block', marginBottom: '5px', color: '#a0aec0', fontSize: '0.9rem' }}>
-                    ZIP Code *
+                    Código Postal *
                   </label>
                   <input
                     type="text"
@@ -372,7 +372,7 @@ const CheckoutScreen = () => {
 
               <div style={{ marginBottom: '25px' }}>
                 <label style={{ display: 'block', marginBottom: '5px', color: '#a0aec0', fontSize: '0.9rem' }}>
-                  Additional Notes
+                  Notas Adicionales
                 </label>
                 <textarea
                   name="notes"
@@ -389,7 +389,7 @@ const CheckoutScreen = () => {
                     fontSize: '1rem',
                     resize: 'vertical'
                   }}
-                  placeholder="Any special instructions or notes..."
+                  placeholder="Cualquier instrucción especial o nota..."
                 />
               </div>
 
@@ -413,12 +413,12 @@ const CheckoutScreen = () => {
                 {isSubmitting ? (
                   <>
                     <span style={{ marginRight: '10px' }}>⏳</span>
-                    Creating Order...
+                    Creando Orden...
                   </>
                 ) : (
                   <>
                     <span style={{ marginRight: '10px' }}>🚀</span>
-                    Create Order
+                    Crear Orden
                   </>
                 )}
               </motion.button>

@@ -6,7 +6,7 @@
   box-sizing: border-box;
 }
 
-body {
+html {
   font-family: "Saira Condensed", sans-serif;
   font-optical-sizing: auto;
   font-weight: 400;

@@ -42,7 +42,7 @@ const PhotoUploadScreen = ({ carData }) => {
 
   const handleAnalyze = async () => {
     if (!selectedFile) {
-      setError('Please select an image first');
+      setError('Por favor selecciona una imagen primero');
       return;
     }
 
@@ -59,7 +59,7 @@ const PhotoUploadScreen = ({ carData }) => {
         } 
       });
     } catch (err) {
-      setError('Error analyzing the image. Please try again.');
+      setError('Error al analizar la imagen. Por favor intenta de nuevo.');
     } finally {
       setIsAnalyzing(false);
     }
@@ -91,24 +91,24 @@ const PhotoUploadScreen = ({ carData }) => {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.2 }}
         >
-          Upload a photo of the vehicle part you need to identify
+          Sube una foto de la pieza del vehículo que necesitas identificar
         </motion.p>
 
         <div className="car-info">
-          <h3>Selected Vehicle</h3>
+          <h3>Vehículo Seleccionado</h3>
           
           {/* Desktop Grid Layout */}
           <div className="info-grid">
             <div className="info-card">
               <div className="info-card-header">
-                <h4 className="info-card-title">Vehicle Details</h4>
+                <h4 className="info-card-title">Detalles del Vehículo</h4>
               </div>
               <div className="info-row">
-                <span className="info-label">Vehicle:</span>
+                <span className="info-label">Vehículo:</span>
                 <span className="info-value">{carData.brand} {carData.model} {carData.year}</span>
               </div>
               <div className="info-row">
-                <span className="info-label">License Plate:</span>
+                <span className="info-label">Placa de Matrícula:</span>
                 <span className="info-value">{carData.plate}</span>
               </div>
               <div className="info-row">
@@ -145,7 +145,7 @@ const PhotoUploadScreen = ({ carData }) => {
             transition={{ duration: 0.2 }}
             style={{ marginTop: '10px' }}
           >
-            Take Photo with Camera
+            Tomar Foto con Cámara
           </motion.button>
           
           {/* Hidden camera input */}
@@ -166,7 +166,7 @@ const PhotoUploadScreen = ({ carData }) => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.3 }}
           >
-            File selected: {selectedFile.name} ({formatFileSize(selectedFile.size)})
+            Archivo seleccionado: {selectedFile.name} ({formatFileSize(selectedFile.size)})
           </motion.div>
         )}
 
@@ -177,7 +177,7 @@ const PhotoUploadScreen = ({ carData }) => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
           >
-            <h4>Selected Image:</h4>
+            <h4>Imagen Seleccionada:</h4>
             <div className="preview-container">
               <img 
                 src={imagePreview} 
@@ -189,7 +189,7 @@ const PhotoUploadScreen = ({ carData }) => {
                 onClick={handleClearImage}
                 style={{ marginTop: '10px' }}
               >
-                Clear Image
+                Limpiar Imagen
               </button>
             </div>
           </motion.div>
@@ -210,10 +210,10 @@ const PhotoUploadScreen = ({ carData }) => {
           {isAnalyzing ? (
             <>
               <span className="loading"></span>
-              Analyzing with AI...
+              Analizando con IA...
             </>
           ) : (
-            'Analyze Image'
+            'Analizar Imagen'
           )}
         </motion.button>
 
@@ -223,14 +223,14 @@ const PhotoUploadScreen = ({ carData }) => {
           onClick={handleStartOver}
           style={{ marginTop: '20px' }}
         >
-          Search Another Vehicle
+          Buscar Otro Vehículo
         </button>
 
         <div style={{ marginTop: '30px', fontSize: '0.9rem', color: '#a0aec0' }}>
-          <p><strong>Tips for better results:</strong></p>
-          <p>• Take the photo with good lighting</p>
-          <p>• Focus well on the specific part</p>
-          <p>• Avoid shadows and reflections</p>
+          <p><strong>Consejos para mejores resultados:</strong></p>
+          <p>• Toma la foto con buena iluminación</p>
+          <p>• Enfoca bien en la pieza específica</p>
+          <p>• Evita sombras y reflejos</p>
         </div>
       </motion.div>
     </div>

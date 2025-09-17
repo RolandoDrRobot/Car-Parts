@@ -34,9 +34,9 @@ const CartScreen = () => {
         >
           <div style={{ textAlign: 'center' }}>
             <div style={{ fontSize: '4rem', marginBottom: '20px' }}>🛒</div>
-            <h2>Your Cart is Empty</h2>
+            <h2>Tu Carrito está Vacío</h2>
             <p style={{ color: '#a0aec0', marginBottom: '30px' }}>
-              Add some car parts to get started!
+              ¡Agrega algunas piezas de auto para comenzar!
             </p>
             <motion.button 
               className="btn"
@@ -45,7 +45,7 @@ const CartScreen = () => {
               whileTap={{ scale: 0.98 }}
               transition={{ duration: 0.2 }}
             >
-              Continue Shopping
+              Continuar Comprando
             </motion.button>
           </div>
         </motion.div>
@@ -62,7 +62,7 @@ const CartScreen = () => {
         transition={{ duration: 0.6, ease: "easeOut" }}
       >
         <div style={{ marginBottom: '30px' }}>
-          <h2>Shopping Cart ({itemCount} {itemCount === 1 ? 'item' : 'items'})</h2>
+          <h2>Carrito de Compras ({itemCount} {itemCount === 1 ? 'artículo' : 'artículos'})</h2>
         </div>
 
         {/* Cart Items */}
@@ -85,19 +85,20 @@ const CartScreen = () => {
                 backdropFilter: 'blur(10px)'
               }}
             >
-              {/* Top Row: Image, Quantity Controls, Remove Button */}
-              <div style={{ display: 'flex', alignItems: 'center', marginBottom: '15px' }}>
-                {/* Item Image */}
-                <div style={{ marginRight: '20px', flex: 1, minWidth: '200px' }}>
+              {/* Top Row: Image and Quantity Controls */}
+              <div style={{ display: 'flex', alignItems: 'center', marginBottom: '15px', gap: '20px' }}>
+                {/* Item Image - More prominent */}
+                <div style={{ flex: '0 0 200px', height: '150px' }}>
                   <img 
                     src={item.imageUrl} 
                     alt={item.name}
                     style={{ 
                       width: '100%', 
-                      height: '120px', 
+                      height: '100%', 
                       objectFit: 'cover',
-                      borderRadius: '8px',
-                      border: '2px solid rgba(255, 255, 255, 0.1)'
+                      borderRadius: '12px',
+                      border: '2px solid rgba(255, 255, 255, 0.1)',
+                      boxShadow: '0 4px 12px rgba(0, 0, 0, 0.2)'
                     }}
                     onError={(e) => {
                       e.target.style.display = 'none';
@@ -107,48 +108,54 @@ const CartScreen = () => {
                   <div style={{
                     display: 'none',
                     width: '100%',
-                    height: '120px',
+                    height: '100%',
                     alignItems: 'center',
                     justifyContent: 'center',
                     background: 'rgba(0, 0, 0, 0.3)',
-                    borderRadius: '8px',
+                    borderRadius: '12px',
                     border: '2px solid rgba(255, 255, 255, 0.1)',
                     color: '#a0aec0',
-                    fontSize: '2rem'
+                    fontSize: '3rem'
                   }}>
                     🔧
                   </div>
                 </div>
 
-                {/* Quantity Controls */}
-                <div style={{ display: 'flex', alignItems: 'center', marginRight: '20px' }}>
+                {/* Quantity Controls - Larger and more prominent */}
+                <div style={{ display: 'flex', alignItems: 'center', gap: '20px', margin: 'auto', flexDirection: 'column' }}>
                   <motion.button 
                     className="quantity-btn"
                     onClick={() => handleQuantityChange(item.id, item.quantity - 1)}
                     whileHover={{ scale: 1.1 }}
                     whileTap={{ scale: 0.9 }}
                     style={{
-                      width: '32px',
-                      height: '32px',
+                      width: '40px',
+                      height: '40px',
                       borderRadius: '50%',
-                      border: '1px solid rgba(255, 255, 255, 0.2)',
+                      border: '2px solid rgba(255, 255, 255, 0.3)',
                       background: 'rgba(255, 255, 255, 0.1)',
                       color: '#fff',
                       cursor: 'pointer',
                       display: 'flex',
                       alignItems: 'center',
                       justifyContent: 'center',
-                      fontSize: '1.2rem'
+                      fontSize: '1.4rem',
+                      fontWeight: 'bold',
+                      transition: 'all 0.2s ease'
                     }}
                   >
                     -
                   </motion.button>
                   <span style={{ 
-                    margin: '0 15px', 
-                    fontSize: '1.1rem', 
+                    fontSize: '1.3rem', 
                     fontWeight: 'bold',
-                    minWidth: '30px',
-                    textAlign: 'center'
+                    minWidth: '40px',
+                    textAlign: 'center',
+                    color: '#fff',
+                    background: 'rgba(255, 255, 255, 0.1)',
+                    padding: '8px 12px',
+                    borderRadius: '8px',
+                    border: '1px solid rgba(255, 255, 255, 0.2)'
                   }}>
                     {item.quantity}
                   </span>
@@ -158,56 +165,72 @@ const CartScreen = () => {
                     whileHover={{ scale: 1.1 }}
                     whileTap={{ scale: 0.9 }}
                     style={{
-                      width: '32px',
-                      height: '32px',
+                      width: '40px',
+                      height: '40px',
                       borderRadius: '50%',
-                      border: '1px solid rgba(255, 255, 255, 0.2)',
+                      border: '2px solid rgba(255, 255, 255, 0.3)',
                       background: 'rgba(255, 255, 255, 0.1)',
                       color: '#fff',
                       cursor: 'pointer',
                       display: 'flex',
                       alignItems: 'center',
                       justifyContent: 'center',
-                      fontSize: '1.2rem'
+                      fontSize: '1.4rem',
+                      fontWeight: 'bold',
+                      transition: 'all 0.2s ease'
                     }}
                   >
                     +
                   </motion.button>
                 </div>
-
-                {/* Remove Button */}
-                <motion.button 
-                  className="remove-btn"
-                  onClick={() => removeItem(item.id)}
-                  whileHover={{ scale: 1.1 }}
-                  whileTap={{ scale: 0.9 }}
-                  style={{
-                    width: '32px',
-                    height: '32px',
-                    borderRadius: '50%',
-                    border: '1px solid rgba(239, 68, 68, 0.3)',
-                    background: 'rgba(239, 68, 68, 0.1)',
-                    color: '#ef4444',
-                    cursor: 'pointer',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    fontSize: '1.2rem'
-                  }}
-                >
-                  ×
-                </motion.button>
               </div>
 
-              {/* Item Details - Full Width */}
-              <div style={{ width: '100%' }}>
-                <h4 style={{ margin: '0 0 8px 0', color: '#fff' }}>{item.name}</h4>
-                <p style={{ margin: '0 0 8px 0', color: '#a0aec0', fontSize: '0.9rem' }}>
-                  Part Number: {item.partNumber}
+              {/* Item Details - Enhanced styling */}
+              <div style={{ 
+                width: '100%',
+                padding: '16px',
+                background: 'rgba(255, 255, 255, 0.03)',
+                borderRadius: '8px',
+                border: '1px solid rgba(255, 255, 255, 0.05)'
+              }}>
+                <h4 style={{ 
+                  margin: '0 0 12px 0', 
+                  color: '#fff',
+                  fontSize: '1.2rem',
+                  fontWeight: '600'
+                }}>
+                  {item.name}
+                </h4>
+                <p style={{ 
+                  margin: '0 0 12px 0', 
+                  color: '#a0aec0', 
+                  fontSize: '1rem',
+                  fontWeight: '500'
+                }}>
+                  Número de Pieza: <span style={{ color: '#fff' }}>{item.partNumber}</span>
                 </p>
-                <p style={{ margin: '0', color: '#4ade80', fontSize: '1.1rem', fontWeight: 'bold' }}>
-                  ${item.price}
-                </p>
+                <div style={{ 
+                  display: 'flex', 
+                  justifyContent: 'space-between', 
+                  alignItems: 'center',
+                  marginTop: '8px'
+                }}>
+                  <p style={{ 
+                    margin: '0', 
+                    color: '#4ade80', 
+                    fontSize: '1.3rem', 
+                    fontWeight: 'bold'
+                  }}>
+                    ${item.price}
+                  </p>
+                  <p style={{ 
+                    margin: '0', 
+                    color: '#a0aec0', 
+                    fontSize: '0.9rem'
+                  }}>
+                    Subtotal: <span style={{ color: '#4ade80', fontWeight: 'bold' }}>${(item.price * item.quantity).toFixed(2)}</span>
+                  </p>
+                </div>
               </div>
             </motion.div>
           ))}
@@ -239,7 +262,7 @@ const CartScreen = () => {
               transition={{ duration: 0.2 }}
               style={{ flex: 1, minWidth: '200px' }}
             >
-              Continue Shopping
+              Continuar Comprando
             </motion.button>
             <motion.button 
               className="btn"
@@ -249,7 +272,7 @@ const CartScreen = () => {
               transition={{ duration: 0.2 }}
               style={{ flex: 1, minWidth: '200px' }}
             >
-              Proceed to Checkout
+              Proceder al Checkout
             </motion.button>
           </div>
         </motion.div>

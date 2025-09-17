@@ -9,6 +9,7 @@ import CheckoutScreen from './components/CheckoutScreen';
 import CartIcon from './components/CartIcon';
 import { CartProvider } from './contexts/CartContext';
 import useScrollToTop from './hooks/useScrollToTop';
+import useServiceWorker from './hooks/useServiceWorker';
 import { fakeCarData } from './data/fakeData';
 
 function App() {
@@ -41,6 +42,9 @@ function App() {
   // Componente interno que usa el hook dentro del Router
   const AppContent = () => {
     useScrollToTop();
+  
+  // Register service worker for PWA
+  useServiceWorker();
     
     return (
       <div className="App">

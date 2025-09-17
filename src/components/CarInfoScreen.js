@@ -51,7 +51,7 @@ const CarInfoScreen = ({ carData, onConfirm }) => {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.2 }}
         >
-          Verify that this is the correct information for your vehicle
+          Verifica que esta sea la información correcta de tu vehículo
         </motion.p>
 
         <motion.div 
@@ -60,7 +60,7 @@ const CarInfoScreen = ({ carData, onConfirm }) => {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.4 }}
         >
-          <h3>Vehicle Information</h3>
+          <h3>Información del Vehículo</h3>
           
           {/* Vehicle Image */}
           {editedData.imageUrl && (
@@ -90,10 +90,10 @@ const CarInfoScreen = ({ carData, onConfirm }) => {
           >
             <div className="info-card">
               <div className="info-card-header">
-                <h4 className="info-card-title">Basic Info</h4>
+                <h4 className="info-card-title">Información Básica</h4>
               </div>
               <div className="info-row">
-                <span className="info-label">License Plate:</span>
+                <span className="info-label">Placa de Matrícula:</span>
                 {isEditing ? (
                   <input 
                     type="text" 
@@ -106,7 +106,7 @@ const CarInfoScreen = ({ carData, onConfirm }) => {
                 )}
               </div>
               <div className="info-row">
-                <span className="info-label">Brand:</span>
+                <span className="info-label">Marca:</span>
                 {isEditing ? (
                   <input 
                     type="text" 
@@ -119,7 +119,7 @@ const CarInfoScreen = ({ carData, onConfirm }) => {
                 )}
               </div>
               <div className="info-row">
-                <span className="info-label">Model:</span>
+                <span className="info-label">Modelo:</span>
                 {isEditing ? (
                   <input 
                     type="text" 
@@ -132,7 +132,7 @@ const CarInfoScreen = ({ carData, onConfirm }) => {
                 )}
               </div>
               <div className="info-row">
-                <span className="info-label">Year:</span>
+                <span className="info-label">Año:</span>
                 {isEditing ? (
                   <input 
                     type="text" 
@@ -148,7 +148,7 @@ const CarInfoScreen = ({ carData, onConfirm }) => {
             
             <div className="info-card">
               <div className="info-card-header">
-                <h4 className="info-card-title">Appearance</h4>
+                <h4 className="info-card-title">Apariencia</h4>
               </div>
               <div className="info-row">
                 <span className="info-label">Color:</span>
@@ -167,10 +167,10 @@ const CarInfoScreen = ({ carData, onConfirm }) => {
             
             <div className="info-card">
               <div className="info-card-header">
-                <h4 className="info-card-title">Technical Specs</h4>
+                <h4 className="info-card-title">Especificaciones Técnicas</h4>
               </div>
               <div className="info-row">
-                <span className="info-label">Engine:</span>
+                <span className="info-label">Motor:</span>
                 {isEditing ? (
                   <input 
                     type="text" 
@@ -183,7 +183,7 @@ const CarInfoScreen = ({ carData, onConfirm }) => {
                 )}
               </div>
               <div className="info-row">
-                <span className="info-label">Transmission:</span>
+                <span className="info-label">Transmisión:</span>
                 {isEditing ? (
                   <input 
                     type="text" 
@@ -196,7 +196,7 @@ const CarInfoScreen = ({ carData, onConfirm }) => {
                 )}
               </div>
               <div className="info-row">
-                <span className="info-label">Fuel Type:</span>
+                <span className="info-label">Tipo de Combustible:</span>
                 {isEditing ? (
                   <input 
                     type="text" 
@@ -229,7 +229,7 @@ const CarInfoScreen = ({ carData, onConfirm }) => {
                 whileTap={{ scale: 0.98 }}
                 transition={{ duration: 0.2 }}
               >
-                Save Changes
+                Guardar Cambios
               </motion.button>
               <motion.button 
                 className="btn btn-secondary"
@@ -238,7 +238,7 @@ const CarInfoScreen = ({ carData, onConfirm }) => {
                 whileTap={{ scale: 0.98 }}
                 transition={{ duration: 0.2 }}
               >
-                Cancel
+                Cancelar
               </motion.button>
             </>
           ) : (
@@ -250,7 +250,7 @@ const CarInfoScreen = ({ carData, onConfirm }) => {
                 whileTap={{ scale: 0.98 }}
                 transition={{ duration: 0.2 }}
               >
-                Edit Information
+                Editar Información
               </motion.button>
               <motion.button 
                 className="btn"
@@ -259,7 +259,7 @@ const CarInfoScreen = ({ carData, onConfirm }) => {
                 whileTap={{ scale: 0.98 }}
                 transition={{ duration: 0.2 }}
               >
-                Confirm and Continue
+                Confirmar y Continuar
               </motion.button>
               <motion.button 
                 className="btn btn-secondary"
@@ -268,7 +268,7 @@ const CarInfoScreen = ({ carData, onConfirm }) => {
                 whileTap={{ scale: 0.98 }}
                 transition={{ duration: 0.2 }}
               >
-                Back to Search
+                Volver a Buscar
               </motion.button>
             </>
           )}

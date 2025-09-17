@@ -39,7 +39,7 @@ const CartIcon = () => {
       }}
     >
       <span style={{ fontSize: '1.2rem' }}>🛒</span>
-      <span>Cart</span>
+      <span>Carrito</span>
       {itemCount > 0 && (
         <motion.span
           initial={{ scale: 0 }}
