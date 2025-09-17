@@ -21,7 +21,7 @@
   ],
   "start_url": ".",
   "display": "standalone",
-  "theme_color": "#22c55e",
+  "theme_color": "#000",
   "background_color": "#0a0a0a",
   "orientation": "portrait-primary",
   "categories": ["automotive", "utilities", "productivity"],
