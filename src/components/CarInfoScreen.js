@@ -62,6 +62,25 @@ const CarInfoScreen = ({ carData, onConfirm }) => {
         >
           <h3>Vehicle Information</h3>
           
+          {/* Vehicle Image */}
+          {editedData.imageUrl && (
+            <motion.div 
+              className="vehicle-image-container"
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.5, delay: 0.5 }}
+            >
+              <h4>Vehicle Photo:</h4>
+              <div className="vehicle-image-wrapper">
+                <img 
+                  src={editedData.imageUrl} 
+                  alt={`${editedData.brand} ${editedData.model} ${editedData.year}`}
+                  className="vehicle-image"
+                />
+              </div>
+            </motion.div>
+          )}
+          
           {/* Desktop Grid Layout */}
           <motion.div 
             className="info-grid"

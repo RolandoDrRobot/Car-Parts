@@ -5,8 +5,8 @@ import { simulateAIIdentification } from '../data/fakeData';
 
 const PhotoUploadScreen = ({ carData }) => {
   const [selectedFile, setSelectedFile] = useState(null);
+  const [imagePreview, setImagePreview] = useState(null);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
-  const [analysisResult, setAnalysisResult] = useState(null);
   const [error, setError] = useState('');
   const navigate = useNavigate();
 
@@ -15,8 +15,29 @@ const PhotoUploadScreen = ({ carData }) => {
     if (file) {
       setSelectedFile(file);
       setError('');
-      setAnalysisResult(null);
+      
+      // Create image preview
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        setImagePreview(e.target.result);
+      };
+      reader.readAsDataURL(file);
     }
+  };
+
+  const handleCameraCapture = () => {
+    // Trigger the hidden camera input
+    const cameraInput = document.getElementById('camera-input');
+    if (cameraInput) {
+      cameraInput.click();
+    }
+  };
+
+
+  const handleClearImage = () => {
+    setSelectedFile(null);
+    setImagePreview(null);
+    setError('');
   };
 
   const handleAnalyze = async () => {
@@ -30,7 +51,13 @@ const PhotoUploadScreen = ({ carData }) => {
 
     try {
       const result = await simulateAIIdentification(selectedFile);
-      setAnalysisResult(result);
+      // Navigate to analysis report screen with the results
+      navigate('/analysis-report', { 
+        state: { 
+          carData, 
+          analysisResult: result 
+        } 
+      });
     } catch (err) {
       setError('Error analyzing the image. Please try again.');
     } finally {
@@ -108,10 +135,64 @@ const PhotoUploadScreen = ({ carData }) => {
           />
         </div>
 
+        <div className="camera-section">
+          <motion.button 
+            type="button"
+            className="btn btn-secondary"
+            onClick={handleCameraCapture}
+            whileHover={{ scale: 1.02 }}
+            whileTap={{ scale: 0.98 }}
+            transition={{ duration: 0.2 }}
+            style={{ marginTop: '10px' }}
+          >
+            Take Photo with Camera
+          </motion.button>
+          
+          {/* Hidden camera input */}
+          <input
+            type="file"
+            accept="image/*"
+            capture="environment"
+            onChange={handleFileSelect}
+            style={{ display: 'none' }}
+            id="camera-input"
+          />
+        </div>
+
         {selectedFile && (
-          <div className="success">
+          <motion.div 
+            className="success"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.3 }}
+          >
             File selected: {selectedFile.name} ({formatFileSize(selectedFile.size)})
-          </div>
+          </motion.div>
+        )}
+
+        {imagePreview && (
+          <motion.div 
+            className="image-preview"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
+          >
+            <h4>Selected Image:</h4>
+            <div className="preview-container">
+              <img 
+                src={imagePreview} 
+                alt="Selected part"
+                className="preview-image"
+              />
+              <button 
+                className="btn btn-secondary clear-button"
+                onClick={handleClearImage}
+                style={{ marginTop: '10px' }}
+              >
+                Clear Image
+              </button>
+            </div>
+          </motion.div>
         )}
 
         {error && <div className="error">{error}</div>}
@@ -122,7 +203,6 @@ const PhotoUploadScreen = ({ carData }) => {
           disabled={!selectedFile || isAnalyzing}
           whileHover={{ scale: 1.02 }}
           whileTap={{ scale: 0.98 }}
-          transition={{ duration: 0.2 }}
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.4 }}
@@ -137,71 +217,6 @@ const PhotoUploadScreen = ({ carData }) => {
           )}
         </motion.button>
 
-        {analysisResult && (
-          <motion.div 
-            className="part-result"
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, ease: "easeOut" }}
-          >
-            <h3>Analysis Result</h3>
-            
-            {/* Desktop Grid Layout */}
-            <div className="info-grid">
-              <div className="info-card">
-                <div className="info-card-header">
-                  <h4 className="info-card-title">Part Identification</h4>
-                </div>
-                <div className="info-row">
-                  <span className="info-label">Identified Part:</span>
-                  <span className="info-value">{analysisResult.identifiedPart.name}</span>
-                </div>
-                <div className="info-row">
-                  <span className="info-label">Part Number:</span>
-                  <span className="info-value">{analysisResult.identifiedPart.partNumber}</span>
-                </div>
-                <div className="info-row">
-                  <span className="info-label">AI Confidence:</span>
-                  <span className="info-value">{analysisResult.confidence}%</span>
-                </div>
-              </div>
-              
-              <div className="info-card">
-                <div className="info-card-header">
-                  <h4 className="info-card-title">Pricing & Availability</h4>
-                </div>
-                <div className="info-row">
-                  <span className="info-label">Price:</span>
-                  <span className="info-value">${analysisResult.identifiedPart.price}</span>
-                </div>
-                <div className="info-row">
-                  <span className="info-label">Location:</span>
-                  <span className="info-value">{analysisResult.identifiedPart.location}</span>
-                </div>
-                <div style={{ marginTop: '15px' }}>
-                  <span className={`stock-status ${
-                    analysisResult.identifiedPart.stock > 0 ? 'stock-available' : 'stock-unavailable'
-                  }`}>
-                    {analysisResult.identifiedPart.stock > 0 
-                      ? `Available (${analysisResult.identifiedPart.stock} units)`
-                      : 'Out of Stock'
-                    }
-                  </span>
-                </div>
-              </div>
-            </div>
-            
-
-            <div style={{ marginTop: '20px' }}>
-              <h4>Recommendations:</h4>
-              <ul style={{ textAlign: 'left', marginTop: '10px' }}>
-                {analysisResult.recommendations.map((rec, index) => (
-                  <li key={index} style={{ marginBottom: '5px' }}>{rec}</li>
-                ))}
-              </ul>
-            </div>
-          </motion.div>
-        )}
 
         <button 
           className="btn btn-secondary"

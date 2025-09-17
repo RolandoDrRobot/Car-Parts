@@ -6,14 +6,28 @@ const LicensePlateScreen = ({ onSubmit, carData }) => {
   const [plate, setPlate] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [searchType, setSearchType] = useState('plate'); // 'plate' or 'manual'
+  const [manualSearch, setManualSearch] = useState({
+    brand: '',
+    model: '',
+    year: '',
+    color: ''
+  });
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     
-    if (!plate.trim()) {
-      setError('Please enter a valid license plate');
-      return;
+    if (searchType === 'plate') {
+      if (!plate.trim()) {
+        setError('Please enter a valid license plate');
+        return;
+      }
+    } else {
+      if (!manualSearch.brand.trim() || !manualSearch.model.trim() || !manualSearch.year.trim()) {
+        setError('Please fill in at least Brand, Model, and Year');
+        return;
+      }
     }
 
     setLoading(true);
@@ -21,15 +35,51 @@ const LicensePlateScreen = ({ onSubmit, carData }) => {
 
     // Simulate API delay
     setTimeout(() => {
-      const found = onSubmit(plate);
+      let found = false;
+      
+      if (searchType === 'plate') {
+        found = onSubmit(plate);
+      } else {
+        // For manual search, we'll create a mock car data based on the input
+        const mockCarData = {
+          id: Date.now(),
+          plate: 'MANUAL',
+          brand: manualSearch.brand,
+          model: manualSearch.model,
+          year: parseInt(manualSearch.year),
+          color: manualSearch.color || 'Unknown',
+          engine: 'Manual Entry',
+          transmission: 'Manual Entry',
+          fuelType: 'Manual Entry',
+          vin: 'MANUAL-ENTRY',
+          owner: 'Manual Entry',
+          lastService: 'Manual Entry',
+          imageUrl: "https://images.unsplash.com/photo-1621007947382-bb3c3994e3fb?w=400&h=300&fit=crop&auto=format"
+        };
+        
+        // Set the car data directly and mark as found
+        onSubmit('MANUAL', mockCarData);
+        found = true;
+      }
+      
       setLoading(false);
       
       if (found) {
         navigate('/car-info');
       } else {
-        setError('No information found for this license plate. Please verify it is correct.');
+        setError(searchType === 'plate' 
+          ? 'No information found for this license plate. Please verify it is correct.'
+          : 'No matching vehicles found. Please check your information.'
+        );
       }
     }, 1500);
+  };
+
+  const handleManualSearchChange = (field, value) => {
+    setManualSearch(prev => ({
+      ...prev,
+      [field]: value
+    }));
   };
 
   return (
@@ -56,6 +106,29 @@ const LicensePlateScreen = ({ onSubmit, carData }) => {
         >
           Identify your vehicle's parts with artificial intelligence
         </motion.p>
+
+        {/* Search Type Tabs */}
+        <motion.div 
+          className="search-tabs"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.5 }}
+        >
+          <button
+            type="button"
+            className={`tab-button ${searchType === 'plate' ? 'active' : ''}`}
+            onClick={() => setSearchType('plate')}
+          >
+            License Plate
+          </button>
+          <button
+            type="button"
+            className={`tab-button ${searchType === 'manual' ? 'active' : ''}`}
+            onClick={() => setSearchType('manual')}
+          >
+            Manual Search
+          </button>
+        </motion.div>
         
         <motion.form 
           onSubmit={handleSubmit}
@@ -63,21 +136,88 @@ const LicensePlateScreen = ({ onSubmit, carData }) => {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.6 }}
         >
-          <div className="input-group">
-            <label htmlFor="plate" className="label">
-              Vehicle License Plate
-            </label>
-            <input
-              type="text"
-              id="plate"
-              className="input"
-              placeholder="Ex: ABC123"
-              value={plate}
-              onChange={(e) => setPlate(e.target.value.toUpperCase())}
-              maxLength="8"
-              disabled={loading}
-            />
-          </div>
+          {searchType === 'plate' ? (
+            <div className="input-group">
+              <label htmlFor="plate" className="label">
+                Vehicle License Plate
+              </label>
+              <input
+                type="text"
+                id="plate"
+                className="input"
+                placeholder="Ex: ABC123"
+                value={plate}
+                onChange={(e) => setPlate(e.target.value.toUpperCase())}
+                maxLength="8"
+                disabled={loading}
+              />
+            </div>
+          ) : (
+            <div className="manual-search-form">
+              <div className="input-row">
+                <div className="input-group">
+                  <label htmlFor="brand" className="label">
+                    Brand *
+                  </label>
+                  <input
+                    type="text"
+                    id="brand"
+                    className="input"
+                    placeholder="Ex: Toyota"
+                    value={manualSearch.brand}
+                    onChange={(e) => handleManualSearchChange('brand', e.target.value)}
+                    disabled={loading}
+                  />
+                </div>
+                <div className="input-group">
+                  <label htmlFor="model" className="label">
+                    Model *
+                  </label>
+                  <input
+                    type="text"
+                    id="model"
+                    className="input"
+                    placeholder="Ex: Corolla"
+                    value={manualSearch.model}
+                    onChange={(e) => handleManualSearchChange('model', e.target.value)}
+                    disabled={loading}
+                  />
+                </div>
+              </div>
+              <div className="input-row">
+                <div className="input-group">
+                  <label htmlFor="year" className="label">
+                    Year *
+                  </label>
+                  <input
+                    type="number"
+                    id="year"
+                    className="input"
+                    placeholder="Ex: 2020"
+                    value={manualSearch.year}
+                    onChange={(e) => handleManualSearchChange('year', e.target.value)}
+                    min="1990"
+                    max="2024"
+                    disabled={loading}
+                  />
+                </div>
+                <div className="input-group">
+                  <label htmlFor="color" className="label">
+                    Color
+                  </label>
+                  <input
+                    type="text"
+                    id="color"
+                    className="input"
+                    placeholder="Ex: White"
+                    value={manualSearch.color}
+                    onChange={(e) => handleManualSearchChange('color', e.target.value)}
+                    disabled={loading}
+                  />
+                </div>
+              </div>
+            </div>
+          )}
 
           {error && (
             <motion.div 
@@ -101,19 +241,30 @@ const LicensePlateScreen = ({ onSubmit, carData }) => {
             {loading ? (
               <>
                 <span className="loading"></span>
-                Searching vehicle...
+                {searchType === 'plate' ? 'Searching vehicle...' : 'Creating vehicle profile...'}
               </>
             ) : (
-              'Search Vehicle'
+              searchType === 'plate' ? 'Search Vehicle' : 'Create Vehicle Profile'
             )}
           </motion.button>
         </motion.form>
 
         <div style={{ marginTop: '30px', fontSize: '0.9rem', color: '#a0aec0' }}>
-          <p><strong>Test License Plates:</strong></p>
-          <p>ABC123 - Toyota Corolla 2020</p>
-          <p>XYZ789 - Honda Civic 2019</p>
-          <p>DEF456 - Ford Focus 2021</p>
+          {searchType === 'plate' ? (
+            <>
+              <p><strong>Test License Plates:</strong></p>
+              <p>ABC123 - Toyota Corolla 2020</p>
+              <p>XYZ789 - Honda Civic 2019</p>
+              <p>DEF456 - Ford Focus 2021</p>
+            </>
+          ) : (
+            <>
+              <p><strong>Manual Search Tips:</strong></p>
+              <p>• Fill in at least Brand, Model, and Year</p>
+              <p>• Color is optional but recommended</p>
+              <p>• You can search any vehicle make and model</p>
+            </>
+          )}
         </div>
       </motion.div>
     </div>

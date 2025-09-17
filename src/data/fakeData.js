@@ -12,7 +12,8 @@ export const fakeCarData = [
     fuelType: "Gasoline",
     vin: "1HGBH41JXMN109186",
     owner: "John Smith",
-    lastService: "2024-01-15"
+    lastService: "2024-01-15",
+    imageUrl: "https://images.unsplash.com/photo-1621007947382-bb3c3994e3fb?w=400&h=300&fit=crop&auto=format"
   },
   {
     id: 2,
@@ -26,7 +27,8 @@ export const fakeCarData = [
     fuelType: "Gasoline",
     vin: "2HGFC2F59MH543210",
     owner: "Maria Garcia",
-    lastService: "2024-02-10"
+    lastService: "2024-02-10",
+    imageUrl: "https://images.unsplash.com/photo-1606664515524-ed2f786a0bd6?w=400&h=300&fit=crop&auto=format"
   },
   {
     id: 3,
@@ -40,7 +42,8 @@ export const fakeCarData = [
     fuelType: "Gasoline",
     vin: "1FAHP3F20CL123456",
     owner: "Carlos Lopez",
-    lastService: "2024-01-28"
+    lastService: "2024-01-28",
+    imageUrl: "https://images.unsplash.com/photo-1606664515524-ed2f786a0bd6?w=400&h=300&fit=crop&auto=format"
   }
 ];
 
@@ -53,7 +56,8 @@ export const fakePartsDatabase = [
     compatibleCars: ["Toyota Corolla 2018-2022"],
     price: 25.99,
     stock: 15,
-    location: "Shelf A-1"
+    location: "Shelf A-1",
+    imageUrl: "https://autorecambiosltda.com/wp-content/uploads/2022/10/Lo-que-debes-saber-sobre-los-repuestos-homologados.png"
   },
   {
     id: 2,
@@ -62,7 +66,8 @@ export const fakePartsDatabase = [
     compatibleCars: ["Honda Civic 2016-2021"],
     price: 89.99,
     stock: 8,
-    location: "Shelf B-3"
+    location: "Shelf B-3",
+    imageUrl: "https://autorecambiosltda.com/wp-content/uploads/2022/10/Lo-que-debes-saber-sobre-los-repuestos-homologados.png"
   },
   {
     id: 3,
@@ -71,7 +76,8 @@ export const fakePartsDatabase = [
     compatibleCars: ["Toyota Corolla", "Honda Civic", "Ford Focus"],
     price: 149.99,
     stock: 12,
-    location: "Shelf C-2"
+    location: "Shelf C-2",
+    imageUrl: "https://autorecambiosltda.com/wp-content/uploads/2022/10/Lo-que-debes-saber-sobre-los-repuestos-homologados.png"
   },
   {
     id: 4,
@@ -80,7 +86,8 @@ export const fakePartsDatabase = [
     compatibleCars: ["Ford Focus 2019-2023"],
     price: 18.50,
     stock: 0,
-    location: "Out of Stock"
+    location: "Out of Stock",
+    imageUrl: "https://autorecambiosltda.com/wp-content/uploads/2022/10/Lo-que-debes-saber-sobre-los-repuestos-homologados.png"
   },
   {
     id: 5,
@@ -89,7 +96,8 @@ export const fakePartsDatabase = [
     compatibleCars: ["Toyota Corolla", "Honda Civic", "Ford Focus"],
     price: 34.99,
     stock: 25,
-    location: "Shelf D-1"
+    location: "Shelf D-1",
+    imageUrl: "https://autorecambiosltda.com/wp-content/uploads/2022/10/Lo-que-debes-saber-sobre-los-repuestos-homologados.png"
   }
 ];
 

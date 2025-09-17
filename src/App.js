@@ -3,23 +3,30 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 import LicensePlateScreen from './components/LicensePlateScreen';
 import CarInfoScreen from './components/CarInfoScreen';
 import PhotoUploadScreen from './components/PhotoUploadScreen';
+import AnalysisReportScreen from './components/AnalysisReportScreen';
 import { fakeCarData } from './data/fakeData';
 
 function App() {
   const [carData, setCarData] = useState(null);
   const [selectedCar, setSelectedCar] = useState(null);
 
-  const handleLicensePlateSubmit = (plate) => {
-    // Simular búsqueda en API
-    const foundCar = fakeCarData.find(car => 
-      car.plate.toLowerCase() === plate.toLowerCase()
-    );
-    
-    if (foundCar) {
-      setCarData(foundCar);
+  const handleLicensePlateSubmit = (plate, manualCarData = null) => {
+    if (manualCarData) {
+      // Handle manual search - use the provided car data
+      setCarData(manualCarData);
       return true;
+    } else {
+      // Simular búsqueda en API por placa
+      const foundCar = fakeCarData.find(car => 
+        car.plate.toLowerCase() === plate.toLowerCase()
+      );
+      
+      if (foundCar) {
+        setCarData(foundCar);
+        return true;
+      }
+      return false;
     }
-    return false;
   };
 
   const handleCarConfirm = (car) => {
@@ -59,6 +66,10 @@ function App() {
                 /> : 
                 <Navigate to="/" />
             } 
+          />
+          <Route 
+            path="/analysis-report" 
+            element={<AnalysisReportScreen />} 
           />
         </Routes>
       </div>

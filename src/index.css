@@ -186,6 +186,92 @@ code {
   box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.2);
 }
 
+/* Camera modal styles */
+.camera-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.8);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.camera-content {
+  background: rgba(20, 20, 20, 0.95);
+  border-radius: 5px;
+  padding: 30px;
+  text-align: center;
+  max-width: 400px;
+  width: 90%;
+}
+
+.camera-content h4 {
+  color: #f7fafc;
+  font-family: "Saira Condensed", sans-serif;
+  font-size: 1.75rem;
+  font-weight: 800;
+  margin-bottom: 20px;
+}
+
+.camera-button {
+  display: inline-block;
+  background: linear-gradient(135deg, #ef4444, #dc2626);
+  color: white;
+  border: none;
+  padding: 18px 32px;
+  border-radius: 5px;
+  font-size: 1.5rem;
+  font-weight: 700;
+  font-family: "Saira Condensed", sans-serif;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  text-decoration: none;
+  box-shadow: 0 4px 14px rgba(239, 68, 68, 0.4);
+}
+
+.camera-button:hover {
+  box-shadow: 0 12px 28px rgba(239, 68, 68, 0.6);
+  transform: translateY(-1px);
+}
+
+/* Image preview styles */
+.image-preview {
+  margin-top: 20px;
+  text-align: center;
+}
+
+.image-preview h4 {
+  color: #f7fafc;
+  font-family: "Saira Condensed", sans-serif;
+  font-size: 1.75rem;
+  font-weight: 800;
+  margin-bottom: 15px;
+}
+
+.preview-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.preview-image {
+  max-width: 100%;
+  max-height: 300px;
+  object-fit: contain;
+  border-radius: 5px;
+  border: 2px solid #404040;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+}
+
+.clear-button {
+  font-size: 1.25rem;
+  padding: 12px 24px;
+}
+
 .btn {
   background: linear-gradient(135deg, #ef4444, #dc2626);
   color: white;
@@ -245,6 +331,103 @@ code {
   letter-spacing: -0.01em;
 }
 
+/* Search Tabs Styles */
+.search-tabs {
+  display: flex;
+  margin-bottom: 25px;
+  background: rgba(0, 0, 0, 0.3);
+  border-radius: 8px;
+  padding: 4px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.tab-button {
+  flex: 1;
+  padding: 12px 20px;
+  background: transparent;
+  border: none;
+  color: #a0aec0;
+  font-family: "Saira Condensed", sans-serif;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  border-radius: 6px;
+  transition: all 0.3s ease;
+}
+
+.tab-button:hover {
+  color: #e2e8f0;
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.tab-button.active {
+  background: #dc2626;
+  color: #ffffff;
+  box-shadow: 0 2px 8px rgba(220, 38, 38, 0.3);
+}
+
+/* Manual Search Form Styles */
+.manual-search-form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.input-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+@media (max-width: 768px) {
+  .input-row {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+  
+  .tab-button {
+    padding: 10px 16px;
+    font-size: 0.9rem;
+  }
+}
+
+/* Vehicle Image Styles */
+.vehicle-image-container {
+  margin-bottom: 25px;
+  text-align: center;
+}
+
+.vehicle-image-container h4 {
+  color: #e2e8f0;
+  font-family: "Saira Condensed", sans-serif;
+  font-size: 1.2rem;
+  font-weight: 600;
+  margin-bottom: 15px;
+}
+
+.vehicle-image-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: rgba(0, 0, 0, 0.3);
+  border-radius: 8px;
+  padding: 10px;
+  border: 2px solid rgba(255, 255, 255, 0.1);
+}
+
+.vehicle-image {
+  max-width: 100%;
+  height: auto;
+  max-height: 250px;
+  border-radius: 5px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  transition: transform 0.3s ease;
+}
+
+.vehicle-image:hover {
+  transform: scale(1.02);
+}
+
 /* Grid layout for car information */
 .info-grid {
   display: grid;
@@ -258,6 +441,14 @@ code {
   .info-grid {
     grid-template-columns: 1fr;
     gap: 12px;
+  }
+  
+  .vehicle-image {
+    max-height: 200px;
+  }
+  
+  .vehicle-image-container h4 {
+    font-size: 1.1rem;
   }
 }
 
@@ -633,6 +824,14 @@ code {
   
   .car-info h3 {
     font-size: 1.5rem;
+  }
+  
+  .vehicle-image {
+    max-height: 180px;
+  }
+  
+  .vehicle-image-container h4 {
+    font-size: 1rem;
   }
   
   .upload-area {
