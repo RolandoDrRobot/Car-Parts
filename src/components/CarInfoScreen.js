@@ -47,7 +47,6 @@ const CarInfoScreen = ({ carData, onConfirm }) => {
             
             <div className="info-card">
               <div className="info-card-header">
-                <span className="info-card-icon"></span>
                 <h4 className="info-card-title">Appearance</h4>
               </div>
               <div className="info-row">
@@ -58,7 +57,6 @@ const CarInfoScreen = ({ carData, onConfirm }) => {
             
             <div className="info-card">
               <div className="info-card-header">
-                <span className="info-card-icon"></span>
                 <h4 className="info-card-title">Technical Specs</h4>
               </div>
               <div className="info-row">

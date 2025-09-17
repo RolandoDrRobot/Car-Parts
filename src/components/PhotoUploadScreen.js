@@ -63,7 +63,6 @@ const PhotoUploadScreen = ({ carData }) => {
           <div className="info-grid">
             <div className="info-card">
               <div className="info-card-header">
-                <span className="info-card-icon"></span>
                 <h4 className="info-card-title">Vehicle Details</h4>
               </div>
               <div className="info-row">
@@ -80,24 +79,6 @@ const PhotoUploadScreen = ({ carData }) => {
               </div>
             </div>
             
-            <div className="info-card">
-              <div className="info-card-header">
-                <span className="info-card-icon"></span>
-                <h4 className="info-card-title">Technical Specs</h4>
-              </div>
-              <div className="info-row">
-                <span className="info-label">Engine:</span>
-                <span className="info-value">{carData.engine}</span>
-              </div>
-              <div className="info-row">
-                <span className="info-label">Transmission:</span>
-                <span className="info-value">{carData.transmission}</span>
-              </div>
-              <div className="info-row">
-                <span className="info-label">Fuel Type:</span>
-                <span className="info-value">{carData.fuelType}</span>
-              </div>
-            </div>
           </div>
           
         </div>
@@ -147,7 +128,6 @@ const PhotoUploadScreen = ({ carData }) => {
             <div className="info-grid">
               <div className="info-card">
                 <div className="info-card-header">
-                  <span className="info-card-icon"></span>
                   <h4 className="info-card-title">Part Identification</h4>
                 </div>
                 <div className="info-row">
@@ -166,7 +146,6 @@ const PhotoUploadScreen = ({ carData }) => {
               
               <div className="info-card">
                 <div className="info-card-header">
-                  <span className="info-card-icon">💰</span>
                   <h4 className="info-card-title">Pricing & Availability</h4>
                 </div>
                 <div className="info-row">
