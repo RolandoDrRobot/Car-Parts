@@ -1,16 +1,39 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 const CarInfoScreen = ({ carData, onConfirm }) => {
   const navigate = useNavigate();
+  const [isEditing, setIsEditing] = useState(false);
+  const [editedData, setEditedData] = useState(carData);
 
   const handleConfirm = () => {
-    onConfirm(carData);
+    onConfirm(editedData);
     navigate('/photo-upload');
   };
 
   const handleGoBack = () => {
     navigate('/');
+  };
+
+  const handleEdit = () => {
+    setIsEditing(true);
+  };
+
+  const handleSave = () => {
+    setIsEditing(false);
+    setEditedData(editedData);
+  };
+
+  const handleCancel = () => {
+    setIsEditing(false);
+    setEditedData(carData);
+  };
+
+  const handleInputChange = (field, value) => {
+    setEditedData(prev => ({
+      ...prev,
+      [field]: value
+    }));
   };
 
   return (
@@ -26,22 +49,60 @@ const CarInfoScreen = ({ carData, onConfirm }) => {
           {/* Desktop Grid Layout */}
           <div className="info-grid">
             <div className="info-card">
-
+              <div className="info-card-header">
+                <h4 className="info-card-title">Basic Info</h4>
+              </div>
               <div className="info-row">
                 <span className="info-label">License Plate:</span>
-                <span className="info-value">{carData.plate}</span>
+                {isEditing ? (
+                  <input 
+                    type="text" 
+                    value={editedData.plate} 
+                    onChange={(e) => handleInputChange('plate', e.target.value)}
+                    className="edit-input"
+                  />
+                ) : (
+                  <span className="info-value">{editedData.plate}</span>
+                )}
               </div>
               <div className="info-row">
                 <span className="info-label">Brand:</span>
-                <span className="info-value">{carData.brand}</span>
+                {isEditing ? (
+                  <input 
+                    type="text" 
+                    value={editedData.brand} 
+                    onChange={(e) => handleInputChange('brand', e.target.value)}
+                    className="edit-input"
+                  />
+                ) : (
+                  <span className="info-value">{editedData.brand}</span>
+                )}
               </div>
               <div className="info-row">
                 <span className="info-label">Model:</span>
-                <span className="info-value">{carData.model}</span>
+                {isEditing ? (
+                  <input 
+                    type="text" 
+                    value={editedData.model} 
+                    onChange={(e) => handleInputChange('model', e.target.value)}
+                    className="edit-input"
+                  />
+                ) : (
+                  <span className="info-value">{editedData.model}</span>
+                )}
               </div>
               <div className="info-row">
                 <span className="info-label">Year:</span>
-                <span className="info-value">{carData.year}</span>
+                {isEditing ? (
+                  <input 
+                    type="text" 
+                    value={editedData.year} 
+                    onChange={(e) => handleInputChange('year', e.target.value)}
+                    className="edit-input"
+                  />
+                ) : (
+                  <span className="info-value">{editedData.year}</span>
+                )}
               </div>
             </div>
             
@@ -51,7 +112,16 @@ const CarInfoScreen = ({ carData, onConfirm }) => {
               </div>
               <div className="info-row">
                 <span className="info-label">Color:</span>
-                <span className="info-value">{carData.color}</span>
+                {isEditing ? (
+                  <input 
+                    type="text" 
+                    value={editedData.color} 
+                    onChange={(e) => handleInputChange('color', e.target.value)}
+                    className="edit-input"
+                  />
+                ) : (
+                  <span className="info-value">{editedData.color}</span>
+                )}
               </div>
             </div>
             
@@ -61,15 +131,42 @@ const CarInfoScreen = ({ carData, onConfirm }) => {
               </div>
               <div className="info-row">
                 <span className="info-label">Engine:</span>
-                <span className="info-value">{carData.engine}</span>
+                {isEditing ? (
+                  <input 
+                    type="text" 
+                    value={editedData.engine} 
+                    onChange={(e) => handleInputChange('engine', e.target.value)}
+                    className="edit-input"
+                  />
+                ) : (
+                  <span className="info-value">{editedData.engine}</span>
+                )}
               </div>
               <div className="info-row">
                 <span className="info-label">Transmission:</span>
-                <span className="info-value">{carData.transmission}</span>
+                {isEditing ? (
+                  <input 
+                    type="text" 
+                    value={editedData.transmission} 
+                    onChange={(e) => handleInputChange('transmission', e.target.value)}
+                    className="edit-input"
+                  />
+                ) : (
+                  <span className="info-value">{editedData.transmission}</span>
+                )}
               </div>
               <div className="info-row">
                 <span className="info-label">Fuel Type:</span>
-                <span className="info-value">{carData.fuelType}</span>
+                {isEditing ? (
+                  <input 
+                    type="text" 
+                    value={editedData.fuelType} 
+                    onChange={(e) => handleInputChange('fuelType', e.target.value)}
+                    className="edit-input"
+                  />
+                ) : (
+                  <span className="info-value">{editedData.fuelType}</span>
+                )}
               </div>
             </div>
           </div>
@@ -77,23 +174,44 @@ const CarInfoScreen = ({ carData, onConfirm }) => {
         </div>
 
 
-        <div className="success">
-          Information verified successfully
-        </div>
 
-        <button 
-          className="btn"
-          onClick={handleConfirm}
-        >
-          Confirm and Continue
-        </button>
-
-        <button 
-          className="btn btn-secondary"
-          onClick={handleGoBack}
-        >
-          Back to Search
-        </button>
+        {isEditing ? (
+          <>
+            <button 
+              className="btn"
+              onClick={handleSave}
+            >
+              Save Changes
+            </button>
+            <button 
+              className="btn btn-secondary"
+              onClick={handleCancel}
+            >
+              Cancel
+            </button>
+          </>
+        ) : (
+          <>
+            <button 
+              className="btn"
+              onClick={handleEdit}
+            >
+              Edit Information
+            </button>
+            <button 
+              className="btn"
+              onClick={handleConfirm}
+            >
+              Confirm and Continue
+            </button>
+            <button 
+              className="btn btn-secondary"
+              onClick={handleGoBack}
+            >
+              Back to Search
+            </button>
+          </>
+        )}
       </div>
     </div>
   );

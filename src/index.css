@@ -54,6 +54,11 @@ code {
   text-align: center;
 }
 
+.card-centered .subtitle {
+  margin-left: auto;
+  margin-right: auto;
+}
+
 
 @keyframes slideUp {
   from {
@@ -96,7 +101,7 @@ code {
 .title {
   color: #f7fafc;
   font-family: "Saira Condensed", sans-serif;
-  font-size: 2.75rem;
+  font-size: 4.5rem;
   font-weight: 800;
   margin-bottom: 16px;
   background: linear-gradient(135deg, #ef4444, #dc2626, #b91c1c);
@@ -109,7 +114,7 @@ code {
 
 .subtitle {
   color: #a0aec0;
-  font-size: 1.125rem;
+  font-size: 1.5rem;
   font-weight: 500;
   margin-bottom: 32px;
   line-height: 1.7;
@@ -126,7 +131,7 @@ code {
   color: #e2e8f0;
   font-weight: 700;
   margin-bottom: 10px;
-  font-size: 1rem;
+  font-size: 1.6rem;
   letter-spacing: 0.01em;
 }
 
@@ -135,7 +140,7 @@ code {
   padding: 18px 24px;
   border: 2px solid #404040;
   border-radius: 5px;
-  font-size: 1.125rem;
+  font-size: 1.5rem;
   font-weight: 500;
   font-family: "Saira Condensed", sans-serif;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
@@ -159,13 +164,35 @@ code {
   font-weight: 400;
 }
 
+/* Edit input styles */
+.edit-input {
+  background: #1a1a1a;
+  border: 2px solid #404040;
+  border-radius: 5px;
+  color: #e2e8f0;
+  padding: 8px 12px;
+  font-size: 1.6rem;
+  font-weight: 500;
+  font-family: "Saira Condensed", sans-serif;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  width: 100%;
+  max-width: 200px;
+}
+
+.edit-input:focus {
+  outline: none;
+  border-color: #ef4444;
+  background: #0f0f0f;
+  box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.2);
+}
+
 .btn {
   background: linear-gradient(135deg, #ef4444, #dc2626);
   color: white;
   border: none;
   padding: 18px 32px;
   border-radius: 5px;
-  font-size: 1.125rem;
+  font-size: 1.5rem;
   font-weight: 700;
   font-family: "Saira Condensed", sans-serif;
   cursor: pointer;
@@ -217,7 +244,7 @@ code {
   color: #f7fafc;
   font-family: "Saira Condensed", sans-serif;
   margin-bottom: 20px;
-  font-size: 1.375rem;
+  font-size: 1.75rem;
   font-weight: 800;
   letter-spacing: -0.01em;
 }
@@ -283,7 +310,7 @@ code {
 .info-card-title {
   color: #f7fafc;
   font-family: "Saira Condensed", sans-serif;
-  font-size: 1.1rem;
+  font-size: 1.4rem;
   font-weight: 700;
   margin: 0;
   letter-spacing: -0.01em;
@@ -314,14 +341,14 @@ code {
 .info-label {
   font-weight: 700;
   color: #a0aec0;
-  font-size: 0.95rem;
+  font-size: 1.6rem;
   letter-spacing: 0.01em;
 }
 
 .info-value {
   color: #e2e8f0;
   font-weight: 600;
-  font-size: 1rem;
+  font-size: 1.6rem;
 }
 
 /* Compact info display for mobile */
@@ -348,7 +375,7 @@ code {
 
 .info-item-label {
   color: #a0aec0;
-  font-size: 0.8rem;
+  font-size: 1.4rem;
   font-weight: 600;
   margin-bottom: 8px;
   text-transform: uppercase;
@@ -357,7 +384,7 @@ code {
 
 .info-item-value {
   color: #f7fafc;
-  font-size: 1.1rem;
+  font-size: 1.4rem;
   font-weight: 700;
 }
 
@@ -375,7 +402,7 @@ code {
 }
 
 .upload-icon {
-  font-size: 3.5rem;
+  font-size: 4.5rem;
   color: #ef4444;
   margin-bottom: 20px;
   transition: all 0.3s ease;
@@ -388,14 +415,14 @@ code {
 
 .upload-text {
   color: #e2e8f0;
-  font-size: 1.125rem;
+  font-size: 1.5rem;
   font-weight: 600;
   margin-bottom: 12px;
 }
 
 .upload-hint {
   color: #a0aec0;
-  font-size: 0.95rem;
+  font-size: 1.6rem;
   font-weight: 500;
 }
 
@@ -414,7 +441,7 @@ code {
   color: #d1fae5;
   font-family: "Saira Condensed", sans-serif;
   margin-bottom: 0;
-  font-size: 1.375rem;
+  font-size: 1.75rem;
   font-weight: 800;
   letter-spacing: -0.01em;
 
@@ -425,7 +452,7 @@ code {
   padding: 12px 20px;
   border-radius: 5px;
   font-weight: 700;
-  font-size: 0.95rem;
+  font-size: 1.6rem;
   margin-top: 12px;
   letter-spacing: 0.01em;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
@@ -507,28 +534,28 @@ code {
   }
   
   .title {
-    font-size: 2.25rem;
+    font-size: 3rem;
     margin-bottom: 12px;
   }
   
   .subtitle {
-    font-size: 1rem;
+    font-size: 1.6rem;
     margin-bottom: 28px;
   }
   
   .input {
     padding: 16px 20px;
-    font-size: 1rem;
+    font-size: 1.6rem;
   }
   
   .btn {
     padding: 16px 28px;
-    font-size: 1rem;
+    font-size: 1.6rem;
   }
   
   
   .car-info h3 {
-    font-size: 1.25rem;
+    font-size: 1.6rem;
   }
   
   /* Mobile grid optimization */
@@ -542,7 +569,7 @@ code {
   }
   
   .info-card-title {
-    font-size: 1rem;
+    font-size: 1.6rem;
   }
   
   .info-row {
@@ -552,11 +579,11 @@ code {
   }
   
   .info-label {
-    font-size: 0.9rem;
+    font-size: 1.2rem;
   }
   
   .info-value {
-    font-size: 0.95rem;
+    font-size: 1.6rem;
   }
   
   /* Compact mobile layout */
@@ -570,12 +597,12 @@ code {
   }
   
   .info-item-label {
-    font-size: 0.75rem;
+    font-size: 1rem;
     margin-bottom: 6px;
   }
   
   .info-item-value {
-    font-size: 1rem;
+    font-size: 1.6rem;
   }
   
   .upload-area {
@@ -583,7 +610,7 @@ code {
   }
   
   .upload-icon {
-    font-size: 3rem;
+    font-size: 4rem;
   }
   
   .part-result {
@@ -591,7 +618,7 @@ code {
   }
   
   .part-result h3 {
-    font-size: 1.25rem;
+    font-size: 1.6rem;
   }
 }
 
@@ -605,29 +632,29 @@ code {
   }
   
   .title {
-    font-size: 2rem;
+    font-size: 3.25rem;
     line-height: 1.1;
   }
   
   .subtitle {
-    font-size: 0.95rem;
+    font-size: 1.6rem;
     line-height: 1.6;
   }
   
   .input {
     padding: 14px 18px;
-    font-size: 0.95rem;
+    font-size: 1.6rem;
   }
   
   .btn {
     padding: 14px 24px;
-    font-size: 0.95rem;
+    font-size: 1.6rem;
   }
   
 
   
   .car-info h3 {
-    font-size: 1.125rem;
+    font-size: 1.5rem;
   }
   
   .upload-area {
@@ -635,15 +662,15 @@ code {
   }
   
   .upload-icon {
-    font-size: 2.5rem;
+    font-size: 3.25rem;
   }
   
   .upload-text {
-    font-size: 1rem;
+    font-size: 1.6rem;
   }
   
   .upload-hint {
-    font-size: 0.9rem;
+    font-size: 1.2rem;
   }
   
   .part-result {
@@ -651,12 +678,12 @@ code {
   }
   
   .part-result h3 {
-    font-size: 1.125rem;
+    font-size: 1.5rem;
   }
   
   .stock-status {
     padding: 10px 16px;
-    font-size: 0.9rem;
+    font-size: 1.2rem;
   }
 }
 
