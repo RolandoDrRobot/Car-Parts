@@ -42,14 +42,18 @@ code {
 .card {
   background: rgba(20, 20, 20, 0.95);
   backdrop-filter: blur(20px);
-  border-radius: 24px;
-  padding: 48px 40px;
+  border-radius: 5px;
+  padding: 30px 15px;
   width: 100%;
   max-width: 520px;
-  text-align: center;
+  text-align: left;
   animation: slideUp 0.8s cubic-bezier(0.16, 1, 0.3, 1);
   position: relative;
   overflow: hidden;
+}
+
+.card-centered {
+  text-align: center;
 }
 
 
@@ -112,8 +116,6 @@ code {
   margin-bottom: 32px;
   line-height: 1.7;
   max-width: 90%;
-  margin-left: auto;
-  margin-right: auto;
 }
 
 .input-group {
@@ -134,7 +136,7 @@ code {
   width: 100%;
   padding: 18px 24px;
   border: 2px solid #404040;
-  border-radius: 16px;
+  border-radius: 5px;
   font-size: 1.125rem;
   font-weight: 500;
   font-family: "Nunito Sans", sans-serif;
@@ -164,7 +166,7 @@ code {
   color: white;
   border: none;
   padding: 18px 32px;
-  border-radius: 16px;
+  border-radius: 5px;
   font-size: 1.125rem;
   font-weight: 700;
   font-family: "Nunito Sans", sans-serif;
@@ -220,25 +222,13 @@ code {
 
 .car-info {
   background: linear-gradient(135deg, #1a1a1a, #0f0f0f);
-  border-radius: 20px;
-  padding: 28px;
-  margin: 24px 0;
+  border-radius: 5px;
+  margin: 0 !important;
   text-align: left;
-  border: 1px solid rgba(255, 255, 255, 0.1);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
   position: relative;
 }
 
-.car-info::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 3px;
-  background: linear-gradient(90deg, #ef4444, #dc2626);
-  border-radius: 20px 20px 0 0;
-}
 
 .car-info h3 {
   color: #f7fafc;
@@ -257,36 +247,38 @@ code {
   margin-top: 20px;
 }
 
-/* Show desktop grid on larger screens */
-@media (min-width: 769px) {
+/* Mobile: Single column layout */
+@media (max-width: 768px) {
   .info-grid {
-    display: grid !important;
-  }
-  
-  .info-compact {
-    display: none !important;
+    grid-template-columns: 1fr;
+    gap: 12px;
   }
 }
 
-/* Show mobile compact on smaller screens */
-@media (max-width: 768px) {
-  .info-grid {
-    display: none !important;
-  }
-  
-  .info-compact {
-    display: grid !important;
-  }
+/* Always show desktop grid layout */
+.info-grid {
+  display: grid;
+}
+
+.info-compact {
+  display: none;
 }
 
 .info-card {
   background: rgba(20, 20, 20, 0.8);
-  border-radius: 16px;
+  border-radius: 5px;
   padding: 20px;
   border: 1px solid rgba(255, 255, 255, 0.05);
   transition: all 0.3s ease;
   position: relative;
   overflow: hidden;
+}
+
+/* Mobile card adjustments */
+@media (max-width: 768px) {
+  .info-card {
+    padding: 16px;
+  }
 }
 
 .info-card::before {
@@ -372,7 +364,7 @@ code {
 
 .info-item {
   background: rgba(20, 20, 20, 0.6);
-  border-radius: 12px;
+  border-radius: 5px;
   padding: 16px;
   text-align: center;
   border: 1px solid rgba(255, 255, 255, 0.05);
@@ -563,6 +555,7 @@ code {
   font-weight: 600;
   box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
   position: relative;
+  text-align: center;
 }
 
 .success::before {
@@ -584,7 +577,6 @@ code {
   
   .card {
     max-width: 600px;
-    padding: 40px 32px;
   }
 }
 
@@ -595,7 +587,6 @@ code {
   }
   
   .card {
-    padding: 32px 24px;
     max-width: 100%;
     margin: 0 8px;
   }
@@ -620,10 +611,6 @@ code {
     font-size: 1rem;
   }
   
-  .car-info {
-    padding: 24px 20px;
-    margin: 20px 0;
-  }
   
   .car-info h3 {
     font-size: 1.25rem;
@@ -653,7 +640,6 @@ code {
   }
   
   .info-row {
-    flex-direction: column;
     align-items: flex-start;
     gap: 4px;
     padding: 10px 0;
@@ -709,7 +695,6 @@ code {
   }
   
   .card {
-    padding: 24px 20px;
     border-radius: 20px;
   }
   
@@ -733,9 +718,7 @@ code {
     font-size: 0.95rem;
   }
   
-  .car-info {
-    padding: 20px 16px;
-  }
+
   
   .car-info h3 {
     font-size: 1.125rem;

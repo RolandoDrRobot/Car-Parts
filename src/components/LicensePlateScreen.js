@@ -33,8 +33,8 @@ const LicensePlateScreen = ({ onSubmit, carData }) => {
 
   return (
     <div className="container">
-      <div className="card">
-        <h1 className="title">🚗 CarFix</h1>
+      <div className="card card-centered">
+        <h1 className="title">CarFix</h1>
         <p className="subtitle">
           Enter your vehicle's license plate to identify parts with artificial intelligence
         </p>

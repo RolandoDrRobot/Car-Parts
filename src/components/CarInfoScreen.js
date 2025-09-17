@@ -21,15 +21,12 @@ const CarInfoScreen = ({ carData, onConfirm }) => {
         </p>
 
         <div className="car-info">
-          <h3>🚗 Vehicle Information</h3>
+          <h3>Vehicle Information</h3>
           
           {/* Desktop Grid Layout */}
           <div className="info-grid">
             <div className="info-card">
-              <div className="info-card-header">
-                <span className="info-card-icon">🏷️</span>
-                <h4 className="info-card-title">Basic Info</h4>
-              </div>
+
               <div className="info-row">
                 <span className="info-label">License Plate:</span>
                 <span className="info-value">{carData.plate}</span>
@@ -50,7 +47,7 @@ const CarInfoScreen = ({ carData, onConfirm }) => {
             
             <div className="info-card">
               <div className="info-card-header">
-                <span className="info-card-icon">🎨</span>
+                <span className="info-card-icon"></span>
                 <h4 className="info-card-title">Appearance</h4>
               </div>
               <div className="info-row">
@@ -61,7 +58,7 @@ const CarInfoScreen = ({ carData, onConfirm }) => {
             
             <div className="info-card">
               <div className="info-card-header">
-                <span className="info-card-icon">⚙️</span>
+                <span className="info-card-icon"></span>
                 <h4 className="info-card-title">Technical Specs</h4>
               </div>
               <div className="info-row">
@@ -79,46 +76,11 @@ const CarInfoScreen = ({ carData, onConfirm }) => {
             </div>
           </div>
           
-          {/* Mobile Compact Layout */}
-          <div className="info-compact">
-            <div className="info-item">
-              <div className="info-item-label">License Plate</div>
-              <div className="info-item-value">{carData.plate}</div>
-            </div>
-            <div className="info-item">
-              <div className="info-item-label">Brand</div>
-              <div className="info-item-value">{carData.brand}</div>
-            </div>
-            <div className="info-item">
-              <div className="info-item-label">Model</div>
-              <div className="info-item-value">{carData.model}</div>
-            </div>
-            <div className="info-item">
-              <div className="info-item-label">Year</div>
-              <div className="info-item-value">{carData.year}</div>
-            </div>
-            <div className="info-item">
-              <div className="info-item-label">Color</div>
-              <div className="info-item-value">{carData.color}</div>
-            </div>
-            <div className="info-item">
-              <div className="info-item-label">Engine</div>
-              <div className="info-item-value">{carData.engine}</div>
-            </div>
-            <div className="info-item">
-              <div className="info-item-label">Transmission</div>
-              <div className="info-item-value">{carData.transmission}</div>
-            </div>
-            <div className="info-item">
-              <div className="info-item-label">Fuel Type</div>
-              <div className="info-item-value">{carData.fuelType}</div>
-            </div>
-          </div>
         </div>
 
 
         <div className="success">
-          ✅ Information verified successfully
+          Information verified successfully
         </div>
 
         <button 

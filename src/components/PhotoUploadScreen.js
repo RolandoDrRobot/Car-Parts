@@ -57,13 +57,13 @@ const PhotoUploadScreen = ({ carData }) => {
         </p>
 
         <div className="car-info">
-          <h3>🚗 Selected Vehicle</h3>
+          <h3>Selected Vehicle</h3>
           
           {/* Desktop Grid Layout */}
           <div className="info-grid">
             <div className="info-card">
               <div className="info-card-header">
-                <span className="info-card-icon">🚗</span>
+                <span className="info-card-icon"></span>
                 <h4 className="info-card-title">Vehicle Details</h4>
               </div>
               <div className="info-row">
@@ -82,7 +82,7 @@ const PhotoUploadScreen = ({ carData }) => {
             
             <div className="info-card">
               <div className="info-card-header">
-                <span className="info-card-icon">⚙️</span>
+                <span className="info-card-icon"></span>
                 <h4 className="info-card-title">Technical Specs</h4>
               </div>
               <div className="info-row">
@@ -100,33 +100,6 @@ const PhotoUploadScreen = ({ carData }) => {
             </div>
           </div>
           
-          {/* Mobile Compact Layout */}
-          <div className="info-compact">
-            <div className="info-item">
-              <div className="info-item-label">Vehicle</div>
-              <div className="info-item-value">{carData.brand} {carData.model}</div>
-            </div>
-            <div className="info-item">
-              <div className="info-item-label">Year</div>
-              <div className="info-item-value">{carData.year}</div>
-            </div>
-            <div className="info-item">
-              <div className="info-item-label">License Plate</div>
-              <div className="info-item-value">{carData.plate}</div>
-            </div>
-            <div className="info-item">
-              <div className="info-item-label">Color</div>
-              <div className="info-item-value">{carData.color}</div>
-            </div>
-            <div className="info-item">
-              <div className="info-item-label">Engine</div>
-              <div className="info-item-value">{carData.engine}</div>
-            </div>
-            <div className="info-item">
-              <div className="info-item-label">Transmission</div>
-              <div className="info-item-value">{carData.transmission}</div>
-            </div>
-          </div>
         </div>
 
         <div className="input-group">
@@ -145,7 +118,7 @@ const PhotoUploadScreen = ({ carData }) => {
 
         {selectedFile && (
           <div className="success">
-            ✅ File selected: {selectedFile.name} ({formatFileSize(selectedFile.size)})
+            File selected: {selectedFile.name} ({formatFileSize(selectedFile.size)})
           </div>
         )}
 
@@ -168,13 +141,13 @@ const PhotoUploadScreen = ({ carData }) => {
 
         {analysisResult && (
           <div className="part-result">
-            <h3>🤖 Analysis Result</h3>
+            <h3>Analysis Result</h3>
             
             {/* Desktop Grid Layout */}
             <div className="info-grid">
               <div className="info-card">
                 <div className="info-card-header">
-                  <span className="info-card-icon">🔍</span>
+                  <span className="info-card-icon"></span>
                   <h4 className="info-card-title">Part Identification</h4>
                 </div>
                 <div className="info-row">
@@ -209,49 +182,17 @@ const PhotoUploadScreen = ({ carData }) => {
                     analysisResult.identifiedPart.stock > 0 ? 'stock-available' : 'stock-unavailable'
                   }`}>
                     {analysisResult.identifiedPart.stock > 0 
-                      ? `✅ Available (${analysisResult.identifiedPart.stock} units)`
-                      : '❌ Out of Stock'
+                      ? `Available (${analysisResult.identifiedPart.stock} units)`
+                      : 'Out of Stock'
                     }
                   </span>
                 </div>
               </div>
             </div>
             
-            {/* Mobile Compact Layout */}
-            <div className="info-compact">
-              <div className="info-item">
-                <div className="info-item-label">Part Name</div>
-                <div className="info-item-value">{analysisResult.identifiedPart.name}</div>
-              </div>
-              <div className="info-item">
-                <div className="info-item-label">Part Number</div>
-                <div className="info-item-value">{analysisResult.identifiedPart.partNumber}</div>
-              </div>
-              <div className="info-item">
-                <div className="info-item-label">Price</div>
-                <div className="info-item-value">${analysisResult.identifiedPart.price}</div>
-              </div>
-              <div className="info-item">
-                <div className="info-item-label">AI Confidence</div>
-                <div className="info-item-value">{analysisResult.confidence}%</div>
-              </div>
-              <div className="info-item">
-                <div className="info-item-label">Location</div>
-                <div className="info-item-value">{analysisResult.identifiedPart.location}</div>
-              </div>
-              <div className="info-item">
-                <div className="info-item-label">Stock</div>
-                <div className="info-item-value">
-                  {analysisResult.identifiedPart.stock > 0 
-                    ? `${analysisResult.identifiedPart.stock} units`
-                    : 'Out of Stock'
-                  }
-                </div>
-              </div>
-            </div>
 
             <div style={{ marginTop: '20px' }}>
-              <h4>💡 Recommendations:</h4>
+              <h4>Recommendations:</h4>
               <ul style={{ textAlign: 'left', marginTop: '10px' }}>
                 {analysisResult.recommendations.map((rec, index) => (
                   <li key={index} style={{ marginBottom: '5px' }}>{rec}</li>
@@ -270,7 +211,7 @@ const PhotoUploadScreen = ({ carData }) => {
         </button>
 
         <div style={{ marginTop: '30px', fontSize: '0.9rem', color: '#a0aec0' }}>
-          <p><strong>💡 Tips for better results:</strong></p>
+          <p><strong>Tips for better results:</strong></p>
           <p>• Take the photo with good lighting</p>
           <p>• Focus well on the specific part</p>
           <p>• Avoid shadows and reflections</p>
