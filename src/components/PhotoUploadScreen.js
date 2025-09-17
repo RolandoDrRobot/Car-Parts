@@ -50,7 +50,9 @@ const PhotoUploadScreen = ({ carData }) => {
     setError('');
 
     try {
-      const result = await simulateAIIdentification(selectedFile);
+      // Enviar imagen a ChatGPT para análisis
+      const result = await simulateAIIdentification(selectedFile, carData);
+      
       // Navigate to analysis report screen with the results
       navigate('/analysis-report', { 
         state: { 
@@ -59,7 +61,8 @@ const PhotoUploadScreen = ({ carData }) => {
         } 
       });
     } catch (err) {
-      setError('Error al analizar la imagen. Por favor intenta de nuevo.');
+      console.error('Error en análisis:', err);
+      setError('Error al analizar la imagen con ChatGPT. Por favor intenta de nuevo.');
     } finally {
       setIsAnalyzing(false);
     }

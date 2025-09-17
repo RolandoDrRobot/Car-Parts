@@ -3,6 +3,7 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { useCart } from '../contexts/CartContext';
 import Modal from './Modal';
+import PartCard from './PartCard';
 
 const AnalysisReportScreen = () => {
   const navigate = useNavigate();
@@ -83,12 +84,49 @@ const AnalysisReportScreen = () => {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.6 }}
         >
-          <h3>Información del Vehículo</h3>
           <div className="info-grid">
             <div className="info-card">
               <div className="info-card-header">
                 <h4 className="info-card-title">Detalles del Vehículo</h4>
               </div>
+              
+              {/* Imagen del vehículo */}
+              <div style={{ 
+                textAlign: 'center', 
+                marginBottom: '15px',
+                background: 'rgba(0, 0, 0, 0.2)',
+                borderRadius: '8px',
+                padding: '10px'
+              }}>
+                <img 
+                  src={carData.imageUrl} 
+                  alt={`${carData.brand} ${carData.model}`}
+                  style={{
+                    maxWidth: '100%',
+                    height: 'auto',
+                    maxHeight: '200px',
+                    borderRadius: '6px',
+                    boxShadow: '0 4px 12px rgba(0, 0, 0, 0.3)'
+                  }}
+                  onError={(e) => {
+                    e.target.style.display = 'none';
+                    e.target.nextSibling.style.display = 'flex';
+                  }}
+                />
+                <div style={{
+                  display: 'none',
+                  flexDirection: 'column',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  color: '#a0aec0',
+                  fontSize: '0.9rem',
+                  minHeight: '120px'
+                }}>
+                  <div style={{ fontSize: '3rem', marginBottom: '8px' }}>🚗</div>
+                  <div style={{ fontSize: '0.8rem' }}>Imagen del vehículo no disponible</div>
+                </div>
+              </div>
+
               <div className="info-row">
                 <span className="info-label">Vehículo:</span>
                 <span className="info-value">{carData.brand} {carData.model} {carData.year}</span>
@@ -105,171 +143,150 @@ const AnalysisReportScreen = () => {
           </div>
         </motion.div>
 
-        {/* Analysis Results */}
-        <motion.div 
-          className="part-result"
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.8 }}
-        >
-          <h3>Resultados del Análisis</h3>
-          
-          <div className="info-grid">
-            <div className="info-card">
-              <div className="info-card-header">
-                <h4 className="info-card-title">Identificación de Pieza</h4>
-              </div>
-              <div className="info-row">
-                <span className="info-label">Pieza Identificada:</span>
-                <span className="info-value">{analysisResult.identifiedPart.name}</span>
-              </div>
-              <div className="info-row">
-                <span className="info-label">Número de Pieza:</span>
-                <span className="info-value">{analysisResult.identifiedPart.partNumber}</span>
-              </div>
-              <div className="info-row">
-                <span className="info-label">Confianza de IA:</span>
-                <span className="info-value">{analysisResult.confidence}%</span>
-              </div>
-            </div>
-            
-            <div className="info-card">
-              <div className="info-card-header">
-                <h4 className="info-card-title">Precios y Disponibilidad</h4>
-              </div>
-              <div className="info-row">
-                <span className="info-label">Precio:</span>
-                <span className="info-value">${analysisResult.identifiedPart.price}</span>
-              </div>
-              <div className="info-row">
-                <span className="info-label">Ubicación:</span>
-                <span className="info-value">{analysisResult.identifiedPart.location}</span>
-              </div>
-              <div style={{ marginTop: '15px' }}>
-                <span className={`stock-status ${
-                  analysisResult.identifiedPart.stock > 0 ? 'stock-available' : 'stock-unavailable'
-                }`}>
-                  {analysisResult.identifiedPart.stock > 0 
-                    ? `Available (${analysisResult.identifiedPart.stock} units)`
-                    : 'Out of Stock'
-                  }
-                </span>
-              </div>
-            </div>
-          </div>
 
-          {/* Part Image */}
-          <motion.div 
-            style={{ marginTop: '20px' }}
+
+
+          {/* Análisis Técnico Detallado - Estilo Card Info */}
+        <motion.div 
+            className="car-info"
             initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 1.0 }}
-          >
-            <h4>Part Image:</h4>
-            <div style={{ marginTop: '10px', textAlign: 'center' }}>
-              <div style={{
-                display: 'flex',
-                justifyContent: 'center',
-                alignItems: 'center',
-                background: 'rgba(0, 0, 0, 0.3)',
-                borderRadius: '8px',
-                padding: '10px',
-                border: '2px solid rgba(255, 255, 255, 0.1)',
-                minHeight: '200px'
-              }}>
-                <img 
-                  src={analysisResult.identifiedPart.imageUrl} 
-                  alt={analysisResult.identifiedPart.name}
-                  style={{ 
-                    maxWidth: '100%', 
-                    height: 'auto',
-                    maxHeight: '200px', 
-                    objectFit: 'cover',
-                    borderRadius: '5px',
-                    boxShadow: '0 4px 12px rgba(0, 0, 0, 0.3)'
-                  }}
-                  onError={(e) => {
-                    e.target.style.display = 'none';
-                    e.target.nextSibling.style.display = 'flex';
-                  }}
-                />
-                <div style={{
-                  display: 'none',
-                  flexDirection: 'column',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  color: '#a0aec0',
-                  fontSize: '0.9rem'
-                }}>
-                  <div style={{ fontSize: '2rem', marginBottom: '10px' }}>🔧</div>
-                  <div>Image not available</div>
-                  <div style={{ fontSize: '0.8rem', marginTop: '5px' }}>
-                    {analysisResult.identifiedPart.name}
-                  </div>
+          animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 1.2 }}
+        >
+
+            <div className="info-grid">
+          
+              {/* Información del Sistema y Especificaciones Técnicas */}
+              <div className="info-card">
+                <div className="info-card-header">
+                  <h4 className="info-card-title">Información del Sistema</h4>
+                </div>
+                <div className="info-row">
+                  <span className="info-label">Sistema:</span>
+                  <span className="info-value">{analysisResult.technicalDetails?.systemType}</span>
+                </div>
+                <div className="info-row">
+                  <span className="info-label">Tipo de Freno:</span>
+                  <span className="info-value">{analysisResult.technicalDetails?.brakeType}</span>
+                </div>
+                <div className="info-row">
+                  <span className="info-label">Desgaste:</span>
+                  <span className="info-value" style={{ color: '#f59e0b' }}>{analysisResult.technicalDetails?.wearLevel}</span>
+                </div>
+                <div className="info-row">
+                  <span className="info-label">Corrosión:</span>
+                  <span className="info-value" style={{ color: '#f59e0b' }}>{analysisResult.technicalDetails?.corrosionStatus}</span>
+                </div>
+                <div className="info-row">
+                  <span className="info-label">Prioridad:</span>
+                  <span className="info-value" style={{ color: '#ef4444', fontWeight: '600' }}>{analysisResult.technicalDetails?.maintenancePriority}</span>
+                </div>
+                <div className="info-row">
+                  <span className="info-label">Diámetro Tambor:</span>
+                  <span className="info-value">{analysisResult.technicalDetails?.technicalSpecs?.drumDiameter}</span>
+                </div>
+                <div className="info-row">
+                  <span className="info-label">Grosor Zapatas:</span>
+                  <span className="info-value">{analysisResult.technicalDetails?.technicalSpecs?.shoeThickness}</span>
+                </div>
+                <div className="info-row">
+                  <span className="info-label">Tensión Resortes:</span>
+                  <span className="info-value" style={{ color: '#22c55e' }}>{analysisResult.technicalDetails?.technicalSpecs?.springTension}</span>
+                </div>
+                <div className="info-row">
+                  <span className="info-label">Diámetro Cilindro:</span>
+                  <span className="info-value">{analysisResult.technicalDetails?.technicalSpecs?.wheelCylinderBore}</span>
+                </div>
+                <div className="info-row">
+                  <span className="info-label">Nivel Líquido:</span>
+                  <span className="info-value" style={{ color: '#f59e0b' }}>{analysisResult.technicalDetails?.technicalSpecs?.brakeFluidLevel}</span>
                 </div>
               </div>
+
+
+
+              {/* Notas de Inspección */}
+              <div className="info-card">
+                <div className="info-card-header">
+                  <h4 className="info-card-title">Notas de Inspección</h4>
+                </div>
+                {analysisResult.technicalDetails?.inspectionNotes?.map((note, index) => (
+                  <div key={index} className="info-row" style={{ alignItems: 'flex-start' }}>
+                    <span className="info-label" style={{ color: '#22c55e', marginRight: '8px' }}>•</span>
+                    <span className="info-value" style={{ flex: 1 }}>{note}</span>
+                  </div>
+                ))}
+            </div>
+
+              {/* Problemas Identificados */}
+              <div className="info-card">
+                <div className="info-card-header">
+                  <h4 className="info-card-title">Problemas Identificados</h4>
+                </div>
+                {analysisResult.technicalDetails?.commonIssues?.map((issue, index) => (
+                  <div key={index} className="info-row" style={{ alignItems: 'flex-start' }}>
+                    <span className="info-label" style={{ color: '#ef4444', marginRight: '8px' }}>•</span>
+                    <span className="info-value" style={{ flex: 1 }}>{issue}</span>
+                  </div>
+                ))}
+              </div>
+
             </div>
           </motion.div>
 
-          {/* Recommendations */}
-          <motion.div 
-            style={{ marginTop: '20px' }}
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 1.2 }}
-          >
-            <h4>Recommendations:</h4>
-            <ul style={{ textAlign: 'left', marginTop: '10px' }}>
-              {analysisResult.recommendations.map((rec, index) => (
-                <li key={index} style={{ marginBottom: '5px' }}>{rec}</li>
-              ))}
-            </ul>
-          </motion.div>
-        </motion.div>
+          {/* Repuestos Disponibles en Stock */}
+          {analysisResult.partsAnalysis && analysisResult.partsAnalysis.length > 0 && (
+            <motion.div 
+              style={{ marginTop: '20px' }}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 1.3 }}
+            >
+              {analysisResult.partsAnalysis.filter(part => part.inStock).length > 0 ? (
+                <>
+                  <h4 className="info-card-title">Repuestos en stock</h4>
+                  <div style={{ 
+                    display: 'grid', 
+                    gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', 
+                    gap: '12px',
+                    marginTop: '15px'
+                  }}>
+                  {analysisResult.partsAnalysis.filter(part => part.inStock).map((part, index) => (
+                    <PartCard
+                      key={index}
+                      part={part}
+                      index={index}
+                      onAddToCart={(availablePart) => {
+                        addItem(availablePart);
+                                setShowCartModal(true);
+                              }}
+                      showAddButton={true}
+                    />
+                  ))}
+                  </div>
+                </>
+              ) : (
+                <div style={{
+                  textAlign: 'center',
+                  padding: '30px 20px',
+                  background: 'rgba(239, 68, 68, 0.1)',
+                  border: '2px solid rgba(239, 68, 68, 0.3)',
+                  borderRadius: '10px',
+                  marginTop: '15px'
+                }}>
+                  <div style={{ fontSize: '2rem', marginBottom: '10px' }}>⚠️</div>
+                  <h6 style={{ color: '#ef4444', margin: '0 0 8px 0', fontSize: '1.1rem', fontWeight: '600' }}>
+                    No hay repuestos disponibles
+                  </h6>
+                  <p style={{ color: '#a0aec0', margin: 0, fontSize: '0.9rem' }}>
+                    Ninguno de los repuestos identificados está disponible en stock actualmente.
+                  </p>
+                </div>
+              )}
+            </motion.div>
+          )}
 
-        {/* Add to Cart Section */}
-        {analysisResult.identifiedPart.stock > 0 && (
-          <motion.div
-            style={{ marginTop: '30px', textAlign: 'center' }}
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 1.3 }}
-          >
-            <div style={{ 
-              background: 'rgba(34, 197, 94, 0.1)', 
-              border: '2px solid rgba(34, 197, 94, 0.3)',
-              borderRadius: '12px',
-              padding: '20px',
-              marginBottom: '20px'
-            }}>
-              <h4 style={{ margin: '0 0 10px 0', color: '#22c55e' }}>Ready to Purchase?</h4>
-              <p style={{ margin: '0', color: '#a0aec0' }}>
-                Add this part to your cart and continue shopping or proceed to checkout.
-              </p>
-            </div>
-            <div style={{ display: 'flex', gap: '15px', flexWrap: 'wrap', justifyContent: 'center' }}>
-              <motion.button 
-                className="btn"
-                onClick={handleAddToCart}
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
-                transition={{ duration: 0.2 }}
-                style={{ background: '#22c55e', borderColor: '#22c55e' }}
-              >
-                🛒 Agregar al Carrito
-              </motion.button>
-              <motion.button 
-                className="btn btn-secondary"
-                onClick={handleViewCart}
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
-                transition={{ duration: 0.2 }}
-              >
-                Ver Carrito
-              </motion.button>
-            </div>
-          </motion.div>
-        )}
+
 
         {/* Action Buttons */}
         <motion.div

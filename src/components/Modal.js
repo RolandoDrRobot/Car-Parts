@@ -64,8 +64,8 @@ const Modal = ({ isOpen, onClose, title, children, type = 'default', autoClose =
           style={{
             ...getModalStyles(),
             borderRadius: '8px',
-            padding: '24px',
-            maxWidth: '400px',
+            padding: type === 'success' ? '16px 20px' : '24px',
+            maxWidth: type === 'success' ? '300px' : '400px',
             width: '100%',
             backdropFilter: 'blur(10px)',
             boxShadow: '0 10px 30px rgba(0, 0, 0, 0.5)',
@@ -76,9 +76,9 @@ const Modal = ({ isOpen, onClose, title, children, type = 'default', autoClose =
           <div style={{ textAlign: 'center' }}>
             {title && (
               <h3 style={{ 
-                margin: '0 0 16px 0', 
+                margin: '0 0 12px 0', 
                 color: '#fff',
-                fontSize: '1.25rem',
+                fontSize: type === 'success' ? '1.1rem' : '1.25rem',
                 fontWeight: '600'
               }}>
                 {title}
@@ -86,10 +86,10 @@ const Modal = ({ isOpen, onClose, title, children, type = 'default', autoClose =
             )}
             
             <div style={{ 
-              marginBottom: '20px',
+              marginBottom: type === 'success' ? '12px' : '20px',
               color: '#a0aec0',
               lineHeight: '1.5',
-              fontSize: '0.95rem'
+              fontSize: type === 'success' ? '0.9rem' : '0.95rem'
             }}>
               {children}
             </div>

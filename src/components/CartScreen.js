@@ -96,7 +96,7 @@ const CartScreen = () => {
                       width: '100%', 
                       height: '100%', 
                       objectFit: 'cover',
-                      borderRadius: '12px',
+                      borderRadius: '6px',
                       border: '2px solid rgba(255, 255, 255, 0.1)',
                       boxShadow: '0 4px 12px rgba(0, 0, 0, 0.2)'
                     }}

@@ -6,6 +6,11 @@
   box-sizing: border-box;
 }
 
+/* General image styling */
+img {
+  border-radius: 6px;
+}
+
 html {
   font-family: "Saira Condensed", sans-serif;
   font-optical-sizing: auto;
@@ -260,7 +265,7 @@ code {
   max-width: 100%;
   max-height: 300px;
   object-fit: contain;
-  border-radius: 5px;
+  border-radius: 6px;
   border: 2px solid #404040;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
 }
@@ -417,7 +422,7 @@ code {
   max-width: 100%;
   height: auto;
   max-height: 250px;
-  border-radius: 5px;
+  border-radius: 6px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
   transition: transform 0.3s ease;
 }
@@ -468,18 +473,6 @@ code {
   position: relative;
   overflow: hidden;
   padding: 20px 0;
-}
-
-/* Info cards in analysis result without styles */
-.part-result .info-card {
-  background: transparent;
-  border: none;
-  border-radius: 5px;
-  padding: 0;
-  box-shadow: none;
-  transition: none;
-  position: static;
-  overflow: visible;
 }
 
 .info-card-header {
@@ -591,27 +584,6 @@ code {
   color: #a0aec0;
   font-size: 1.6rem;
   font-weight: 500;
-}
-
-.part-result {
-  background: linear-gradient(135deg, #064e3b, #065f46);
-  border: 2px solid #10b981;
-  border-radius: 5px;
-  padding: 28px;
-  margin: 24px 0;
-  text-align: left;
-  position: relative;
-  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.2);
-}
-
-.part-result h3 {
-  color: #d1fae5;
-  font-family: "Saira Condensed", sans-serif;
-  margin-bottom: 0;
-  font-size: 1.75rem;
-  font-weight: 800;
-  letter-spacing: -0.01em;
-
 }
 
 .stock-status {
@@ -779,14 +751,6 @@ code {
   .upload-icon {
     font-size: 4rem;
   }
-  
-  .part-result {
-    padding: 24px 20px;
-  }
-  
-  .part-result h3 {
-    font-size: 1.6rem;
-  }
 }
 
 @media (max-width: 480px) {
@@ -846,14 +810,6 @@ code {
   
   .upload-hint {
     font-size: 1.2rem;
-  }
-  
-  .part-result {
-    padding: 20px 16px;
-  }
-  
-  .part-result h3 {
-    font-size: 1.5rem;
   }
   
   .stock-status {
