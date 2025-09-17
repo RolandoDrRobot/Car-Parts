@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { motion } from 'framer-motion';
 
 const LicensePlateScreen = ({ onSubmit, carData }) => {
   const [plate, setPlate] = useState('');
@@ -33,13 +34,35 @@ const LicensePlateScreen = ({ onSubmit, carData }) => {
 
   return (
     <div className="container">
-      <div className="card card-centered">
-        <h1 className="title">CarFix</h1>
-        <p className="subtitle">
-          dentify your vehicle's parts with artificial intelligence
-        </p>
+      <motion.div 
+        className="card card-centered"
+        initial={{ opacity: 0, y: 50 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6, ease: "easeOut" }}
+      >
+        <motion.h1 
+          className="title"
+          initial={{ opacity: 0, scale: 0.8 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.5, delay: 0.2 }}
+        >
+          CarFix
+        </motion.h1>
+        <motion.p 
+          className="subtitle"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.4 }}
+        >
+          Enter your vehicle's license plate to identify parts with artificial intelligence
+        </motion.p>
         
-        <form onSubmit={handleSubmit}>
+        <motion.form 
+          onSubmit={handleSubmit}
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.6 }}
+        >
           <div className="input-group">
             <label htmlFor="plate" className="label">
               Vehicle License Plate
@@ -56,12 +79,24 @@ const LicensePlateScreen = ({ onSubmit, carData }) => {
             />
           </div>
 
-          {error && <div className="error">{error}</div>}
+          {error && (
+            <motion.div 
+              className="error"
+              initial={{ opacity: 0, scale: 0.8 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.3 }}
+            >
+              {error}
+            </motion.div>
+          )}
 
-          <button 
+          <motion.button 
             type="submit" 
             className="btn"
             disabled={loading}
+            whileHover={{ scale: 1.02 }}
+            whileTap={{ scale: 0.98 }}
+            transition={{ duration: 0.2 }}
           >
             {loading ? (
               <>
@@ -71,8 +106,8 @@ const LicensePlateScreen = ({ onSubmit, carData }) => {
             ) : (
               'Search Vehicle'
             )}
-          </button>
-        </form>
+          </motion.button>
+        </motion.form>
 
         <div style={{ marginTop: '30px', fontSize: '0.9rem', color: '#a0aec0' }}>
           <p><strong>Test License Plates:</strong></p>
@@ -80,7 +115,7 @@ const LicensePlateScreen = ({ onSubmit, carData }) => {
           <p>XYZ789 - Honda Civic 2019</p>
           <p>DEF456 - Ford Focus 2021</p>
         </div>
-      </div>
+      </motion.div>
     </div>
   );
 };

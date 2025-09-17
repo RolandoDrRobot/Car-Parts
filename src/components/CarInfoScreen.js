@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { motion } from 'framer-motion';
 
 const CarInfoScreen = ({ carData, onConfirm }) => {
   const navigate = useNavigate();
@@ -38,16 +39,36 @@ const CarInfoScreen = ({ carData, onConfirm }) => {
 
   return (
     <div className="container">
-      <div className="card">
-        <p className="subtitle">
+      <motion.div 
+        className="card"
+        initial={{ opacity: 0, y: 50 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6, ease: "easeOut" }}
+      >
+        <motion.p 
+          className="subtitle"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.2 }}
+        >
           Verify that this is the correct information for your vehicle
-        </p>
+        </motion.p>
 
-        <div className="car-info">
+        <motion.div 
+          className="car-info"
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.4 }}
+        >
           <h3>Vehicle Information</h3>
           
           {/* Desktop Grid Layout */}
-          <div className="info-grid">
+          <motion.div 
+            className="info-grid"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.5, delay: 0.6 }}
+          >
             <div className="info-card">
               <div className="info-card-header">
                 <h4 className="info-card-title">Basic Info</h4>
@@ -169,50 +190,71 @@ const CarInfoScreen = ({ carData, onConfirm }) => {
                 )}
               </div>
             </div>
-          </div>
+          </motion.div>
           
-        </div>
+        </motion.div>
 
 
 
-        {isEditing ? (
-          <>
-            <button 
-              className="btn"
-              onClick={handleSave}
-            >
-              Save Changes
-            </button>
-            <button 
-              className="btn btn-secondary"
-              onClick={handleCancel}
-            >
-              Cancel
-            </button>
-          </>
-        ) : (
-          <>
-            <button 
-              className="btn"
-              onClick={handleEdit}
-            >
-              Edit Information
-            </button>
-            <button 
-              className="btn"
-              onClick={handleConfirm}
-            >
-              Confirm and Continue
-            </button>
-            <button 
-              className="btn btn-secondary"
-              onClick={handleGoBack}
-            >
-              Back to Search
-            </button>
-          </>
-        )}
-      </div>
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.8 }}
+        >
+          {isEditing ? (
+            <>
+              <motion.button 
+                className="btn"
+                onClick={handleSave}
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+                transition={{ duration: 0.2 }}
+              >
+                Save Changes
+              </motion.button>
+              <motion.button 
+                className="btn btn-secondary"
+                onClick={handleCancel}
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+                transition={{ duration: 0.2 }}
+              >
+                Cancel
+              </motion.button>
+            </>
+          ) : (
+            <>
+              <motion.button 
+                className="btn"
+                onClick={handleEdit}
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+                transition={{ duration: 0.2 }}
+              >
+                Edit Information
+              </motion.button>
+              <motion.button 
+                className="btn"
+                onClick={handleConfirm}
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+                transition={{ duration: 0.2 }}
+              >
+                Confirm and Continue
+              </motion.button>
+              <motion.button 
+                className="btn btn-secondary"
+                onClick={handleGoBack}
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+                transition={{ duration: 0.2 }}
+              >
+                Back to Search
+              </motion.button>
+            </>
+          )}
+        </motion.div>
+      </motion.div>
     </div>
   );
 };

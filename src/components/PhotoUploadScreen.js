@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { motion } from 'framer-motion';
 import { simulateAIIdentification } from '../data/fakeData';
 
 const PhotoUploadScreen = ({ carData }) => {
@@ -51,10 +52,20 @@ const PhotoUploadScreen = ({ carData }) => {
 
   return (
     <div className="container">
-      <div className="card">
-        <p className="subtitle">
+      <motion.div 
+        className="card"
+        initial={{ opacity: 0, y: 50 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6, ease: "easeOut" }}
+      >
+        <motion.p 
+          className="subtitle"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.2 }}
+        >
           Upload a photo of the vehicle part you need to identify
-        </p>
+        </motion.p>
 
         <div className="car-info">
           <h3>Selected Vehicle</h3>
@@ -105,10 +116,16 @@ const PhotoUploadScreen = ({ carData }) => {
 
         {error && <div className="error">{error}</div>}
 
-        <button 
+        <motion.button 
           className="btn"
           onClick={handleAnalyze}
           disabled={!selectedFile || isAnalyzing}
+          whileHover={{ scale: 1.02 }}
+          whileTap={{ scale: 0.98 }}
+          transition={{ duration: 0.2 }}
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.4 }}
         >
           {isAnalyzing ? (
             <>
@@ -118,10 +135,15 @@ const PhotoUploadScreen = ({ carData }) => {
           ) : (
             'Analyze Image'
           )}
-        </button>
+        </motion.button>
 
         {analysisResult && (
-          <div className="part-result">
+          <motion.div 
+            className="part-result"
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, ease: "easeOut" }}
+          >
             <h3>Analysis Result</h3>
             
             {/* Desktop Grid Layout */}
@@ -178,7 +200,7 @@ const PhotoUploadScreen = ({ carData }) => {
                 ))}
               </ul>
             </div>
-          </div>
+          </motion.div>
         )}
 
         <button 
@@ -195,7 +217,7 @@ const PhotoUploadScreen = ({ carData }) => {
           <p>• Focus well on the specific part</p>
           <p>• Avoid shadows and reflections</p>
         </div>
-      </div>
+      </motion.div>
     </div>
   );
 };
