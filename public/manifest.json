@@ -4,17 +4,12 @@
   "description": "Identifica las piezas de tu vehículo con inteligencia artificial",
   "icons": [
     {
-      "src": "favicon.ico",
-      "sizes": "64x64 32x32 24x24 16x16",
-      "type": "image/x-icon"
-    },
-    {
-      "src": "logo192.png",
+      "src": "CarLogo.png",
       "type": "image/png",
       "sizes": "192x192"
     },
     {
-      "src": "logo512.png",
+      "src": "CarLogo.png",
       "type": "image/png",
       "sizes": "512x512"
     }
