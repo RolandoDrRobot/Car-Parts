@@ -96,7 +96,7 @@ const LicensePlateScreen = ({ onSubmit, carData }) => {
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.5, delay: 0.2 }}
         >
-          CarFix
+          CarParts
         </motion.h1>
         <motion.p 
           className="subtitle"

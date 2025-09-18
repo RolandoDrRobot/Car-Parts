@@ -1,6 +1,6 @@
-const CACHE_NAME = 'carfix-v1.0.0';
-const STATIC_CACHE = 'carfix-static-v1';
-const DYNAMIC_CACHE = 'carfix-dynamic-v1';
+const CACHE_NAME = 'carparts-v1.0.0';
+const STATIC_CACHE = 'carparts-static-v1';
+const DYNAMIC_CACHE = 'carparts-dynamic-v1';
 
 const urlsToCache = [
   '/',

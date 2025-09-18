@@ -381,7 +381,7 @@ const AnalysisReportScreen = () => {
           transition={{ duration: 0.5, delay: 1.6 }}
         >
           <p><strong>Análisis completado el:</strong> {new Date().toLocaleString()}</p>
-          <p><strong>Modelo de IA:</strong> CarFix Part Identifier v2.1</p>
+          <p><strong>Modelo de IA:</strong> CarParts Part Identifier v2.1</p>
         </motion.div>
 
         {/* Cart Success Modal */}

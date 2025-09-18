@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://carfix.app/sitemap.xml
+Sitemap: https://carparts.app/sitemap.xml
