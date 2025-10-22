@@ -422,7 +422,7 @@ export const fakePartsDatabase = [
 ];
 
 // Configuración de la API de ChatGPT
-const CHATGPT_API_KEY = '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'; // Dejar vacío por ahora
+const CHATGPT_API_KEY = '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'; // Dejar vacío por ahora
 const CHATGPT_API_URL = 'https://api.openai.com/v1/chat/completions';
 
 // Función para enviar foto a ChatGPT y obtener análisis
