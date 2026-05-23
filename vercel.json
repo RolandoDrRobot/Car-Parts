@@ -1,7 +1,3 @@
 {
-  "build": {
-    "env": {
-      "REACT_APP_AI": "$AI"
-    }
-  }
+  "rewrites": [{ "source": "/(.*)", "destination": "/" }]
 }
