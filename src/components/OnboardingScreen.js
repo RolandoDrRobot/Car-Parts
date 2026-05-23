@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { useSettings } from '../contexts/SettingsContext';
 import { useVehicles } from '../contexts/VehiclesContext';
+import { screen, section, sectionStagger, item, btn, selectable } from '../utils/animations';
 
 const COUNTRIES = [
   { code: 'CR', name: 'Costa Rica', flag: '🇨🇷' },
@@ -33,19 +34,20 @@ const OnboardingScreen = () => {
 
   if (step === 1) {
     return (
-      <div className="container" style={{ padding: '0 20px' }}>
+      <motion.div className="container" style={{ padding: '0 20px' }}
+        variants={screen} initial="initial" animate="animate">
 
         {/* Logo */}
-        <div style={{ paddingTop: '32px', textAlign: 'center', flexShrink: 0 }}>
+        <motion.div variants={section} style={{ paddingTop: '32px', textAlign: 'center', flexShrink: 0 }}>
           <h1 className="title" style={{ marginBottom: '4px' }}>CarParts</h1>
-          <p style={{ color: '#a0aec0', fontSize: '1.1rem', margin: '0 0 20px', fontFamily: 'Saira Condensed, sans-serif' }}>
+          <p style={{ color: '#a0aec0', fontSize: '1.1rem', margin: '0 0 12px', fontFamily: 'Saira Condensed, sans-serif' }}>
             Identifica piezas con IA y encuentra dónde comprarlas
           </p>
-          <p style={{ color: '#718096', fontSize: '0.9rem', margin: 0 }}>Selecciona tu país:</p>
-        </div>
+          <p style={{ color: '#4a5568', fontSize: '0.9rem', margin: 0 }}>Selecciona tu país:</p>
+        </motion.div>
 
-        {/* Country grid (fills remaining space) */}
-        <div style={{
+        {/* Country grid */}
+        <motion.div variants={sectionStagger} style={{
           flex: 1, display: 'grid', gridTemplateColumns: '1fr 1fr 1fr',
           gridTemplateRows: '1fr 1fr', gap: '10px',
           padding: '16px 0', minHeight: 0,
@@ -53,8 +55,9 @@ const OnboardingScreen = () => {
           {COUNTRIES.map(c => (
             <motion.button
               key={c.code}
+              variants={item}
+              {...selectable}
               onClick={() => setCountry(c.code)}
-              whileTap={{ scale: 0.96 }}
               style={{
                 background: country === c.code ? 'rgba(239,68,68,0.15)' : 'rgba(255,255,255,0.04)',
                 border: country === c.code ? '2px solid #ef4444' : '2px solid rgba(255,255,255,0.07)',
@@ -68,33 +71,31 @@ const OnboardingScreen = () => {
               </span>
             </motion.button>
           ))}
-        </div>
+        </motion.div>
 
         {/* CTA */}
-        <div style={{ paddingBottom: '28px', flexShrink: 0 }}>
+        <motion.div variants={section} style={{ paddingBottom: '28px', flexShrink: 0 }}>
           <motion.button
             className="btn"
             onClick={() => setStep(2)}
             disabled={!country}
-            whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}
+            {...btn}
             style={{ marginTop: 0 }}
           >
             Continuar
           </motion.button>
-        </div>
+        </motion.div>
 
-      </div>
+      </motion.div>
     );
   }
 
   // Step 2: Add vehicle
   return (
-    <div className="container" style={{ justifyContent: 'center', padding: '20px' }}>
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        style={{ width: '100%' }}
-      >
+    <motion.div className="container" style={{ justifyContent: 'center', padding: '20px' }}
+      variants={screen} initial="initial" animate="animate">
+
+      <motion.div variants={section} style={{ width: '100%' }}>
         <h2 style={{ color: 'white', margin: '0 0 6px', fontSize: '2rem', fontFamily: 'Saira Condensed, sans-serif', fontWeight: 700 }}>
           Agrega tu vehículo
         </h2>
@@ -132,17 +133,18 @@ const OnboardingScreen = () => {
           <motion.button className="btn" style={{ marginTop: 0 }}
             onClick={() => finalize(true)}
             disabled={!vehicle.brand || !vehicle.model || !vehicle.year}
-            whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
+            {...btn}>
             Guardar y Empezar
           </motion.button>
           <motion.button className="btn btn-secondary" style={{ marginTop: 0 }}
             onClick={() => finalize(false)}
-            whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
+            {...btn}>
             Omitir
           </motion.button>
         </div>
       </motion.div>
-    </div>
+
+    </motion.div>
   );
 };
 

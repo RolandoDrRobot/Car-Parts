@@ -3,6 +3,7 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { useVehicles } from '../contexts/VehiclesContext';
 import { analyzeCarPart } from '../data/fakeData';
+import { screen, section, item, btn, backBtn } from '../utils/animations';
 
 const PhotoUploadScreen = () => {
   const navigate = useNavigate();
@@ -43,13 +44,14 @@ const PhotoUploadScreen = () => {
   };
 
   return (
-    <div className="container">
+    <motion.div className="container"
+      variants={screen} initial="initial" animate="animate">
 
       {/* ── HEADER ── */}
-      <div style={{ padding: '20px 20px 0', flexShrink: 0 }}>
+      <motion.div variants={section} style={{ padding: '20px 20px 0', flexShrink: 0 }}>
         <motion.button
           onClick={() => navigate('/')}
-          whileHover={{ x: -3 }}
+          {...backBtn}
           style={{ background: 'none', border: 'none', color: '#a0aec0', cursor: 'pointer', fontSize: '1rem', padding: 0, display: 'flex', alignItems: 'center', gap: '6px', fontFamily: 'Saira Condensed, sans-serif', marginBottom: '14px' }}
         >
           ← Volver
@@ -60,11 +62,11 @@ const PhotoUploadScreen = () => {
         <p style={{ color: '#a0aec0', fontSize: '1rem', margin: 0 }}>
           Foto de cualquier pieza del vehículo
         </p>
-      </div>
+      </motion.div>
 
       {/* ── VEHICLE PICKER ── */}
       {vehicles.length > 0 && (
-        <div style={{ padding: '14px 20px 0', flexShrink: 0 }}>
+        <motion.div variants={section} style={{ padding: '14px 20px 0', flexShrink: 0 }}>
           <select
             className="input"
             value={selectedVehicleId}
@@ -78,26 +80,32 @@ const PhotoUploadScreen = () => {
               </option>
             ))}
           </select>
-        </div>
+        </motion.div>
       )}
 
       {/* ── UPLOAD / PREVIEW (fills remaining space) ── */}
-      <div style={{ flex: 1, padding: '14px 20px', display: 'flex', flexDirection: 'column', minHeight: 0 }}>
+      <motion.div variants={section}
+        style={{ flex: 1, padding: '14px 20px', display: 'flex', flexDirection: 'column', minHeight: 0 }}>
         {!preview ? (
-          /* Drop zone */
           <label
             htmlFor="photo-input"
             style={{
               flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center',
               justifyContent: 'center', cursor: 'pointer',
-              border: '2px dashed rgba(239,68,68,0.5)', borderRadius: '12px',
-              background: 'rgba(239,68,68,0.04)',
-              transition: 'all 0.2s',
+              border: '2px dashed rgba(239,68,68,0.4)', borderRadius: '12px',
+              background: 'rgba(239,68,68,0.03)',
+              transition: 'border-color 0.2s, background 0.2s',
             }}
             onDragOver={e => e.preventDefault()}
             onDrop={e => { e.preventDefault(); handleFile(e.dataTransfer.files[0]); }}
           >
-            <span style={{ fontSize: '3.5rem', marginBottom: '12px' }}>📷</span>
+            <motion.span
+              animate={{ y: [0, -6, 0] }}
+              transition={{ duration: 2.2, repeat: Infinity, ease: 'easeInOut' }}
+              style={{ fontSize: '3.5rem', marginBottom: '12px', display: 'block' }}
+            >
+              📷
+            </motion.span>
             <p style={{ color: '#e2e8f0', fontSize: '1.4rem', fontFamily: 'Saira Condensed, sans-serif', fontWeight: 600, margin: '0 0 6px' }}>
               Toca para seleccionar
             </p>
@@ -108,8 +116,10 @@ const PhotoUploadScreen = () => {
               onChange={e => handleFile(e.target.files[0])} />
           </label>
         ) : (
-          /* Image preview */
-          <div style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', minHeight: 0 }}>
+          <motion.div
+            variants={item}
+            style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', minHeight: 0 }}
+          >
             <img
               src={preview} alt="Pieza"
               style={{ flex: 1, minHeight: 0, maxHeight: '100%', maxWidth: '100%', objectFit: 'contain', borderRadius: '10px', border: '2px solid rgba(255,255,255,0.1)' }}
@@ -120,12 +130,12 @@ const PhotoUploadScreen = () => {
             >
               Cambiar imagen
             </button>
-          </div>
+          </motion.div>
         )}
-      </div>
+      </motion.div>
 
-      {/* ── FOOTER: error + buttons ── */}
-      <div style={{ padding: '0 20px 24px', flexShrink: 0 }}>
+      {/* ── FOOTER ── */}
+      <motion.div variants={section} style={{ padding: '0 20px 24px', flexShrink: 0 }}>
         {error && <div className="error" style={{ marginBottom: '8px' }}>{error}</div>}
 
         <input id="camera-input" type="file" accept="image/*" capture="environment"
@@ -135,7 +145,7 @@ const PhotoUploadScreen = () => {
           <motion.button
             className="btn btn-secondary"
             onClick={() => document.getElementById('camera-input').click()}
-            whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}
+            {...btn}
             style={{ marginTop: 0 }}
           >
             📸 Tomar Foto con Cámara
@@ -145,7 +155,7 @@ const PhotoUploadScreen = () => {
             className="btn"
             onClick={handleAnalyze}
             disabled={analyzing}
-            whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}
+            {...btn}
             style={{ marginTop: 0 }}
           >
             {analyzing
@@ -153,9 +163,9 @@ const PhotoUploadScreen = () => {
               : 'Analizar Imagen'}
           </motion.button>
         )}
-      </div>
+      </motion.div>
 
-    </div>
+    </motion.div>
   );
 };
 
