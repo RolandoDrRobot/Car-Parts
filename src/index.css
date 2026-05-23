@@ -19,7 +19,7 @@ html {
   font-variation-settings: "wdth" 100, "YTLC" 500;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 50%, #2a2a2a 100%);
+  background: #0a0a0a;
   height: 100%;
   overflow: hidden;
   line-height: 1.6;
@@ -888,6 +888,13 @@ select.input {
 select.input option {
   background: #1a1a1a;
   color: #e2e8f0;
+}
+
+/* Glass panel — used on section containers so the car bleeds through subtly */
+.glass {
+  background: rgba(10,10,10,0.55);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
 }
 
 /* Drawer scrollbar */

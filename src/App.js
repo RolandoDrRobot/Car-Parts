@@ -34,14 +34,39 @@ const AppContent = () => {
   );
 };
 
+const CAR_BG = 'https://images.unsplash.com/photo-1719906238408-1b70b0115195?fm=jpg&q=85&w=1080&auto=format&fit=crop';
+
 function App() {
   return (
     <SettingsProvider>
       <VehiclesProvider>
         <HistoryProvider>
-          <Router>
-            <AppContent />
-          </Router>
+          {/* ── Background layers ── */}
+          <div style={{
+            position: 'fixed', inset: 0, zIndex: 0,
+            backgroundImage: `url(${CAR_BG})`,
+            backgroundSize: 'cover',
+            backgroundPosition: 'center 40%',
+          }} />
+          <div style={{
+            position: 'fixed', inset: 0, zIndex: 1,
+            background: 'linear-gradient(180deg, rgba(10,10,10,0.95) 0%, rgba(10,10,10,0.68) 38%, rgba(10,10,10,0.50) 58%, rgba(10,10,10,0.82) 78%, rgba(10,10,10,0.97) 100%)',
+          }} />
+          <div style={{
+            position: 'fixed', inset: 0, zIndex: 2,
+            background: 'radial-gradient(ellipse at center, transparent 35%, rgba(10,10,10,0.72) 100%)',
+          }} />
+          <div style={{
+            position: 'fixed', inset: 0, zIndex: 3, pointerEvents: 'none',
+            backgroundImage: 'repeating-linear-gradient(0deg, transparent, transparent 3px, rgba(0,0,0,0.07) 3px, rgba(0,0,0,0.07) 4px)',
+          }} />
+
+          {/* ── App content ── */}
+          <div style={{ position: 'relative', zIndex: 10, height: '100%', display: 'flex', flexDirection: 'column' }}>
+            <Router>
+              <AppContent />
+            </Router>
+          </div>
         </HistoryProvider>
       </VehiclesProvider>
     </SettingsProvider>
