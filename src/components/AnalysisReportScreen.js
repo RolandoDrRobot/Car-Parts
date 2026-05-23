@@ -7,19 +7,17 @@ import { searchParts } from '../utils/mercadolibreAPI';
 import { getSearchLinks } from '../utils/searchLinks';
 
 const SEVERITY = {
-  ok:       { label: 'Buen estado',    color: '#22c55e', bg: 'rgba(34,197,94,0.12)'  },
-  warning:  { label: 'Revisar',        color: '#f59e0b', bg: 'rgba(245,158,11,0.12)' },
-  critical: { label: 'Crítico',        color: '#ef4444', bg: 'rgba(239,68,68,0.12)'  },
+  ok:       { label: 'Buen estado', color: '#22c55e', bg: 'rgba(34,197,94,0.12)'  },
+  warning:  { label: 'Revisar',     color: '#f59e0b', bg: 'rgba(245,158,11,0.12)' },
+  critical: { label: 'Crítico',     color: '#ef4444', bg: 'rgba(239,68,68,0.12)'  },
 };
 
 const CURRENCY_SYMBOLS = {
   CRC: '₡', MXN: '$', COP: '$', ARS: '$', CLP: '$', USD: '$',
 };
 
-const formatPrice = (price, currency) => {
-  const symbol = CURRENCY_SYMBOLS[currency] || '$';
-  return `${symbol}${price?.toLocaleString('es-ES') ?? '—'}`;
-};
+const formatPrice = (price, currency) =>
+  `${CURRENCY_SYMBOLS[currency] || '$'}${price?.toLocaleString('es-ES') ?? '—'}`;
 
 const AnalysisReportScreen = () => {
   const navigate = useNavigate();
@@ -30,10 +28,9 @@ const AnalysisReportScreen = () => {
 
   const [listings, setListings] = useState([]);
   const [mlLoading, setMlLoading] = useState(true);
-  const [mlError, setMlError] = useState(false);
   const savedRef = useRef(false);
 
-  // Save to history once
+  // Save to history once on mount
   useEffect(() => {
     if (result?.isCarPart && !savedRef.current) {
       savedRef.current = true;
@@ -54,43 +51,47 @@ const AnalysisReportScreen = () => {
       setMlLoading(false);
       return;
     }
-    setMlLoading(true);
     searchParts(result.searchQuery, settings.country)
-      .then(items => { setListings(items); setMlLoading(false); })
-      .catch(() => { setMlError(true); setMlLoading(false); });
+      .then(items => setListings(items))
+      .catch(() => setListings([]))
+      .finally(() => setMlLoading(false));
   }, [result?.isCarPart, result?.searchQuery, settings.country]);
 
-  // No navigation state
+  // ── No state ──
   if (!result) {
     return (
-      <div className="container">
-        <div className="card card-centered">
-          <p style={{ color: '#a0aec0', fontSize: '1.3rem' }}>Sin datos de análisis.</p>
-          <button className="btn" onClick={() => navigate('/')}>Volver al Inicio</button>
+      <div className="container" style={{ justifyContent: 'center', alignItems: 'center' }}>
+        <div style={{ textAlign: 'center', padding: '20px' }}>
+          <p style={{ color: '#a0aec0', fontSize: '1.2rem', marginBottom: '16px' }}>Sin datos de análisis.</p>
+          <button className="btn" style={{ marginTop: 0 }} onClick={() => navigate('/')}>Volver al Inicio</button>
         </div>
       </div>
     );
   }
 
-  // Not a car part
+  // ── Not a car part ──
   if (!result.isCarPart) {
     return (
-      <div className="container">
-        <motion.div className="card card-centered"
-          initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
-          <div style={{ fontSize: '3.5rem', marginBottom: '16px' }}>⚠️</div>
-          <h2 style={{ color: '#f59e0b', fontFamily: 'Saira Condensed, sans-serif', fontSize: '1.8rem', marginBottom: '12px' }}>
+      <div className="container" style={{ justifyContent: 'center', alignItems: 'center', padding: '20px' }}>
+        <motion.div
+          initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}
+          style={{ textAlign: 'center', maxWidth: '400px' }}
+        >
+          <div style={{ fontSize: '3rem', marginBottom: '12px' }}>⚠️</div>
+          <h2 style={{ color: '#f59e0b', fontFamily: 'Saira Condensed, sans-serif', fontSize: '1.8rem', marginBottom: '10px' }}>
             Imagen no válida
           </h2>
-          <p style={{ color: '#a0aec0', lineHeight: 1.6, marginBottom: '24px' }}>
-            {result.message || 'La imagen no parece ser de una pieza de vehículo. Intenta con una foto más clara de la pieza.'}
+          <p style={{ color: '#a0aec0', lineHeight: 1.6, marginBottom: '20px' }}>
+            {result.message || 'La imagen no parece ser de una pieza de vehículo.'}
           </p>
-          <div style={{ display: 'flex', gap: '12px', justifyContent: 'center', flexWrap: 'wrap' }}>
-            <button className="btn" onClick={() => navigate('/scan', { state: { vehicle } })}>
+          <div style={{ display: 'flex', gap: '10px', justifyContent: 'center' }}>
+            <button className="btn" style={{ marginTop: 0 }}
+              onClick={() => navigate('/scan', { state: { vehicle } })}>
               Intentar Nuevamente
             </button>
-            <button className="btn btn-secondary" onClick={() => navigate('/')}>
-              Volver al Inicio
+            <button className="btn btn-secondary" style={{ marginTop: 0 }}
+              onClick={() => navigate('/')}>
+              Inicio
             </button>
           </div>
         </motion.div>
@@ -102,191 +103,166 @@ const AnalysisReportScreen = () => {
   const searchLinks = getSearchLinks(result.searchQuery, settings.country);
 
   return (
-    <div className="container" style={{ justifyContent: 'flex-start', alignItems: 'stretch', paddingTop: '24px' }}>
-      <div style={{ width: '100%', maxWidth: '640px', margin: '0 auto' }}>
+    <div className="container">
 
-        {/* Back */}
+      {/* ── HEADER: Part ID ── */}
+      <div style={{ padding: '16px 20px', borderBottom: '1px solid rgba(255,255,255,0.07)', flexShrink: 0 }}>
         <motion.button
           onClick={() => navigate('/scan', { state: { vehicle } })}
-          style={{ background: 'none', border: 'none', color: '#a0aec0', cursor: 'pointer', fontSize: '1.2rem', marginBottom: '16px', padding: 0, display: 'flex', alignItems: 'center', gap: '6px', fontFamily: 'Saira Condensed, sans-serif' }}
           whileHover={{ x: -3 }}
+          style={{ background: 'none', border: 'none', color: '#a0aec0', cursor: 'pointer', fontSize: '0.9rem', padding: 0, display: 'flex', alignItems: 'center', gap: '6px', fontFamily: 'Saira Condensed, sans-serif', marginBottom: '10px' }}
         >
           ← Otro escaneo
         </motion.button>
 
-        {/* Part Identification */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.4 }}
-          style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '12px', padding: '20px', marginBottom: '20px' }}
-        >
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '12px' }}>
-            <h2 style={{ color: 'white', fontFamily: 'Saira Condensed, sans-serif', fontSize: '1.8rem', fontWeight: 700, margin: 0, flex: 1 }}>
-              {result.partName}
-            </h2>
-            <span style={{
-              background: severity.bg, color: severity.color,
-              border: `1px solid ${severity.color}`,
-              borderRadius: '20px', padding: '4px 12px',
-              fontSize: '0.85rem', fontWeight: 700,
-              fontFamily: 'Saira Condensed, sans-serif',
-              flexShrink: 0, marginLeft: '12px',
-            }}>
-              {severity.label}
-            </span>
-          </div>
-
-          {vehicle && (
-            <p style={{ color: '#a0aec0', fontSize: '0.85rem', marginBottom: '12px' }}>
-              🚗 {vehicle.brand} {vehicle.model} {vehicle.year}
-            </p>
-          )}
-
-          <p style={{ color: '#a0aec0', lineHeight: 1.6, marginBottom: '12px', fontSize: '1.1rem' }}>
-            {result.description}
-          </p>
-
-          {result.conditionSeverity !== 'ok' && (
-            <div style={{
-              background: severity.bg, border: `1px solid ${severity.color}`,
-              borderRadius: '8px', padding: '12px 14px',
-              color: severity.color, fontSize: '1rem',
-              fontFamily: 'Saira Condensed, sans-serif', fontWeight: 600,
-            }}>
-              {result.recommendedAction}
-            </div>
-          )}
-        </motion.div>
-
-        {/* MercadoLibre Listings */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.4, delay: 0.15 }}
-        >
-          <p style={{ color: '#a0aec0', fontSize: '0.85rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: '12px', fontFamily: 'Saira Condensed, sans-serif' }}>
-            Dónde Comprar
-          </p>
-
-          {mlLoading ? (
-            <div style={{ display: 'flex', gap: '10px', alignItems: 'center', padding: '20px', color: '#a0aec0' }}>
-              <span className="loading" style={{ borderColor: 'rgba(255,255,255,0.1)', borderTopColor: '#ef4444' }} />
-              Buscando en MercadoLibre...
-            </div>
-          ) : listings.length > 0 ? (
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', marginBottom: '20px' }}>
-              {listings.map((item, i) => (
-                <motion.a
-                  key={item.id}
-                  href={item.url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: i * 0.05 }}
-                  whileHover={{ scale: 1.01 }}
-                  style={{
-                    background: 'rgba(255,255,255,0.04)',
-                    border: '1px solid rgba(255,255,255,0.08)',
-                    borderRadius: '10px',
-                    padding: '12px',
-                    display: 'flex',
-                    gap: '12px',
-                    alignItems: 'center',
-                    textDecoration: 'none',
-                  }}
-                >
-                  {item.thumbnail && (
-                    <img
-                      src={item.thumbnail}
-                      alt={item.title}
-                      style={{ width: '64px', height: '64px', objectFit: 'contain', borderRadius: '6px', background: '#fff', flexShrink: 0 }}
-                      onError={e => { e.target.style.display = 'none'; }}
-                    />
-                  )}
-                  <div style={{ flex: 1, minWidth: 0 }}>
-                    <div style={{ color: '#e2e8f0', fontWeight: 600, fontSize: '1rem', lineHeight: 1.3, marginBottom: '6px', fontFamily: 'Saira Condensed, sans-serif', overflow: 'hidden', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical' }}>
-                      {item.title}
-                    </div>
-                    <div style={{ display: 'flex', gap: '8px', alignItems: 'center', flexWrap: 'wrap' }}>
-                      <span style={{ color: '#22c55e', fontWeight: 700, fontSize: '1.1rem', fontFamily: 'Saira Condensed, sans-serif' }}>
-                        {formatPrice(item.price, item.currency)}
-                      </span>
-                      {item.freeShipping && (
-                        <span style={{ background: 'rgba(34,197,94,0.12)', color: '#22c55e', border: '1px solid rgba(34,197,94,0.3)', borderRadius: '4px', padding: '1px 6px', fontSize: '0.75rem', fontWeight: 600 }}>
-                          Envío gratis
-                        </span>
-                      )}
-                      {item.condition === 'new' && (
-                        <span style={{ color: '#a0aec0', fontSize: '0.78rem' }}>Nuevo</span>
-                      )}
-                    </div>
-                    {item.seller && (
-                      <div style={{ color: '#4a5568', fontSize: '0.75rem', marginTop: '4px' }}>{item.seller}</div>
-                    )}
-                  </div>
-                  <span style={{ color: '#a0aec0', fontSize: '1rem', flexShrink: 0 }}>→</span>
-                </motion.a>
-              ))}
-            </div>
-          ) : (
-            !mlError && (
-              <div style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.07)', borderRadius: '8px', padding: '16px', marginBottom: '16px', color: '#a0aec0', fontSize: '0.9rem' }}>
-                No se encontraron resultados en MercadoLibre para este país. Prueba los siguientes links:
-              </div>
-            )
-          )}
-
-          {/* Search Links (always shown as fallback/complement) */}
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-            {searchLinks.map(link => (
-              <a
-                key={link.name}
-                href={link.url}
-                target="_blank"
-                rel="noopener noreferrer"
-                style={{
-                  background: 'rgba(255,255,255,0.03)',
-                  border: '1px solid rgba(255,255,255,0.07)',
-                  borderRadius: '8px',
-                  padding: '12px 16px',
-                  color: '#a0aec0',
-                  textDecoration: 'none',
-                  display: 'flex',
-                  justifyContent: 'space-between',
-                  alignItems: 'center',
-                  fontSize: '1rem',
-                  fontFamily: 'Saira Condensed, sans-serif',
-                  fontWeight: 600,
-                }}
-              >
-                <span>Buscar en {link.name}</span>
-                <span style={{ color: '#ef4444' }}>→</span>
-              </a>
-            ))}
-          </div>
-        </motion.div>
-
-        {/* Actions */}
-        <div style={{ marginTop: '28px', display: 'flex', gap: '12px', flexWrap: 'wrap' }}>
-          <motion.button
-            className="btn"
-            onClick={() => navigate('/scan', { state: { vehicle } })}
-            whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}
-          >
-            Escanear Otra Pieza
-          </motion.button>
-          <motion.button
-            className="btn btn-secondary"
-            onClick={() => navigate('/')}
-            whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}
-          >
-            Inicio
-          </motion.button>
+        <div style={{ display: 'flex', alignItems: 'flex-start', gap: '10px' }}>
+          <h2 style={{ color: 'white', fontFamily: 'Saira Condensed, sans-serif', fontSize: '1.8rem', fontWeight: 700, margin: 0, flex: 1, lineHeight: 1.2 }}>
+            {result.partName}
+          </h2>
+          <span style={{
+            background: severity.bg, color: severity.color,
+            border: `1px solid ${severity.color}`,
+            borderRadius: '20px', padding: '4px 10px',
+            fontSize: '0.8rem', fontWeight: 700,
+            fontFamily: 'Saira Condensed, sans-serif', flexShrink: 0,
+          }}>
+            {severity.label}
+          </span>
         </div>
 
+        {vehicle && (
+          <p style={{ color: '#4a5568', fontSize: '0.8rem', margin: '6px 0 0' }}>
+            🚗 {vehicle.brand} {vehicle.model} {vehicle.year}
+          </p>
+        )}
+
+        {result.conditionSeverity !== 'ok' && (
+          <div style={{
+            background: severity.bg, border: `1px solid ${severity.color}`,
+            borderRadius: '6px', padding: '8px 12px', marginTop: '10px',
+            color: severity.color, fontSize: '0.9rem',
+            fontFamily: 'Saira Condensed, sans-serif', fontWeight: 600,
+          }}>
+            {result.recommendedAction}
+          </div>
+        )}
       </div>
+
+      {/* ── LISTINGS (scrollable) ── */}
+      <div style={{ flex: 1, overflowY: 'auto', padding: '16px 20px', minHeight: 0 }}>
+
+        <p style={{ color: '#a0aec0', fontSize: '0.75rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', margin: '0 0 12px', fontFamily: 'Saira Condensed, sans-serif' }}>
+          Dónde Comprar
+        </p>
+
+        {mlLoading ? (
+          <div style={{ display: 'flex', gap: '10px', alignItems: 'center', padding: '16px 0', color: '#a0aec0', fontSize: '0.9rem' }}>
+            <span className="loading" />
+            Buscando en MercadoLibre...
+          </div>
+        ) : listings.length > 0 ? (
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', marginBottom: '20px' }}>
+            {listings.map((item, i) => (
+              <motion.a
+                key={item.id}
+                href={item.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                initial={{ opacity: 0, y: 8 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: i * 0.04 }}
+                style={{
+                  background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)',
+                  borderRadius: '10px', padding: '10px', display: 'flex', gap: '10px',
+                  alignItems: 'center', textDecoration: 'none',
+                }}
+              >
+                {item.thumbnail && (
+                  <img src={item.thumbnail} alt=""
+                    style={{ width: '56px', height: '56px', objectFit: 'contain', borderRadius: '6px', background: '#fff', flexShrink: 0 }}
+                    onError={e => { e.target.style.display = 'none'; }} />
+                )}
+                <div style={{ flex: 1, minWidth: 0 }}>
+                  <div style={{ color: '#e2e8f0', fontWeight: 600, fontSize: '0.9rem', lineHeight: 1.3, marginBottom: '4px', fontFamily: 'Saira Condensed, sans-serif', overflow: 'hidden', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical' }}>
+                    {item.title}
+                  </div>
+                  <div style={{ display: 'flex', gap: '6px', alignItems: 'center', flexWrap: 'wrap' }}>
+                    <span style={{ color: '#22c55e', fontWeight: 700, fontSize: '1rem', fontFamily: 'Saira Condensed, sans-serif' }}>
+                      {formatPrice(item.price, item.currency)}
+                    </span>
+                    {item.freeShipping && (
+                      <span style={{ background: 'rgba(34,197,94,0.12)', color: '#22c55e', border: '1px solid rgba(34,197,94,0.3)', borderRadius: '4px', padding: '1px 5px', fontSize: '0.7rem', fontWeight: 600 }}>
+                        Envío gratis
+                      </span>
+                    )}
+                  </div>
+                  {item.seller && (
+                    <div style={{ color: '#4a5568', fontSize: '0.72rem', marginTop: '2px' }}>{item.seller}</div>
+                  )}
+                </div>
+                <span style={{ color: '#a0aec0', flexShrink: 0 }}>→</span>
+              </motion.a>
+            ))}
+          </div>
+        ) : (
+          <div style={{ background: 'rgba(255,255,255,0.03)', borderRadius: '8px', padding: '14px', marginBottom: '16px', color: '#4a5568', fontSize: '0.85rem' }}>
+            Sin resultados en MercadoLibre para este país. Usa los links:
+          </div>
+        )}
+
+        {/* Search links */}
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+          {searchLinks.map(link => (
+            <a
+              key={link.name}
+              href={link.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              style={{
+                background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.07)',
+                borderRadius: '8px', padding: '11px 14px', color: '#a0aec0',
+                textDecoration: 'none', display: 'flex', justifyContent: 'space-between',
+                alignItems: 'center', fontSize: '1rem',
+                fontFamily: 'Saira Condensed, sans-serif', fontWeight: 600,
+              }}
+            >
+              <span>Buscar en {link.name}</span>
+              <span style={{ color: '#ef4444' }}>→</span>
+            </a>
+          ))}
+        </div>
+
+        {/* Description (collapsed at bottom) */}
+        <div style={{ marginTop: '20px', padding: '14px', background: 'rgba(255,255,255,0.02)', borderRadius: '8px' }}>
+          <p style={{ color: '#4a5568', fontSize: '0.75rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.05em', margin: '0 0 6px', fontFamily: 'Saira Condensed, sans-serif' }}>
+            Diagnóstico IA
+          </p>
+          <p style={{ color: '#a0aec0', fontSize: '0.85rem', lineHeight: 1.6, margin: 0 }}>
+            {result.description}
+          </p>
+        </div>
+      </div>
+
+      {/* ── FOOTER: actions ── */}
+      <div style={{ padding: '10px 20px 24px', borderTop: '1px solid rgba(255,255,255,0.07)', flexShrink: 0, display: 'flex', gap: '10px' }}>
+        <motion.button
+          className="btn"
+          onClick={() => navigate('/scan', { state: { vehicle } })}
+          whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}
+          style={{ marginTop: 0, flex: 1 }}
+        >
+          Otra Pieza
+        </motion.button>
+        <motion.button
+          className="btn btn-secondary"
+          onClick={() => navigate('/')}
+          whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}
+          style={{ marginTop: 0, flex: 1 }}
+        >
+          Inicio
+        </motion.button>
+      </div>
+
     </div>
   );
 };

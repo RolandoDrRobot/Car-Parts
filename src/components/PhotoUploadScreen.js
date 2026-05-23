@@ -36,144 +36,125 @@ const PhotoUploadScreen = () => {
       navigate('/results', { state: { result, vehicle: selectedVehicle } });
     } catch (err) {
       console.error(err);
-      setError('Error al analizar la imagen. Verifica tu conexión e intenta de nuevo.');
+      setError('Error al analizar. Verifica tu conexión e intenta de nuevo.');
     } finally {
       setAnalyzing(false);
     }
   };
 
-  const formatSize = (bytes) => {
-    const k = 1024;
-    const i = Math.floor(Math.log(bytes) / Math.log(k));
-    return `${(bytes / Math.pow(k, i)).toFixed(1)} ${['B','KB','MB'][i]}`;
-  };
-
   return (
     <div className="container">
-      <motion.div
-        className="card"
-        initial={{ opacity: 0, y: 40 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
-      >
+
+      {/* ── HEADER ── */}
+      <div style={{ padding: '20px 20px 0', flexShrink: 0 }}>
         <motion.button
           onClick={() => navigate('/')}
-          style={{ background: 'none', border: 'none', color: '#a0aec0', cursor: 'pointer', fontSize: '1.2rem', marginBottom: '16px', padding: 0, display: 'flex', alignItems: 'center', gap: '6px', fontFamily: 'Saira Condensed, sans-serif' }}
           whileHover={{ x: -3 }}
+          style={{ background: 'none', border: 'none', color: '#a0aec0', cursor: 'pointer', fontSize: '1rem', padding: 0, display: 'flex', alignItems: 'center', gap: '6px', fontFamily: 'Saira Condensed, sans-serif', marginBottom: '14px' }}
         >
           ← Volver
         </motion.button>
-
-        <h2 style={{ color: 'white', fontSize: '2rem', fontFamily: 'Saira Condensed, sans-serif', fontWeight: 700, marginBottom: '6px' }}>
+        <h2 style={{ color: 'white', fontSize: '2rem', fontFamily: 'Saira Condensed, sans-serif', fontWeight: 700, margin: '0 0 4px' }}>
           Escanear Pieza
         </h2>
-        <p style={{ color: '#a0aec0', fontSize: '1.2rem', marginBottom: '24px' }}>
-          Sube o toma una foto de la pieza que quieres identificar
+        <p style={{ color: '#a0aec0', fontSize: '1rem', margin: 0 }}>
+          Foto de cualquier pieza del vehículo
         </p>
+      </div>
 
-        {/* Vehicle Picker */}
-        {vehicles.length > 0 && (
-          <div className="input-group" style={{ marginTop: 0, marginBottom: '20px' }}>
-            <label className="label">Vehículo (opcional)</label>
-            <select
-              className="input"
-              value={selectedVehicleId}
-              onChange={e => setSelectedVehicleId(e.target.value)}
+      {/* ── VEHICLE PICKER ── */}
+      {vehicles.length > 0 && (
+        <div style={{ padding: '14px 20px 0', flexShrink: 0 }}>
+          <select
+            className="input"
+            value={selectedVehicleId}
+            onChange={e => setSelectedVehicleId(e.target.value)}
+            style={{ padding: '12px 16px', fontSize: '1.1rem' }}
+          >
+            <option value="">Sin contexto de vehículo</option>
+            {vehicles.map(v => (
+              <option key={v.id} value={v.id}>
+                {v.brand} {v.model} {v.year}
+              </option>
+            ))}
+          </select>
+        </div>
+      )}
+
+      {/* ── UPLOAD / PREVIEW (fills remaining space) ── */}
+      <div style={{ flex: 1, padding: '14px 20px', display: 'flex', flexDirection: 'column', minHeight: 0 }}>
+        {!preview ? (
+          /* Drop zone */
+          <label
+            htmlFor="photo-input"
+            style={{
+              flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center',
+              justifyContent: 'center', cursor: 'pointer',
+              border: '2px dashed rgba(239,68,68,0.5)', borderRadius: '12px',
+              background: 'rgba(239,68,68,0.04)',
+              transition: 'all 0.2s',
+            }}
+            onDragOver={e => e.preventDefault()}
+            onDrop={e => { e.preventDefault(); handleFile(e.dataTransfer.files[0]); }}
+          >
+            <span style={{ fontSize: '3.5rem', marginBottom: '12px' }}>📷</span>
+            <p style={{ color: '#e2e8f0', fontSize: '1.4rem', fontFamily: 'Saira Condensed, sans-serif', fontWeight: 600, margin: '0 0 6px' }}>
+              Toca para seleccionar
+            </p>
+            <p style={{ color: '#4a5568', fontSize: '0.9rem', margin: 0 }}>
+              o arrastra y suelta
+            </p>
+            <input id="photo-input" type="file" accept="image/*" style={{ display: 'none' }}
+              onChange={e => handleFile(e.target.files[0])} />
+          </label>
+        ) : (
+          /* Image preview */
+          <div style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', minHeight: 0 }}>
+            <img
+              src={preview} alt="Pieza"
+              style={{ flex: 1, minHeight: 0, maxHeight: '100%', maxWidth: '100%', objectFit: 'contain', borderRadius: '10px', border: '2px solid rgba(255,255,255,0.1)' }}
+            />
+            <button
+              onClick={() => { setFile(null); setPreview(null); setError(''); }}
+              style={{ background: 'none', border: 'none', color: '#a0aec0', cursor: 'pointer', fontSize: '0.85rem', marginTop: '8px', fontFamily: 'Saira Condensed, sans-serif' }}
             >
-              <option value="">Sin contexto de vehículo</option>
-              {vehicles.map(v => (
-                <option key={v.id} value={v.id}>
-                  {v.brand} {v.model} {v.year}
-                </option>
-              ))}
-            </select>
+              Cambiar imagen
+            </button>
           </div>
         )}
+      </div>
 
-        {/* Upload Area */}
-        <label
-          htmlFor="photo-input"
-          className="upload-area"
-          style={{ display: 'block', cursor: 'pointer' }}
-          onDragOver={e => e.preventDefault()}
-          onDrop={e => { e.preventDefault(); handleFile(e.dataTransfer.files[0]); }}
-        >
-          <div className="upload-icon">📷</div>
-          <p className="upload-text">Toca para seleccionar imagen</p>
-          <p className="upload-hint">o arrastra y suelta aquí</p>
-          <input
-            id="photo-input"
-            type="file"
-            accept="image/*"
-            style={{ display: 'none' }}
-            onChange={e => handleFile(e.target.files[0])}
-          />
-        </label>
+      {/* ── FOOTER: error + buttons ── */}
+      <div style={{ padding: '0 20px 24px', flexShrink: 0 }}>
+        {error && <div className="error" style={{ marginBottom: '8px' }}>{error}</div>}
 
-        {/* Camera Button */}
-        <input
-          id="camera-input"
-          type="file"
-          accept="image/*"
-          capture="environment"
-          style={{ display: 'none' }}
-          onChange={e => handleFile(e.target.files[0])}
-        />
-        <motion.button
-          className="btn btn-secondary"
-          onClick={() => document.getElementById('camera-input').click()}
-          whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}
-        >
-          📸 Tomar Foto con Cámara
-        </motion.button>
+        <input id="camera-input" type="file" accept="image/*" capture="environment"
+          style={{ display: 'none' }} onChange={e => handleFile(e.target.files[0])} />
 
-        {/* Preview */}
-        {preview && (
-          <motion.div
-            className="image-preview"
-            initial={{ opacity: 0, y: 16 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.3 }}
+        {!preview ? (
+          <motion.button
+            className="btn btn-secondary"
+            onClick={() => document.getElementById('camera-input').click()}
+            whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}
+            style={{ marginTop: 0 }}
           >
-            <h4>Vista previa</h4>
-            <div className="preview-container">
-              <img src={preview} alt="Pieza seleccionada" className="preview-image" />
-              <div style={{ color: '#a0aec0', fontSize: '0.85rem', marginTop: '8px' }}>
-                {file?.name} · {formatSize(file?.size || 0)}
-              </div>
-              <button
-                className="btn btn-secondary clear-button"
-                onClick={() => { setFile(null); setPreview(null); }}
-                style={{ marginTop: '10px' }}
-              >
-                Cambiar imagen
-              </button>
-            </div>
-          </motion.div>
+            📸 Tomar Foto con Cámara
+          </motion.button>
+        ) : (
+          <motion.button
+            className="btn"
+            onClick={handleAnalyze}
+            disabled={analyzing}
+            whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}
+            style={{ marginTop: 0 }}
+          >
+            {analyzing
+              ? <><span className="loading" />Analizando con IA...</>
+              : 'Analizar Imagen'}
+          </motion.button>
         )}
+      </div>
 
-        {error && <div className="error">{error}</div>}
-
-        <motion.button
-          className="btn"
-          onClick={handleAnalyze}
-          disabled={!file || analyzing}
-          whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}
-        >
-          {analyzing ? (
-            <><span className="loading" />Analizando con IA...</>
-          ) : (
-            'Analizar Imagen'
-          )}
-        </motion.button>
-
-        <div style={{ marginTop: '24px', color: '#4a5568', fontSize: '0.9rem', lineHeight: 1.7 }}>
-          <strong style={{ color: '#a0aec0' }}>Consejos:</strong>
-          <br />• Buena iluminación y enfoque claro
-          <br />• Encuadra bien la pieza, sin sombras
-          <br />• Funciona con cualquier pieza del vehículo
-        </div>
-      </motion.div>
     </div>
   );
 };
