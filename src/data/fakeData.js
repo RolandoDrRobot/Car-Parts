@@ -1,5 +1,5 @@
-const OPENAI_API_KEY = process.env.REACT_APP_OPENAI_API_KEY || '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';
-const OPENAI_API_URL = 'https://api.openai.com/v1/chat/completions';
+const ANTHROPIC_API_KEY = process.env.REACT_APP_AI;
+const ANTHROPIC_API_URL = 'https://api.anthropic.com/v1/messages';
 
 const toBase64 = (file) =>
   new Promise((resolve, reject) => {
@@ -9,8 +9,17 @@ const toBase64 = (file) =>
     reader.onerror = reject;
   });
 
+const getMediaType = (file) => {
+  const type = file.type;
+  if (['image/jpeg', 'image/png', 'image/gif', 'image/webp'].includes(type)) return type;
+  return 'image/jpeg';
+};
+
 export const analyzeCarPart = async (imageFile, vehicle = null) => {
+  if (!ANTHROPIC_API_KEY) throw new Error('API key not configured (REACT_APP_AI)');
+
   const base64Image = await toBase64(imageFile);
+  const mediaType = getMediaType(imageFile);
 
   const vehicleContext = vehicle
     ? `El vehículo es un ${vehicle.brand} ${vehicle.model} ${vehicle.year}.`
@@ -38,32 +47,42 @@ Responde ÚNICAMENTE con JSON válido, sin bloques markdown, sin explicaciones a
 Si NO es una pieza de vehículo:
 { "isCarPart": false, "message": "descripción de lo que muestra la imagen en su lugar" }`;
 
-  const res = await fetch(OPENAI_API_URL, {
+  const res = await fetch(ANTHROPIC_API_URL, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
-      'Authorization': `Bearer ${OPENAI_API_KEY}`,
+      'x-api-key': ANTHROPIC_API_KEY,
+      'anthropic-version': '2023-06-01',
+      'anthropic-dangerous-direct-browser-access': 'true',
     },
     body: JSON.stringify({
-      model: 'gpt-4o',
+      model: 'claude-opus-4-5',
+      max_tokens: 800,
       messages: [{
         role: 'user',
         content: [
+          {
+            type: 'image',
+            source: {
+              type: 'base64',
+              media_type: mediaType,
+              data: base64Image,
+            },
+          },
           { type: 'text', text: prompt },
-          { type: 'image_url', image_url: { url: `data:image/jpeg;base64,${base64Image}` } },
         ],
       }],
-      max_tokens: 800,
-      temperature: 0.1,
     }),
   });
 
-  if (!res.ok) throw new Error(`OpenAI API ${res.status}`);
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({}));
+    throw new Error(`Claude API ${res.status}: ${err?.error?.message || 'unknown error'}`);
+  }
 
   const data = await res.json();
-  const text = data.choices[0].message.content.trim();
+  const text = data.content[0].text.trim();
 
-  // Strip markdown code fences if present
-  const jsonStr = text.replace(/^```json\n?/, '').replace(/\n?```$/, '');
+  const jsonStr = text.replace(/^```json\n?/, '').replace(/\n?```$/, '').trim();
   return JSON.parse(jsonStr);
 };
