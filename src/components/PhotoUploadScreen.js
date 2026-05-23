@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { motion } from 'framer-motion';
+import { ArrowLeft, ScanLine, Camera } from 'lucide-react';
 import { useVehicles } from '../contexts/VehiclesContext';
 import { analyzeCarPart } from '../data/fakeData';
 import { screen, section, item, btn, backBtn } from '../utils/animations';
@@ -54,7 +55,7 @@ const PhotoUploadScreen = () => {
           {...backBtn}
           style={{ background: 'none', border: 'none', color: '#a0aec0', cursor: 'pointer', fontSize: '1rem', padding: 0, display: 'flex', alignItems: 'center', gap: '6px', fontFamily: 'Saira Condensed, sans-serif', marginBottom: '14px' }}
         >
-          ← Volver
+          <ArrowLeft size={16} /> Volver
         </motion.button>
         <h2 style={{ color: 'white', fontSize: '2rem', fontFamily: 'Saira Condensed, sans-serif', fontWeight: 700, margin: '0 0 4px' }}>
           Escanear Pieza
@@ -102,9 +103,9 @@ const PhotoUploadScreen = () => {
             <motion.span
               animate={{ y: [0, -6, 0] }}
               transition={{ duration: 2.2, repeat: Infinity, ease: 'easeInOut' }}
-              style={{ fontSize: '3.5rem', marginBottom: '12px', display: 'block' }}
+              style={{ marginBottom: '12px', display: 'flex', color: '#ef4444' }}
             >
-              📷
+              <ScanLine size={56} />
             </motion.span>
             <p style={{ color: '#e2e8f0', fontSize: '1.4rem', fontFamily: 'Saira Condensed, sans-serif', fontWeight: 600, margin: '0 0 6px' }}>
               Toca para seleccionar
@@ -146,9 +147,9 @@ const PhotoUploadScreen = () => {
             className="btn btn-secondary"
             onClick={() => document.getElementById('camera-input').click()}
             {...btn}
-            style={{ marginTop: 0 }}
+            style={{ marginTop: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}
           >
-            📸 Tomar Foto con Cámara
+            <Camera size={18} /> Tomar Foto con Cámara
           </motion.button>
         ) : (
           <motion.button

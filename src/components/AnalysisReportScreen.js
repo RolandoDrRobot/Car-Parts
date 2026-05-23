@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { motion } from 'framer-motion';
+import { ArrowLeft, AlertTriangle, Car, ExternalLink } from 'lucide-react';
 import { useSettings } from '../contexts/SettingsContext';
 import { useHistory } from '../contexts/HistoryContext';
 import { searchParts } from '../utils/mercadolibreAPI';
@@ -72,7 +73,7 @@ const AnalysisReportScreen = () => {
       <motion.div className="container" style={{ justifyContent: 'center', alignItems: 'center', padding: '20px' }}
         variants={screen} initial="initial" animate="animate">
         <motion.div variants={section} style={{ textAlign: 'center', maxWidth: '400px' }}>
-          <motion.div variants={badge} style={{ fontSize: '3rem', marginBottom: '12px' }}>⚠️</motion.div>
+          <motion.div variants={badge} style={{ marginBottom: '12px', display: 'flex', justifyContent: 'center', color: '#f59e0b' }}><AlertTriangle size={48} /></motion.div>
           <h2 style={{ color: '#f59e0b', fontFamily: 'Saira Condensed, sans-serif', fontSize: '1.8rem', marginBottom: '10px' }}>
             Imagen no válida
           </h2>
@@ -109,7 +110,7 @@ const AnalysisReportScreen = () => {
           {...backBtn}
           style={{ background: 'none', border: 'none', color: '#a0aec0', cursor: 'pointer', fontSize: '0.9rem', padding: 0, display: 'flex', alignItems: 'center', gap: '6px', fontFamily: 'Saira Condensed, sans-serif', marginBottom: '10px' }}
         >
-          ← Otro escaneo
+          <ArrowLeft size={14} /> Otro escaneo
         </motion.button>
 
         <div style={{ display: 'flex', alignItems: 'flex-start', gap: '10px' }}>
@@ -131,8 +132,8 @@ const AnalysisReportScreen = () => {
         </div>
 
         {vehicle && (
-          <p style={{ color: '#4a5568', fontSize: '0.8rem', margin: '6px 0 0' }}>
-            🚗 {vehicle.brand} {vehicle.model} {vehicle.year}
+          <p style={{ color: '#4a5568', fontSize: '0.8rem', margin: '6px 0 0', display: 'flex', alignItems: 'center', gap: '4px' }}>
+            <Car size={13} /> {vehicle.brand} {vehicle.model} {vehicle.year}
           </p>
         )}
 
@@ -204,7 +205,7 @@ const AnalysisReportScreen = () => {
                     <div style={{ color: '#4a5568', fontSize: '0.72rem', marginTop: '2px' }}>{listing.seller}</div>
                   )}
                 </div>
-                <span style={{ color: '#a0aec0', flexShrink: 0 }}>→</span>
+                <ExternalLink size={14} color="#a0aec0" style={{ flexShrink: 0 }} />
               </motion.a>
             ))}
           </div>
@@ -233,7 +234,7 @@ const AnalysisReportScreen = () => {
             }}
           >
             <span>Buscar en {link.name}</span>
-            <span style={{ color: '#ef4444' }}>→</span>
+            <ExternalLink size={14} color="#ef4444" />
           </motion.a>
         ))}
 

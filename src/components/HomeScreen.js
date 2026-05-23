@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
+import { Settings, Car, ScanLine, Disc, Gauge, Layers, Zap, Filter, Thermometer, Wind, RotateCw, Wrench, CheckCircle2, AlertCircle, AlertTriangle } from 'lucide-react';
 import { useSettings } from '../contexts/SettingsContext';
 import { useVehicles } from '../contexts/VehiclesContext';
 import { useHistory } from '../contexts/HistoryContext';
@@ -12,12 +13,17 @@ const COUNTRY_NAMES = {
   AR: 'Argentina',  CL: 'Chile',  US: 'Estados Unidos',
 };
 
-const SEVERITY_COLORS = { ok: '#22c55e', warning: '#f59e0b', critical: '#ef4444' };
+const SEVERITY_ICONS = {
+  ok:       <CheckCircle2 size={10} color="#22c55e" />,
+  warning:  <AlertCircle size={10} color="#f59e0b" />,
+  critical: <AlertTriangle size={10} color="#ef4444" />,
+};
 
 const CATEGORY_ICONS = {
-  frenos: '🔴', motor: '⚙️', 'suspensión': '🔩', eléctrico: '⚡',
-  filtros: '🔘', carrocería: '🚗', enfriamiento: '🌡️', escape: '💨',
-  'transmisión': '⚙️', otro: '🔧',
+  frenos: <Disc size={18} />, motor: <Gauge size={18} />, 'suspensión': <Layers size={18} />,
+  eléctrico: <Zap size={18} />, filtros: <Filter size={18} />, carrocería: <Car size={18} />,
+  enfriamiento: <Thermometer size={18} />, escape: <Wind size={18} />,
+  'transmisión': <RotateCw size={18} />, otro: <Wrench size={18} />,
 };
 
 const HomeScreen = () => {
@@ -55,10 +61,10 @@ const HomeScreen = () => {
               background: 'rgba(255,255,255,0.07)', border: 'none', borderRadius: '50%',
               width: '44px', height: '44px', cursor: 'pointer',
               display: 'flex', alignItems: 'center', justifyContent: 'center',
-              fontSize: '1.2rem', flexShrink: 0,
+              flexShrink: 0, color: '#a0aec0',
             }}
           >
-            ⚙️
+            <Settings size={20} />
           </motion.button>
         </div>
       </motion.div>
@@ -82,7 +88,7 @@ const HomeScreen = () => {
                   cursor: 'pointer', minWidth: '130px', flexShrink: 0, textAlign: 'left', color: 'white',
                 }}
               >
-                <div style={{ fontSize: '1.2rem', marginBottom: '4px' }}>🚗</div>
+                <div style={{ marginBottom: '4px', color: '#a0aec0', display: 'flex' }}><Car size={20} /></div>
                 <div style={{ fontWeight: 700, fontSize: '0.9rem', fontFamily: 'Saira Condensed, sans-serif' }}>
                   {v.brand} {v.model}
                 </div>
@@ -121,7 +127,7 @@ const HomeScreen = () => {
           {...scanBtn}
           style={{ marginTop: 0, padding: '20px', fontSize: '1.5rem', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '10px' }}
         >
-          <span>��</span> Escanear Pieza
+          <ScanLine size={24} /> Escanear Pieza
         </motion.button>
 
         {vehicles.length === 0 && (
@@ -157,8 +163,8 @@ const HomeScreen = () => {
                   marginBottom: '8px',
                 }}
               >
-                <span style={{ fontSize: '1.2rem', flexShrink: 0 }}>
-                  {CATEGORY_ICONS[scan.partCategory] || '🔧'}
+                <span style={{ flexShrink: 0, color: '#a0aec0', display: 'flex' }}>
+                  {CATEGORY_ICONS[scan.partCategory] || <Wrench size={18} />}
                 </span>
                 <div style={{ flex: 1, minWidth: 0 }}>
                   <div style={{ color: 'white', fontWeight: 700, fontSize: '0.95rem', fontFamily: 'Saira Condensed, sans-serif', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
@@ -168,10 +174,9 @@ const HomeScreen = () => {
                     {formatDate(scan.date)}{scan.vehicle ? ` · ${scan.vehicle.brand} ${scan.vehicle.model}` : ''}
                   </div>
                 </div>
-                <span style={{
-                  width: '8px', height: '8px', borderRadius: '50%', flexShrink: 0,
-                  background: SEVERITY_COLORS[scan.conditionSeverity] || '#a0aec0',
-                }} />
+                <span style={{ flexShrink: 0, display: 'flex' }}>
+                  {SEVERITY_ICONS[scan.conditionSeverity] || <AlertCircle size={10} color="#a0aec0" />}
+                </span>
               </motion.div>
             ))}
           </>
@@ -180,7 +185,7 @@ const HomeScreen = () => {
             variants={item}
             style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '100%', color: '#2d3748', textAlign: 'center', gap: '8px' }}
           >
-            <span style={{ fontSize: '2.5rem' }}>📷</span>
+            <ScanLine size={40} color="#2d3748" />
             <p style={{ fontFamily: 'Saira Condensed, sans-serif', fontSize: '1rem', margin: 0 }}>
               Tus escaneos aparecerán aquí
             </p>

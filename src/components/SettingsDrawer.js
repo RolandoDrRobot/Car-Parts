@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { X, Trash2, Plus, CheckCircle2, AlertCircle, AlertTriangle } from 'lucide-react';
 import { useSettings } from '../contexts/SettingsContext';
 import { useVehicles } from '../contexts/VehiclesContext';
 import { useHistory } from '../contexts/HistoryContext';
@@ -106,9 +107,9 @@ const SettingsDrawer = ({ isOpen, onClose }) => {
               <motion.button
                 onClick={onClose}
                 whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.9 }}
-                style={{ background: 'none', border: 'none', color: '#a0aec0', fontSize: '1.4rem', cursor: 'pointer', padding: '4px 8px' }}
+                style={{ background: 'none', border: 'none', color: '#a0aec0', cursor: 'pointer', padding: '4px 8px', display: 'flex' }}
               >
-                ✕
+                <X size={20} />
               </motion.button>
             </motion.div>
 
@@ -194,9 +195,9 @@ const SettingsDrawer = ({ isOpen, onClose }) => {
                   <motion.button
                     onClick={() => removeVehicle(v.id)}
                     whileHover={{ scale: 1.2 }} whileTap={{ scale: 0.85 }}
-                    style={{ background: 'none', border: 'none', color: '#ef4444', cursor: 'pointer', fontSize: '1.1rem', padding: '4px' }}
+                    style={{ background: 'none', border: 'none', color: '#ef4444', cursor: 'pointer', padding: '4px', display: 'flex' }}
                   >
-                    🗑
+                    <Trash2 size={16} />
                   </motion.button>
                 </div>
               ))}
@@ -214,9 +215,13 @@ const SettingsDrawer = ({ isOpen, onClose }) => {
                     fontSize: '1rem',
                     fontFamily: 'Saira Condensed, sans-serif',
                     fontWeight: 600,
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    gap: '6px',
                   }}
                 >
-                  + Agregar vehículo
+                  <Plus size={16} /> Agregar vehículo
                 </button>
               ) : (
                 <div style={{ background: 'rgba(255,255,255,0.04)', borderRadius: '8px', padding: '14px', display: 'flex', flexDirection: 'column', gap: '8px' }}>
@@ -311,10 +316,13 @@ const SettingsDrawer = ({ isOpen, onClose }) => {
                           {formatDate(s.date)}{s.vehicle ? ` · ${s.vehicle.brand} ${s.vehicle.model}` : ''}
                         </div>
                       </div>
-                      <span style={{
-                        width: '8px', height: '8px', borderRadius: '50%', flexShrink: 0,
-                        background: s.conditionSeverity === 'ok' ? '#22c55e' : s.conditionSeverity === 'warning' ? '#f59e0b' : '#ef4444',
-                      }} />
+                      <span style={{ flexShrink: 0, display: 'flex' }}>
+                        {s.conditionSeverity === 'ok'
+                          ? <CheckCircle2 size={12} color="#22c55e" />
+                          : s.conditionSeverity === 'warning'
+                          ? <AlertCircle size={12} color="#f59e0b" />
+                          : <AlertTriangle size={12} color="#ef4444" />}
+                      </span>
                     </div>
                   ))}
                 </div>
