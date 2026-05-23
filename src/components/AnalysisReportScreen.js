@@ -1,409 +1,292 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { useCart } from '../contexts/CartContext';
-import Modal from './Modal';
-import PartCard from './PartCard';
+import { useSettings } from '../contexts/SettingsContext';
+import { useHistory } from '../contexts/HistoryContext';
+import { searchParts } from '../utils/mercadolibreAPI';
+import { getSearchLinks } from '../utils/searchLinks';
+
+const SEVERITY = {
+  ok:       { label: 'Buen estado',    color: '#22c55e', bg: 'rgba(34,197,94,0.12)'  },
+  warning:  { label: 'Revisar',        color: '#f59e0b', bg: 'rgba(245,158,11,0.12)' },
+  critical: { label: 'Crítico',        color: '#ef4444', bg: 'rgba(239,68,68,0.12)'  },
+};
+
+const CURRENCY_SYMBOLS = {
+  CRC: '₡', MXN: '$', COP: '$', ARS: '$', CLP: '$', USD: '$',
+};
+
+const formatPrice = (price, currency) => {
+  const symbol = CURRENCY_SYMBOLS[currency] || '$';
+  return `${symbol}${price?.toLocaleString('es-ES') ?? '—'}`;
+};
 
 const AnalysisReportScreen = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const { carData, analysisResult } = location.state || {};
-  const { addItem } = useCart();
-  const [showCartModal, setShowCartModal] = useState(false);
+  const { result, vehicle } = location.state || {};
+  const { settings } = useSettings();
+  const { addScan } = useHistory();
 
-  const handleStartOver = () => {
-    navigate('/');
-  };
+  const [listings, setListings] = useState([]);
+  const [mlLoading, setMlLoading] = useState(true);
+  const [mlError, setMlError] = useState(false);
+  const savedRef = useRef(false);
 
-  const handleNewAnalysis = () => {
-    navigate('/photo-upload', { state: { carData } });
-  };
-
-  const handleAddToCart = () => {
-    if (analysisResult && analysisResult.identifiedPart) {
-      addItem(analysisResult.identifiedPart);
-      setShowCartModal(true);
+  // Save to history once
+  useEffect(() => {
+    if (result?.isCarPart && !savedRef.current) {
+      savedRef.current = true;
+      addScan({
+        partName: result.partName,
+        partCategory: result.partCategory,
+        conditionSeverity: result.conditionSeverity,
+        vehicle: vehicle || null,
+        searchQuery: result.searchQuery,
+      });
     }
-  };
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
-  const handleViewCart = () => {
-    navigate('/cart');
-  };
+  // Fetch ML listings
+  useEffect(() => {
+    if (!result?.isCarPart || !result?.searchQuery) {
+      setMlLoading(false);
+      return;
+    }
+    setMlLoading(true);
+    searchParts(result.searchQuery, settings.country)
+      .then(items => { setListings(items); setMlLoading(false); })
+      .catch(() => { setMlError(true); setMlLoading(false); });
+  }, [result?.isCarPart, result?.searchQuery, settings.country]);
 
-  const handleCloseCartModal = () => {
-    setShowCartModal(false);
-  };
-
-  // Manejar caso de imagen inválida
-  if (analysisResult && analysisResult.error && analysisResult.type === "invalid_image") {
+  // No navigation state
+  if (!result) {
     return (
       <div className="container">
-        <motion.div 
-          className="card card-centered"
-          initial={{ opacity: 0, y: 50 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, ease: "easeOut" }}
-        >
-          <div style={{ textAlign: 'center', marginBottom: '20px' }}>
-            <div style={{ fontSize: '4rem', marginBottom: '15px' }}>⚠️</div>
-            <h2 style={{ color: '#f59e0b', marginBottom: '15px' }}>Imagen No Válida</h2>
-            <p style={{ color: '#6b7280', marginBottom: '20px', lineHeight: '1.6' }}>
-              {analysisResult.imageAnalysis}
-            </p>
-            <div style={{ 
-              background: '#fef3c7', 
-              border: '1px solid #f59e0b', 
-              borderRadius: '8px', 
-              padding: '15px', 
-              marginBottom: '20px',
-              textAlign: 'left'
-            }}>
-              <p style={{ margin: 0, fontSize: '0.9rem', color: '#92400e' }}>
-                <strong>Recomendaciones:</strong>
-              </p>
-              <ul style={{ margin: '10px 0 0 0', paddingLeft: '20px', color: '#92400e' }}>
-                <li>Asegúrate de que la foto sea del sistema de frenos del vehículo</li>
-                <li>La imagen debe ser clara y bien iluminada</li>
-                <li>Evita fotos de paisajes, personas u otros objetos</li>
-                <li>Enfócate en las piezas del sistema de frenos</li>
-              </ul>
-            </div>
-          </div>
-          <div style={{ display: 'flex', gap: '15px', justifyContent: 'center' }}>
-            <motion.button 
-              className="btn btn-secondary"
-              onClick={handleNewAnalysis}
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-            >
+        <div className="card card-centered">
+          <p style={{ color: '#a0aec0', fontSize: '1.3rem' }}>Sin datos de análisis.</p>
+          <button className="btn" onClick={() => navigate('/')}>Volver al Inicio</button>
+        </div>
+      </div>
+    );
+  }
+
+  // Not a car part
+  if (!result.isCarPart) {
+    return (
+      <div className="container">
+        <motion.div className="card card-centered"
+          initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
+          <div style={{ fontSize: '3.5rem', marginBottom: '16px' }}>⚠️</div>
+          <h2 style={{ color: '#f59e0b', fontFamily: 'Saira Condensed, sans-serif', fontSize: '1.8rem', marginBottom: '12px' }}>
+            Imagen no válida
+          </h2>
+          <p style={{ color: '#a0aec0', lineHeight: 1.6, marginBottom: '24px' }}>
+            {result.message || 'La imagen no parece ser de una pieza de vehículo. Intenta con una foto más clara de la pieza.'}
+          </p>
+          <div style={{ display: 'flex', gap: '12px', justifyContent: 'center', flexWrap: 'wrap' }}>
+            <button className="btn" onClick={() => navigate('/scan', { state: { vehicle } })}>
               Intentar Nuevamente
-            </motion.button>
-            <motion.button 
-              className="btn"
-              onClick={handleStartOver}
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-            >
+            </button>
+            <button className="btn btn-secondary" onClick={() => navigate('/')}>
               Volver al Inicio
-            </motion.button>
+            </button>
           </div>
         </motion.div>
       </div>
     );
   }
 
-  if (!analysisResult || !carData) {
-    return (
-      <div className="container">
-        <motion.div 
-          className="card card-centered"
-          initial={{ opacity: 0, y: 50 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, ease: "easeOut" }}
-        >
-          <h2>No Analysis Data Found</h2>
-          <p>Please go back and perform an analysis first.</p>
-          <motion.button 
-            className="btn"
-            onClick={handleStartOver}
-            whileHover={{ scale: 1.02 }}
-            whileTap={{ scale: 0.98 }}
-            transition={{ duration: 0.2 }}
-          >
-            Empezar de Nuevo
-          </motion.button>
-        </motion.div>
-      </div>
-    );
-  }
+  const severity = SEVERITY[result.conditionSeverity] || SEVERITY.warning;
+  const searchLinks = getSearchLinks(result.searchQuery, settings.country);
 
   return (
-    <div className="container">
-      <motion.div 
-        className="card"
-        initial={{ opacity: 0, y: 50 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6, ease: "easeOut" }}
-      > 
-        <motion.p 
-          className="subtitle"
+    <div className="container" style={{ justifyContent: 'flex-start', alignItems: 'stretch', paddingTop: '24px' }}>
+      <div style={{ width: '100%', maxWidth: '640px', margin: '0 auto' }}>
+
+        {/* Back */}
+        <motion.button
+          onClick={() => navigate('/scan', { state: { vehicle } })}
+          style={{ background: 'none', border: 'none', color: '#a0aec0', cursor: 'pointer', fontSize: '1.2rem', marginBottom: '16px', padding: 0, display: 'flex', alignItems: 'center', gap: '6px', fontFamily: 'Saira Condensed, sans-serif' }}
+          whileHover={{ x: -3 }}
+        >
+          ← Otro escaneo
+        </motion.button>
+
+        {/* Part Identification */}
+        <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.4 }}
+          transition={{ duration: 0.4 }}
+          style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '12px', padding: '20px', marginBottom: '20px' }}
         >
-          Resultados de identificación de piezas con IA
-        </motion.p>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '12px' }}>
+            <h2 style={{ color: 'white', fontFamily: 'Saira Condensed, sans-serif', fontSize: '1.8rem', fontWeight: 700, margin: 0, flex: 1 }}>
+              {result.partName}
+            </h2>
+            <span style={{
+              background: severity.bg, color: severity.color,
+              border: `1px solid ${severity.color}`,
+              borderRadius: '20px', padding: '4px 12px',
+              fontSize: '0.85rem', fontWeight: 700,
+              fontFamily: 'Saira Condensed, sans-serif',
+              flexShrink: 0, marginLeft: '12px',
+            }}>
+              {severity.label}
+            </span>
+          </div>
 
-        {/* Vehicle Information */}
-        <motion.div 
-          className="car-info"
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.6 }}
-        >
-          <div className="info-grid">
-            <div className="info-card">
-              <div className="info-card-header">
-                <h4 className="info-card-title">Detalles del Vehículo</h4>
-              </div>
-              
-              {/* Imagen del vehículo */}
-              <div style={{ 
-                textAlign: 'center', 
-                marginBottom: '15px',
-                background: 'rgba(0, 0, 0, 0.2)',
-                borderRadius: '8px',
-                padding: '10px'
-              }}>
-                <img 
-                  src={carData.imageUrl} 
-                  alt={`${carData.brand} ${carData.model}`}
-                  style={{
-                    maxWidth: '100%',
-                    height: 'auto',
-                    maxHeight: '200px',
-                    borderRadius: '6px',
-                    boxShadow: '0 4px 12px rgba(0, 0, 0, 0.3)'
-                  }}
-                  onError={(e) => {
-                    e.target.style.display = 'none';
-                    e.target.nextSibling.style.display = 'flex';
-                  }}
-                />
-                <div style={{
-                  display: 'none',
-                  flexDirection: 'column',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  color: '#a0aec0',
-                  fontSize: '0.9rem',
-                  minHeight: '120px'
-                }}>
-                  <div style={{ fontSize: '3rem', marginBottom: '8px' }}>🚗</div>
-                  <div style={{ fontSize: '0.8rem' }}>Imagen del vehículo no disponible</div>
-                </div>
-              </div>
+          {vehicle && (
+            <p style={{ color: '#a0aec0', fontSize: '0.85rem', marginBottom: '12px' }}>
+              🚗 {vehicle.brand} {vehicle.model} {vehicle.year}
+            </p>
+          )}
 
-              <div className="info-row">
-                <span className="info-label">Vehículo:</span>
-                <span className="info-value">{carData.brand} {carData.model} {carData.year}</span>
-              </div>
-              <div className="info-row">
-                <span className="info-label">Placa de Matrícula:</span>
-                <span className="info-value">{carData.plate}</span>
-              </div>
-              <div className="info-row">
-                <span className="info-label">Color:</span>
-                <span className="info-value">{carData.color}</span>
-              </div>
+          <p style={{ color: '#a0aec0', lineHeight: 1.6, marginBottom: '12px', fontSize: '1.1rem' }}>
+            {result.description}
+          </p>
+
+          {result.conditionSeverity !== 'ok' && (
+            <div style={{
+              background: severity.bg, border: `1px solid ${severity.color}`,
+              borderRadius: '8px', padding: '12px 14px',
+              color: severity.color, fontSize: '1rem',
+              fontFamily: 'Saira Condensed, sans-serif', fontWeight: 600,
+            }}>
+              {result.recommendedAction}
             </div>
+          )}
+        </motion.div>
+
+        {/* MercadoLibre Listings */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.4, delay: 0.15 }}
+        >
+          <p style={{ color: '#a0aec0', fontSize: '0.85rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: '12px', fontFamily: 'Saira Condensed, sans-serif' }}>
+            Dónde Comprar
+          </p>
+
+          {mlLoading ? (
+            <div style={{ display: 'flex', gap: '10px', alignItems: 'center', padding: '20px', color: '#a0aec0' }}>
+              <span className="loading" style={{ borderColor: 'rgba(255,255,255,0.1)', borderTopColor: '#ef4444' }} />
+              Buscando en MercadoLibre...
+            </div>
+          ) : listings.length > 0 ? (
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', marginBottom: '20px' }}>
+              {listings.map((item, i) => (
+                <motion.a
+                  key={item.id}
+                  href={item.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: i * 0.05 }}
+                  whileHover={{ scale: 1.01 }}
+                  style={{
+                    background: 'rgba(255,255,255,0.04)',
+                    border: '1px solid rgba(255,255,255,0.08)',
+                    borderRadius: '10px',
+                    padding: '12px',
+                    display: 'flex',
+                    gap: '12px',
+                    alignItems: 'center',
+                    textDecoration: 'none',
+                  }}
+                >
+                  {item.thumbnail && (
+                    <img
+                      src={item.thumbnail}
+                      alt={item.title}
+                      style={{ width: '64px', height: '64px', objectFit: 'contain', borderRadius: '6px', background: '#fff', flexShrink: 0 }}
+                      onError={e => { e.target.style.display = 'none'; }}
+                    />
+                  )}
+                  <div style={{ flex: 1, minWidth: 0 }}>
+                    <div style={{ color: '#e2e8f0', fontWeight: 600, fontSize: '1rem', lineHeight: 1.3, marginBottom: '6px', fontFamily: 'Saira Condensed, sans-serif', overflow: 'hidden', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical' }}>
+                      {item.title}
+                    </div>
+                    <div style={{ display: 'flex', gap: '8px', alignItems: 'center', flexWrap: 'wrap' }}>
+                      <span style={{ color: '#22c55e', fontWeight: 700, fontSize: '1.1rem', fontFamily: 'Saira Condensed, sans-serif' }}>
+                        {formatPrice(item.price, item.currency)}
+                      </span>
+                      {item.freeShipping && (
+                        <span style={{ background: 'rgba(34,197,94,0.12)', color: '#22c55e', border: '1px solid rgba(34,197,94,0.3)', borderRadius: '4px', padding: '1px 6px', fontSize: '0.75rem', fontWeight: 600 }}>
+                          Envío gratis
+                        </span>
+                      )}
+                      {item.condition === 'new' && (
+                        <span style={{ color: '#a0aec0', fontSize: '0.78rem' }}>Nuevo</span>
+                      )}
+                    </div>
+                    {item.seller && (
+                      <div style={{ color: '#4a5568', fontSize: '0.75rem', marginTop: '4px' }}>{item.seller}</div>
+                    )}
+                  </div>
+                  <span style={{ color: '#a0aec0', fontSize: '1rem', flexShrink: 0 }}>→</span>
+                </motion.a>
+              ))}
+            </div>
+          ) : (
+            !mlError && (
+              <div style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.07)', borderRadius: '8px', padding: '16px', marginBottom: '16px', color: '#a0aec0', fontSize: '0.9rem' }}>
+                No se encontraron resultados en MercadoLibre para este país. Prueba los siguientes links:
+              </div>
+            )
+          )}
+
+          {/* Search Links (always shown as fallback/complement) */}
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+            {searchLinks.map(link => (
+              <a
+                key={link.name}
+                href={link.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                style={{
+                  background: 'rgba(255,255,255,0.03)',
+                  border: '1px solid rgba(255,255,255,0.07)',
+                  borderRadius: '8px',
+                  padding: '12px 16px',
+                  color: '#a0aec0',
+                  textDecoration: 'none',
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  alignItems: 'center',
+                  fontSize: '1rem',
+                  fontFamily: 'Saira Condensed, sans-serif',
+                  fontWeight: 600,
+                }}
+              >
+                <span>Buscar en {link.name}</span>
+                <span style={{ color: '#ef4444' }}>→</span>
+              </a>
+            ))}
           </div>
         </motion.div>
 
-
-
-
-          {/* Análisis Técnico Detallado - Estilo Card Info */}
-        <motion.div 
-            className="car-info"
-            initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 1.2 }}
-        >
-
-            <div className="info-grid">
-          
-              {/* Información del Sistema y Especificaciones Técnicas */}
-              <div className="info-card">
-                <div className="info-card-header">
-                  <h4 className="info-card-title">Información del Sistema</h4>
-                </div>
-                <div className="info-row">
-                  <span className="info-label">Sistema:</span>
-                  <span className="info-value">{analysisResult.technicalDetails?.systemType}</span>
-                </div>
-                <div className="info-row">
-                  <span className="info-label">Tipo de Freno:</span>
-                  <span className="info-value">{analysisResult.technicalDetails?.brakeType}</span>
-                </div>
-                <div className="info-row">
-                  <span className="info-label">Desgaste:</span>
-                  <span className="info-value" style={{ color: '#f59e0b' }}>{analysisResult.technicalDetails?.wearLevel}</span>
-                </div>
-                <div className="info-row">
-                  <span className="info-label">Corrosión:</span>
-                  <span className="info-value" style={{ color: '#f59e0b' }}>{analysisResult.technicalDetails?.corrosionStatus}</span>
-                </div>
-                <div className="info-row">
-                  <span className="info-label">Prioridad:</span>
-                  <span className="info-value" style={{ color: '#ef4444', fontWeight: '600' }}>{analysisResult.technicalDetails?.maintenancePriority}</span>
-                </div>
-                <div className="info-row">
-                  <span className="info-label">Diámetro Tambor:</span>
-                  <span className="info-value">{analysisResult.technicalDetails?.technicalSpecs?.drumDiameter}</span>
-                </div>
-                <div className="info-row">
-                  <span className="info-label">Grosor Zapatas:</span>
-                  <span className="info-value">{analysisResult.technicalDetails?.technicalSpecs?.shoeThickness}</span>
-                </div>
-                <div className="info-row">
-                  <span className="info-label">Tensión Resortes:</span>
-                  <span className="info-value" style={{ color: '#22c55e' }}>{analysisResult.technicalDetails?.technicalSpecs?.springTension}</span>
-                </div>
-                <div className="info-row">
-                  <span className="info-label">Diámetro Cilindro:</span>
-                  <span className="info-value">{analysisResult.technicalDetails?.technicalSpecs?.wheelCylinderBore}</span>
-                </div>
-                <div className="info-row">
-                  <span className="info-label">Nivel Líquido:</span>
-                  <span className="info-value" style={{ color: '#f59e0b' }}>{analysisResult.technicalDetails?.technicalSpecs?.brakeFluidLevel}</span>
-                </div>
-              </div>
-
-
-
-              {/* Notas de Inspección */}
-              <div className="info-card">
-                <div className="info-card-header">
-                  <h4 className="info-card-title">Notas de Inspección</h4>
-                </div>
-                {analysisResult.technicalDetails?.inspectionNotes?.map((note, index) => (
-                  <div key={index} className="info-row" style={{ alignItems: 'flex-start' }}>
-                    <span className="info-label" style={{ color: '#22c55e', marginRight: '8px' }}>•</span>
-                    <span className="info-value" style={{ flex: 1 }}>{note}</span>
-                  </div>
-                ))}
-            </div>
-
-              {/* Problemas Identificados */}
-              <div className="info-card">
-                <div className="info-card-header">
-                  <h4 className="info-card-title">Problemas Identificados</h4>
-                </div>
-                {analysisResult.technicalDetails?.commonIssues?.map((issue, index) => (
-                  <div key={index} className="info-row" style={{ alignItems: 'flex-start' }}>
-                    <span className="info-label" style={{ color: '#ef4444', marginRight: '8px' }}>•</span>
-                    <span className="info-value" style={{ flex: 1 }}>{issue}</span>
-                  </div>
-                ))}
-              </div>
-
-            </div>
-          </motion.div>
-
-          {/* Repuestos Disponibles en Stock */}
-          {analysisResult.partsAnalysis && analysisResult.partsAnalysis.length > 0 && (
-            <motion.div 
-              style={{ marginTop: '20px' }}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 1.3 }}
-            >
-              {analysisResult.partsAnalysis.filter(part => part.inStock).length > 0 ? (
-                <>
-                  <h4 className="info-card-title">Repuestos en stock</h4>
-                  <div style={{ 
-                    display: 'grid', 
-                    gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', 
-                    gap: '12px',
-                    marginTop: '15px'
-                  }}>
-                  {analysisResult.partsAnalysis.filter(part => part.inStock).map((part, index) => (
-                    <PartCard
-                      key={index}
-                      part={part}
-                      index={index}
-                      onAddToCart={(availablePart) => {
-                        addItem(availablePart);
-                                setShowCartModal(true);
-                              }}
-                      showAddButton={true}
-                    />
-                  ))}
-                  </div>
-                </>
-              ) : (
-                <div style={{
-                  textAlign: 'center',
-                  padding: '30px 20px',
-                  background: 'rgba(239, 68, 68, 0.1)',
-                  border: '2px solid rgba(239, 68, 68, 0.3)',
-                  borderRadius: '10px',
-                  marginTop: '15px'
-                }}>
-                  <div style={{ fontSize: '2rem', marginBottom: '10px' }}>⚠️</div>
-                  <h6 style={{ color: '#ef4444', margin: '0 0 8px 0', fontSize: '1.1rem', fontWeight: '600' }}>
-                    No hay repuestos disponibles
-                  </h6>
-                  <p style={{ color: '#a0aec0', margin: 0, fontSize: '0.9rem' }}>
-                    Ninguno de los repuestos identificados está disponible en stock actualmente.
-                  </p>
-                </div>
-              )}
-            </motion.div>
-          )}
-
-
-
-        {/* Action Buttons */}
-        <motion.div
-          style={{ marginTop: '30px', display: 'flex', gap: '15px', flexWrap: 'wrap', justifyContent: 'center' }}
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 1.4 }}
-        >
-          <motion.button 
+        {/* Actions */}
+        <div style={{ marginTop: '28px', display: 'flex', gap: '12px', flexWrap: 'wrap' }}>
+          <motion.button
             className="btn"
-            onClick={handleNewAnalysis}
-            whileHover={{ scale: 1.02 }}
-            whileTap={{ scale: 0.98 }}
-            transition={{ duration: 0.2 }}
+            onClick={() => navigate('/scan', { state: { vehicle } })}
+            whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}
           >
-            Analizar Otra Pieza
+            Escanear Otra Pieza
           </motion.button>
-          <motion.button 
+          <motion.button
             className="btn btn-secondary"
-            onClick={handleStartOver}
-            whileHover={{ scale: 1.02 }}
-            whileTap={{ scale: 0.98 }}
-            transition={{ duration: 0.2 }}
+            onClick={() => navigate('/')}
+            whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}
           >
-            Buscar Otro Vehículo
+            Inicio
           </motion.button>
-        </motion.div>
+        </div>
 
-        {/* Additional Information */}
-        <motion.div 
-          style={{ marginTop: '30px', fontSize: '0.9rem', color: '#a0aec0' }}
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.5, delay: 1.6 }}
-        >
-          <p><strong>Análisis completado el:</strong> {new Date().toLocaleString()}</p>
-          <p><strong>Modelo de IA:</strong> CarParts Part Identifier v2.1</p>
-        </motion.div>
-
-        {/* Cart Success Modal */}
-        <Modal
-          isOpen={showCartModal}
-          onClose={handleCloseCartModal}
-          title="¡Agregado al Carrito!"
-          type="success"
-          autoClose={true}
-          autoCloseDelay={3000}
-        >
-          <p style={{ marginBottom: '15px' }}>
-            <strong>{analysisResult?.identifiedPart?.name}</strong> ha sido agregado a tu carrito.
-          </p>
-          <p style={{ marginBottom: '15px' }}>
-            Precio: <span style={{ color: '#22c55e', fontWeight: 'bold' }}>${analysisResult?.identifiedPart?.price}</span>
-          </p>
-          <p style={{ fontSize: '0.9rem', color: '#a0aec0' }}>
-            Puedes continuar agregando más piezas o proceder al checkout.
-          </p>
-        </Modal>
-      </motion.div>
+      </div>
     </div>
   );
 };

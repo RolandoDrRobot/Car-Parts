@@ -1,198 +1,152 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { simulateAIIdentification } from '../data/fakeData';
+import { useVehicles } from '../contexts/VehiclesContext';
+import { analyzeCarPart } from '../data/fakeData';
 
-const PhotoUploadScreen = ({ carData }) => {
-  const [selectedFile, setSelectedFile] = useState(null);
-  const [imagePreview, setImagePreview] = useState(null);
-  const [isAnalyzing, setIsAnalyzing] = useState(false);
-  const [error, setError] = useState('');
+const PhotoUploadScreen = () => {
   const navigate = useNavigate();
+  const location = useLocation();
+  const { vehicles } = useVehicles();
 
-  const handleFileSelect = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      setSelectedFile(file);
-      setError('');
-      
-      // Create image preview
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        setImagePreview(e.target.result);
-      };
-      reader.readAsDataURL(file);
-    }
-  };
+  const passedVehicle = location.state?.vehicle || null;
+  const [selectedVehicleId, setSelectedVehicleId] = useState(passedVehicle?.id || '');
+  const [file, setFile] = useState(null);
+  const [preview, setPreview] = useState(null);
+  const [analyzing, setAnalyzing] = useState(false);
+  const [error, setError] = useState('');
 
-  const handleCameraCapture = () => {
-    // Trigger the hidden camera input
-    const cameraInput = document.getElementById('camera-input');
-    if (cameraInput) {
-      cameraInput.click();
-    }
-  };
+  const selectedVehicle = vehicles.find(v => v.id === selectedVehicleId) || null;
 
-
-  const handleClearImage = () => {
-    setSelectedFile(null);
-    setImagePreview(null);
+  const handleFile = (f) => {
+    if (!f) return;
+    setFile(f);
     setError('');
+    const reader = new FileReader();
+    reader.onload = e => setPreview(e.target.result);
+    reader.readAsDataURL(f);
   };
 
   const handleAnalyze = async () => {
-    if (!selectedFile) {
-      setError('Por favor selecciona una imagen primero');
-      return;
-    }
-
-    setIsAnalyzing(true);
+    if (!file) { setError('Selecciona una imagen primero'); return; }
+    setAnalyzing(true);
     setError('');
-
     try {
-      // Enviar imagen a ChatGPT para análisis
-      const result = await simulateAIIdentification(selectedFile, carData);
-      
-      // Navigate to analysis report screen with the results
-      navigate('/analysis-report', { 
-        state: { 
-          carData, 
-          analysisResult: result 
-        } 
-      });
+      const result = await analyzeCarPart(file, selectedVehicle);
+      navigate('/results', { state: { result, vehicle: selectedVehicle } });
     } catch (err) {
-      console.error('Error en análisis:', err);
-      setError('Error al analizar la imagen con ChatGPT. Por favor intenta de nuevo.');
+      console.error(err);
+      setError('Error al analizar la imagen. Verifica tu conexión e intenta de nuevo.');
     } finally {
-      setIsAnalyzing(false);
+      setAnalyzing(false);
     }
   };
 
-  const handleStartOver = () => {
-    navigate('/');
-  };
-
-  const formatFileSize = (bytes) => {
-    if (bytes === 0) return '0 Bytes';
+  const formatSize = (bytes) => {
     const k = 1024;
-    const sizes = ['Bytes', 'KB', 'MB', 'GB'];
     const i = Math.floor(Math.log(bytes) / Math.log(k));
-    return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+    return `${(bytes / Math.pow(k, i)).toFixed(1)} ${['B','KB','MB'][i]}`;
   };
 
   return (
     <div className="container">
-      <motion.div 
+      <motion.div
         className="card"
-        initial={{ opacity: 0, y: 50 }}
+        initial={{ opacity: 0, y: 40 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6, ease: "easeOut" }}
+        transition={{ duration: 0.5 }}
       >
-        <motion.p 
-          className="subtitle"
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.2 }}
+        <motion.button
+          onClick={() => navigate('/')}
+          style={{ background: 'none', border: 'none', color: '#a0aec0', cursor: 'pointer', fontSize: '1.2rem', marginBottom: '16px', padding: 0, display: 'flex', alignItems: 'center', gap: '6px', fontFamily: 'Saira Condensed, sans-serif' }}
+          whileHover={{ x: -3 }}
         >
-          Sube una foto de la pieza del vehículo que necesitas identificar
-        </motion.p>
+          ← Volver
+        </motion.button>
 
-        <div className="car-info">
-          <h3>Vehículo Seleccionado</h3>
-          
-          {/* Desktop Grid Layout */}
-          <div className="info-grid">
-            <div className="info-card">
-              <div className="info-card-header">
-                <h4 className="info-card-title">Detalles del Vehículo</h4>
-              </div>
-              <div className="info-row">
-                <span className="info-label">Vehículo:</span>
-                <span className="info-value">{carData.brand} {carData.model} {carData.year}</span>
-              </div>
-              <div className="info-row">
-                <span className="info-label">Placa de Matrícula:</span>
-                <span className="info-value">{carData.plate}</span>
-              </div>
-              <div className="info-row">
-                <span className="info-label">Color:</span>
-                <span className="info-value">{carData.color}</span>
-              </div>
-            </div>
-            
+        <h2 style={{ color: 'white', fontSize: '2rem', fontFamily: 'Saira Condensed, sans-serif', fontWeight: 700, marginBottom: '6px' }}>
+          Escanear Pieza
+        </h2>
+        <p style={{ color: '#a0aec0', fontSize: '1.2rem', marginBottom: '24px' }}>
+          Sube o toma una foto de la pieza que quieres identificar
+        </p>
+
+        {/* Vehicle Picker */}
+        {vehicles.length > 0 && (
+          <div className="input-group" style={{ marginTop: 0, marginBottom: '20px' }}>
+            <label className="label">Vehículo (opcional)</label>
+            <select
+              className="input"
+              value={selectedVehicleId}
+              onChange={e => setSelectedVehicleId(e.target.value)}
+            >
+              <option value="">Sin contexto de vehículo</option>
+              {vehicles.map(v => (
+                <option key={v.id} value={v.id}>
+                  {v.brand} {v.model} {v.year}
+                </option>
+              ))}
+            </select>
           </div>
-          
-        </div>
+        )}
 
-        <div className="input-group">
-          <label htmlFor="photo" className="label">
-            Select Image
-          </label>
+        {/* Upload Area */}
+        <label
+          htmlFor="photo-input"
+          className="upload-area"
+          style={{ display: 'block', cursor: 'pointer' }}
+          onDragOver={e => e.preventDefault()}
+          onDrop={e => { e.preventDefault(); handleFile(e.dataTransfer.files[0]); }}
+        >
+          <div className="upload-icon">📷</div>
+          <p className="upload-text">Toca para seleccionar imagen</p>
+          <p className="upload-hint">o arrastra y suelta aquí</p>
           <input
-            type="file"
-            id="photo"
-            accept="image/*"
-            onChange={handleFileSelect}
-            className="input"
-            style={{ padding: '10px' }}
-          />
-        </div>
-
-        <div className="camera-section">
-          <motion.button 
-            type="button"
-            className="btn btn-secondary"
-            onClick={handleCameraCapture}
-            whileHover={{ scale: 1.02 }}
-            whileTap={{ scale: 0.98 }}
-            transition={{ duration: 0.2 }}
-            style={{ marginTop: '10px' }}
-          >
-            Tomar Foto con Cámara
-          </motion.button>
-          
-          {/* Hidden camera input */}
-          <input
+            id="photo-input"
             type="file"
             accept="image/*"
-            capture="environment"
-            onChange={handleFileSelect}
             style={{ display: 'none' }}
-            id="camera-input"
+            onChange={e => handleFile(e.target.files[0])}
           />
-        </div>
+        </label>
 
-        {selectedFile && (
-          <motion.div 
-            className="success"
-            initial={{ opacity: 0, y: 20 }}
+        {/* Camera Button */}
+        <input
+          id="camera-input"
+          type="file"
+          accept="image/*"
+          capture="environment"
+          style={{ display: 'none' }}
+          onChange={e => handleFile(e.target.files[0])}
+        />
+        <motion.button
+          className="btn btn-secondary"
+          onClick={() => document.getElementById('camera-input').click()}
+          whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}
+        >
+          📸 Tomar Foto con Cámara
+        </motion.button>
+
+        {/* Preview */}
+        {preview && (
+          <motion.div
+            className="image-preview"
+            initial={{ opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.3 }}
           >
-            Archivo seleccionado: {selectedFile.name} ({formatFileSize(selectedFile.size)})
-          </motion.div>
-        )}
-
-        {imagePreview && (
-          <motion.div 
-            className="image-preview"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
-          >
-            <h4>Imagen Seleccionada:</h4>
+            <h4>Vista previa</h4>
             <div className="preview-container">
-              <img 
-                src={imagePreview} 
-                alt="Selected part"
-                className="preview-image"
-              />
-              <button 
+              <img src={preview} alt="Pieza seleccionada" className="preview-image" />
+              <div style={{ color: '#a0aec0', fontSize: '0.85rem', marginTop: '8px' }}>
+                {file?.name} · {formatSize(file?.size || 0)}
+              </div>
+              <button
                 className="btn btn-secondary clear-button"
-                onClick={handleClearImage}
+                onClick={() => { setFile(null); setPreview(null); }}
                 style={{ marginTop: '10px' }}
               >
-                Limpiar Imagen
+                Cambiar imagen
               </button>
             </div>
           </motion.div>
@@ -200,40 +154,24 @@ const PhotoUploadScreen = ({ carData }) => {
 
         {error && <div className="error">{error}</div>}
 
-        <motion.button 
+        <motion.button
           className="btn"
           onClick={handleAnalyze}
-          disabled={!selectedFile || isAnalyzing}
-          whileHover={{ scale: 1.02 }}
-          whileTap={{ scale: 0.98 }}
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.4 }}
+          disabled={!file || analyzing}
+          whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}
         >
-          {isAnalyzing ? (
-            <>
-              <span className="loading"></span>
-              Analizando con IA...
-            </>
+          {analyzing ? (
+            <><span className="loading" />Analizando con IA...</>
           ) : (
             'Analizar Imagen'
           )}
         </motion.button>
 
-
-        <button 
-          className="btn btn-secondary"
-          onClick={handleStartOver}
-          style={{ marginTop: '20px' }}
-        >
-          Buscar Otro Vehículo
-        </button>
-
-        <div style={{ marginTop: '30px', fontSize: '0.9rem', color: '#a0aec0' }}>
-          <p><strong>Consejos para mejores resultados:</strong></p>
-          <p>• Toma la foto con buena iluminación</p>
-          <p>• Enfoca bien en la pieza específica</p>
-          <p>• Evita sombras y reflejos</p>
+        <div style={{ marginTop: '24px', color: '#4a5568', fontSize: '0.9rem', lineHeight: 1.7 }}>
+          <strong style={{ color: '#a0aec0' }}>Consejos:</strong>
+          <br />• Buena iluminación y enfoque claro
+          <br />• Encuadra bien la pieza, sin sombras
+          <br />• Funciona con cualquier pieza del vehículo
         </div>
       </motion.div>
     </div>

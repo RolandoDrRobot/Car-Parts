@@ -863,6 +863,27 @@ code {
   background: linear-gradient(135deg, #dc2626, #b91c1c);
 }
 
+/* Select input styling (matches .input) */
+select.input {
+  appearance: none;
+  -webkit-appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='%23a0aec0' d='M6 8L0 0h12z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 16px center;
+  padding-right: 40px;
+  cursor: pointer;
+}
+
+select.input option {
+  background: #1a1a1a;
+  color: #e2e8f0;
+}
+
+/* Drawer scrollbar */
+.drawer-scroll::-webkit-scrollbar {
+  width: 4px;
+}
+
 /* Print styles */
 @media print {
   .card {
