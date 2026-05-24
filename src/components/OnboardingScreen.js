@@ -49,25 +49,27 @@ const OnboardingScreen = () => {
         </motion.div>
 
         <motion.div variants={sectionStagger} style={{
-          flex: 1, display: 'grid', gridTemplateColumns: '1fr 1fr 1fr',
-          gridTemplateRows: '1fr 1fr', gap: '10px',
+          flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center',
           padding: '16px 0', minHeight: 0,
         }}>
-          {COUNTRIES.map(c => (
-            <motion.button key={c.code} variants={item} {...selectable}
-              onClick={() => setCountry(c.code)}
-              style={{
-                background: country === c.code ? 'rgba(239,68,68,0.15)' : 'rgba(255,255,255,0.04)',
-                border: country === c.code ? '2px solid #ef4444' : '2px solid rgba(255,255,255,0.07)',
-                borderRadius: '10px', cursor: 'pointer', color: 'white',
-                display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: '6px',
-              }}>
-              <span style={{ fontSize: '1.8rem' }}>{c.flag}</span>
-              <span style={{ fontSize: '0.85rem', fontFamily: 'Saira Condensed, sans-serif', fontWeight: 600 }}>
-                {c.name}
-              </span>
-            </motion.button>
-          ))}
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '8px', width: '100%' }}>
+            {COUNTRIES.map(c => (
+              <motion.button key={c.code} variants={item} {...selectable}
+                onClick={() => setCountry(c.code)}
+                style={{
+                  background: country === c.code ? 'rgba(239,68,68,0.15)' : 'rgba(255,255,255,0.04)',
+                  border: country === c.code ? '2px solid #ef4444' : '2px solid rgba(255,255,255,0.07)',
+                  borderRadius: '10px', cursor: 'pointer', color: 'white',
+                  display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
+                  gap: '4px', padding: '14px 6px',
+                }}>
+                <span style={{ fontSize: '1.4rem' }}>{c.flag}</span>
+                <span style={{ fontSize: '0.8rem', fontFamily: 'Saira Condensed, sans-serif', fontWeight: 600 }}>
+                  {c.name}
+                </span>
+              </motion.button>
+            ))}
+          </div>
         </motion.div>
 
         <motion.div variants={section} style={{ paddingBottom: '28px', flexShrink: 0 }}>

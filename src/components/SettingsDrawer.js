@@ -28,9 +28,9 @@ const emptyVehicle = { brand: '', model: '', year: '', color: '', engine: '', fu
 
 const SectionTitle = ({ children }) => (
   <p style={{
-    color: '#a0aec0', fontSize: '1rem', fontWeight: 700,
+    color: '#a0aec0', fontSize: '0.72rem', fontWeight: 700,
     textTransform: 'uppercase', letterSpacing: '0.08em',
-    marginBottom: '12px', marginTop: '28px',
+    marginBottom: '8px', marginTop: '20px',
     fontFamily: 'Saira Condensed, sans-serif',
   }}>
     {children}
@@ -100,7 +100,7 @@ const SettingsDrawer = ({ isOpen, onClose }) => {
               borderLeft: '1px solid rgba(255,255,255,0.08)',
               zIndex: 101,
               overflowY: 'auto',
-              padding: '24px 20px 40px',
+              padding: '16px 16px 32px',
             }}
           >
             {/* Header */}
@@ -109,8 +109,8 @@ const SettingsDrawer = ({ isOpen, onClose }) => {
               initial="initial"
               animate="animate"
             >
-            <motion.div variants={drawerSection} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
-              <h2 style={{ color: 'white', fontSize: '1.8rem', fontFamily: 'Saira Condensed, sans-serif', fontWeight: 700, margin: 0 }}>
+            <motion.div variants={drawerSection} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '4px' }}>
+              <h2 style={{ color: 'white', fontSize: '1.4rem', fontFamily: 'Saira Condensed, sans-serif', fontWeight: 700, margin: 0 }}>
                 Ajustes
               </h2>
               <motion.button
@@ -135,17 +135,17 @@ const SettingsDrawer = ({ isOpen, onClose }) => {
                     background: settings.country === c.code ? 'rgba(239,68,68,0.15)' : 'rgba(255,255,255,0.04)',
                     border: settings.country === c.code ? '2px solid #ef4444' : '2px solid rgba(255,255,255,0.07)',
                     borderRadius: '8px',
-                    padding: '10px 6px',
+                    padding: '7px 4px',
                     cursor: 'pointer',
                     color: 'white',
                     display: 'flex',
                     flexDirection: 'column',
                     alignItems: 'center',
-                    gap: '4px',
+                    gap: '3px',
                   }}
                 >
-                  <span style={{ fontSize: '1.4rem' }}>{c.flag}</span>
-                  <span style={{ fontSize: '0.75rem', fontFamily: 'Saira Condensed, sans-serif', fontWeight: 600 }}>{c.name}</span>
+                  <span style={{ fontSize: '1.1rem' }}>{c.flag}</span>
+                  <span style={{ fontSize: '0.68rem', fontFamily: 'Saira Condensed, sans-serif', fontWeight: 600 }}>{c.name}</span>
                 </motion.button>
               ))}
             </div>
@@ -165,10 +165,10 @@ const SettingsDrawer = ({ isOpen, onClose }) => {
                     background: settings.language === lang.code ? 'rgba(239,68,68,0.15)' : 'rgba(255,255,255,0.04)',
                     border: settings.language === lang.code ? '2px solid #ef4444' : '2px solid rgba(255,255,255,0.07)',
                     borderRadius: '8px',
-                    padding: '10px',
+                    padding: '8px',
                     cursor: 'pointer',
                     color: 'white',
-                    fontSize: '1.1rem',
+                    fontSize: '0.9rem',
                     fontFamily: 'Saira Condensed, sans-serif',
                     fontWeight: 600,
                   }}
