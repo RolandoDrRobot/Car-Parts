@@ -1,5 +1,5 @@
-const ANTHROPIC_API_KEY = process.env.REACT_APP_AI;
-const ANTHROPIC_API_URL = 'https://api.anthropic.com/v1/messages';
+const GEMINI_API_KEY = process.env.REACT_APP_AI;
+const GEMINI_URL = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent';
 
 const toBase64 = (file) =>
   new Promise((resolve, reject) => {
@@ -10,13 +10,12 @@ const toBase64 = (file) =>
   });
 
 const getMediaType = (file) => {
-  const type = file.type;
-  if (['image/jpeg', 'image/png', 'image/gif', 'image/webp'].includes(type)) return type;
-  return 'image/jpeg';
+  const t = file.type;
+  return ['image/jpeg', 'image/png', 'image/gif', 'image/webp'].includes(t) ? t : 'image/jpeg';
 };
 
 export const analyzeCarPart = async (imageFile, vehicle = null) => {
-  if (!ANTHROPIC_API_KEY) throw new Error('API key not configured (REACT_APP_AI)');
+  if (!GEMINI_API_KEY) throw new Error('API key not configured (REACT_APP_AI)');
 
   const base64Image = await toBase64(imageFile);
   const mediaType = getMediaType(imageFile);
@@ -47,42 +46,27 @@ Responde ÚNICAMENTE con JSON válido, sin bloques markdown, sin explicaciones a
 Si NO es una pieza de vehículo:
 { "isCarPart": false, "message": "descripción de lo que muestra la imagen en su lugar" }`;
 
-  const res = await fetch(ANTHROPIC_API_URL, {
+  const res = await fetch(`${GEMINI_URL}?key=${GEMINI_API_KEY}`, {
     method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'x-api-key': ANTHROPIC_API_KEY,
-      'anthropic-version': '2023-06-01',
-      'anthropic-dangerous-direct-browser-access': 'true',
-    },
+    headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
-      model: 'claude-opus-4-5',
-      max_tokens: 800,
-      messages: [{
-        role: 'user',
-        content: [
-          {
-            type: 'image',
-            source: {
-              type: 'base64',
-              media_type: mediaType,
-              data: base64Image,
-            },
-          },
-          { type: 'text', text: prompt },
+      contents: [{
+        parts: [
+          { inline_data: { mime_type: mediaType, data: base64Image } },
+          { text: prompt },
         ],
       }],
+      generationConfig: { temperature: 0.1, maxOutputTokens: 800 },
     }),
   });
 
   if (!res.ok) {
     const err = await res.json().catch(() => ({}));
-    throw new Error(`Claude API ${res.status}: ${err?.error?.message || 'unknown error'}`);
+    throw new Error(`Gemini API ${res.status}: ${err?.error?.message || 'unknown error'}`);
   }
 
   const data = await res.json();
-  const text = data.content[0].text.trim();
-
+  const text = data.candidates[0].content.parts[0].text.trim();
   const jsonStr = text.replace(/^```json\n?/, '').replace(/\n?```$/, '').trim();
   return JSON.parse(jsonStr);
 };
