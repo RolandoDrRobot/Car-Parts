@@ -52,7 +52,7 @@ const HomeScreen = () => {
           <div style={{ display: 'flex', gap: '8px' }}>
             {vehicles.length > 0 && (
               <motion.button
-                onClick={() => navigate('/garage')}
+                onClick={() => navigate('/garage', { state: { vehicleId: selectedVehicleId } })}
                 aria-label="Mi Garaje"
                 {...gearBtn}
                 style={{
