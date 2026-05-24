@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, Trash2, Plus, CheckCircle2, AlertCircle, AlertTriangle } from 'lucide-react';
 import { useSettings } from '../contexts/SettingsContext';
@@ -44,6 +44,15 @@ const SettingsDrawer = ({ isOpen, onClose }) => {
   const [showAddForm, setShowAddForm] = useState(false);
   const [newVehicle, setNewVehicle] = useState(emptyVehicle);
   const [confirmClear, setConfirmClear] = useState(false);
+
+  const currentYear = new Date().getFullYear();
+
+  useEffect(() => {
+    if (!isOpen) return;
+    const onKey = (e) => { if (e.key === 'Escape') onClose(); };
+    document.addEventListener('keydown', onKey);
+    return () => document.removeEventListener('keydown', onKey);
+  }, [isOpen, onClose]);
 
   const handleAddVehicle = () => {
     if (!newVehicle.brand || !newVehicle.model || !newVehicle.year) return;
@@ -237,7 +246,7 @@ const SettingsDrawer = ({ isOpen, onClose }) => {
                       style={{ padding: '10px 12px', fontSize: '1rem' }}
                     />
                     <input
-                      className="input" placeholder="Año *" type="number" min="1990" max="2026"
+                      className="input" placeholder="Año *" type="number" min="1990" max={currentYear + 1}
                       value={newVehicle.year}
                       onChange={e => setNewVehicle(p => ({ ...p, year: e.target.value }))}
                       style={{ padding: '10px 12px', fontSize: '1rem' }}

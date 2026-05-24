@@ -118,7 +118,7 @@ const OnboardingScreen = () => {
         <div className="input-row" style={{ marginTop: '12px' }}>
           <div className="input-group" style={{ margin: 0 }}>
             <label className="label" style={{ fontSize: '1.2rem' }}>Año *</label>
-            <input className="input" type="number" placeholder="2020" min="1990" max="2026"
+            <input className="input" type="number" placeholder="2020" min="1990" max={new Date().getFullYear() + 1}
               value={vehicle.year}
               onChange={e => setVehicle(p => ({ ...p, year: e.target.value }))} />
           </div>

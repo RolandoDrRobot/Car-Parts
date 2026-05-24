@@ -17,6 +17,7 @@ const PhotoUploadScreen = () => {
   const [preview, setPreview] = useState(null);
   const [analyzing, setAnalyzing] = useState(false);
   const [error, setError] = useState('');
+  const [dragging, setDragging] = useState(false);
 
   const selectedVehicle = vehicles.find(v => v.id === selectedVehicleId) || null;
 
@@ -93,22 +94,24 @@ const PhotoUploadScreen = () => {
             style={{
               flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center',
               justifyContent: 'center', cursor: 'pointer',
-              border: '2px dashed rgba(239,68,68,0.4)', borderRadius: '12px',
-              background: 'rgba(239,68,68,0.03)',
-              transition: 'border-color 0.2s, background 0.2s',
+              border: dragging ? '2px dashed #ef4444' : '2px dashed rgba(239,68,68,0.4)',
+              borderRadius: '12px',
+              background: dragging ? 'rgba(239,68,68,0.10)' : 'rgba(239,68,68,0.03)',
+              transition: 'border-color 0.15s, background 0.15s',
             }}
-            onDragOver={e => e.preventDefault()}
-            onDrop={e => { e.preventDefault(); handleFile(e.dataTransfer.files[0]); }}
+            onDragOver={e => { e.preventDefault(); setDragging(true); }}
+            onDragLeave={() => setDragging(false)}
+            onDrop={e => { e.preventDefault(); setDragging(false); handleFile(e.dataTransfer.files[0]); }}
           >
             <motion.span
               animate={{ y: [0, -6, 0] }}
               transition={{ duration: 2.2, repeat: Infinity, ease: 'easeInOut' }}
-              style={{ marginBottom: '12px', display: 'flex', color: '#ef4444' }}
+              style={{ marginBottom: '12px', display: 'flex', color: dragging ? '#ef4444' : 'rgba(239,68,68,0.7)' }}
             >
               <ScanLine size={56} />
             </motion.span>
             <p style={{ color: '#e2e8f0', fontSize: '1.4rem', fontFamily: 'Saira Condensed, sans-serif', fontWeight: 600, margin: '0 0 6px' }}>
-              Toca para seleccionar
+              {dragging ? 'Suelta la imagen' : 'Toca para seleccionar'}
             </p>
             <p style={{ color: '#4a5568', fontSize: '0.9rem', margin: 0 }}>
               o arrastra y suelta

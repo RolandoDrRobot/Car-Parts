@@ -56,6 +56,7 @@ const HomeScreen = () => {
           </div>
           <motion.button
             onClick={() => setDrawerOpen(true)}
+            aria-label="Abrir ajustes"
             {...gearBtn}
             style={{
               background: 'rgba(255,255,255,0.07)', border: 'none', borderRadius: '50%',
@@ -183,10 +184,10 @@ const HomeScreen = () => {
         ) : (
           <motion.div
             variants={item}
-            style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '100%', color: '#2d3748', textAlign: 'center', gap: '8px' }}
+            style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '100%', color: '#4a5568', textAlign: 'center', gap: '8px' }}
           >
-            <ScanLine size={40} color="#2d3748" />
-            <p style={{ fontFamily: 'Saira Condensed, sans-serif', fontSize: '1rem', margin: 0 }}>
+            <ScanLine size={40} color="#4a5568" />
+            <p style={{ fontFamily: 'Saira Condensed, sans-serif', fontSize: '1rem', margin: 0, color: '#4a5568' }}>
               Tus escaneos aparecerán aquí
             </p>
           </motion.div>

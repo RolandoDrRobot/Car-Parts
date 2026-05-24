@@ -1,98 +1,50 @@
-const CACHE_NAME = 'carparts-v1.0.0';
-const STATIC_CACHE = 'carparts-static-v1';
-const DYNAMIC_CACHE = 'carparts-dynamic-v1';
+const STATIC_CACHE = 'carparts-static-v2';
+const DYNAMIC_CACHE = 'carparts-dynamic-v2';
 
-const urlsToCache = [
-  '/',
-  '/manifest.json',
-  '/favicon.ico'
-];
+const urlsToCache = ['/', '/manifest.json', '/favicon.ico'];
 
-// Install event
 self.addEventListener('install', (event) => {
-  console.log('Service Worker installing...');
   event.waitUntil(
     caches.open(STATIC_CACHE)
-      .then((cache) => {
-        console.log('Opened cache');
-        return cache.addAll(urlsToCache);
-      })
-      .then(() => {
-        return self.skipWaiting();
-      })
+      .then((cache) => cache.addAll(urlsToCache))
+      .then(() => self.skipWaiting())
   );
 });
 
-// Activate event
 self.addEventListener('activate', (event) => {
-  console.log('Service Worker activating...');
   event.waitUntil(
-    caches.keys().then((cacheNames) => {
-      return Promise.all(
-        cacheNames.map((cacheName) => {
-          if (cacheName !== STATIC_CACHE && cacheName !== DYNAMIC_CACHE) {
-            console.log('Deleting old cache:', cacheName);
-            return caches.delete(cacheName);
-          }
-        })
-      );
-    }).then(() => {
-      return self.clients.claim();
+    caches.keys().then((cacheNames) =>
+      Promise.all(
+        cacheNames
+          .filter((name) => name !== STATIC_CACHE && name !== DYNAMIC_CACHE)
+          .map((name) => caches.delete(name))
+      )
+    ).then(() => self.clients.claim())
+  );
+});
+
+self.addEventListener('fetch', (event) => {
+  const { request } = event;
+  if (request.method !== 'GET') return;
+
+  const url = new URL(request.url);
+  if (url.origin !== location.origin) return;
+
+  event.respondWith(
+    caches.match(request).then((cached) => {
+      if (cached) return cached;
+      return fetch(request).then((res) => {
+        if (!res || res.status !== 200 || res.type !== 'basic') return res;
+        const clone = res.clone();
+        caches.open(DYNAMIC_CACHE).then((cache) => cache.put(request, clone));
+        return res;
+      });
+    }).catch(() => {
+      if (request.mode === 'navigate') return caches.match('/');
     })
   );
 });
 
-// Fetch event
-self.addEventListener('fetch', (event) => {
-  const { request } = event;
-  const url = new URL(request.url);
-
-  // Skip non-GET requests
-  if (request.method !== 'GET') {
-    return;
-  }
-
-  // Skip external requests
-  if (url.origin !== location.origin) {
-    return;
-  }
-
-  event.respondWith(
-    caches.match(request)
-      .then((response) => {
-        if (response) {
-          return response;
-        }
-
-        return fetch(request).then((fetchResponse) => {
-          // Don't cache if not a valid response
-          if (!fetchResponse || fetchResponse.status !== 200 || fetchResponse.type !== 'basic') {
-            return fetchResponse;
-          }
-
-          // Clone the response
-          const responseToCache = fetchResponse.clone();
-
-          caches.open(DYNAMIC_CACHE)
-            .then((cache) => {
-              cache.put(request, responseToCache);
-            });
-
-          return fetchResponse;
-        });
-      })
-      .catch(() => {
-        // Return offline page for navigation requests
-        if (request.mode === 'navigate') {
-          return caches.match('/');
-        }
-      })
-  );
-});
-
-// Handle messages from the main thread
 self.addEventListener('message', (event) => {
-  if (event.data && event.data.type === 'SKIP_WAITING') {
-    self.skipWaiting();
-  }
+  if (event.data?.type === 'SKIP_WAITING') self.skipWaiting();
 });

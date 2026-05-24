@@ -1,5 +1,6 @@
 const GEMINI_API_KEY = process.env.REACT_APP_AI;
 const GEMINI_URL = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent';
+const TIMEOUT_MS = 30000;
 
 const toBase64 = (file) =>
   new Promise((resolve, reject) => {
@@ -46,27 +47,45 @@ Responde ÚNICAMENTE con JSON válido, sin bloques markdown, sin explicaciones a
 Si NO es una pieza de vehículo:
 { "isCarPart": false, "message": "descripción de lo que muestra la imagen en su lugar" }`;
 
-  const res = await fetch(`${GEMINI_URL}?key=${GEMINI_API_KEY}`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      contents: [{
-        parts: [
-          { inline_data: { mime_type: mediaType, data: base64Image } },
-          { text: prompt },
-        ],
-      }],
-      generationConfig: { temperature: 0.1, maxOutputTokens: 800 },
-    }),
-  });
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), TIMEOUT_MS);
+
+  let res;
+  try {
+    res = await fetch(`${GEMINI_URL}?key=${GEMINI_API_KEY}`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      signal: controller.signal,
+      body: JSON.stringify({
+        contents: [{
+          parts: [
+            { inline_data: { mime_type: mediaType, data: base64Image } },
+            { text: prompt },
+          ],
+        }],
+        generationConfig: { temperature: 0.1, maxOutputTokens: 800 },
+      }),
+    });
+  } catch (err) {
+    if (err.name === 'AbortError') throw new Error('La solicitud tardó demasiado. Intenta de nuevo.');
+    throw err;
+  } finally {
+    clearTimeout(timeoutId);
+  }
 
   if (!res.ok) {
     const err = await res.json().catch(() => ({}));
-    throw new Error(`Gemini API ${res.status}: ${err?.error?.message || 'unknown error'}`);
+    throw new Error(`Error al analizar (${res.status}): ${err?.error?.message || 'intenta de nuevo'}`);
   }
 
   const data = await res.json();
-  const text = data.candidates[0].content.parts[0].text.trim();
+  const text = data.candidates?.[0]?.content?.parts?.[0]?.text?.trim();
+  if (!text) throw new Error('La IA no devolvió respuesta. Intenta con otra imagen.');
+
   const jsonStr = text.replace(/^```json\n?/, '').replace(/\n?```$/, '').trim();
-  return JSON.parse(jsonStr);
+  try {
+    return JSON.parse(jsonStr);
+  } catch {
+    throw new Error('No se pudo interpretar la respuesta. Intenta con otra imagen.');
+  }
 };
