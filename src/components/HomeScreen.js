@@ -139,9 +139,19 @@ const HomeScreen = () => {
           className="btn"
           onClick={() => navigate('/scan', { state: { vehicle: selectedVehicle } })}
           {...scanBtn}
-          style={{ marginTop: 0, padding: '20px', fontSize: '1.5rem', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '10px' }}
+          style={{
+            marginTop: 0,
+            padding: '13px 20px',
+            fontSize: '1rem',
+            fontWeight: 700,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            gap: '8px',
+            letterSpacing: '0.04em',
+          }}
         >
-          <ScanLine size={24} /> Escanear Pieza
+          <ScanLine size={18} /> Escanear Pieza
         </motion.button>
 
         {vehicles.length === 0 && (
