@@ -5,7 +5,6 @@ import {
   ArrowLeft, Droplets, Filter, Wind, Disc, Gauge, Thermometer,
   Zap, RotateCw, Battery, Timer, Eye, CheckCircle2, AlertCircle,
   AlertTriangle, HelpCircle, ChevronDown, ChevronUp, Car, Wrench,
-  Plus,
 } from 'lucide-react';
 import { useVehicles } from '../contexts/VehiclesContext';
 import { useGarage } from '../contexts/GarageContext';
