@@ -107,63 +107,6 @@ const SettingsDrawer = ({ isOpen, onClose }) => {
               </motion.button>
             </motion.div>
 
-            {/* Country */}
-            <motion.div variants={drawerSection}>
-            <SectionTitle>País</SectionTitle>
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '8px' }}>
-              {COUNTRIES.map(c => (
-                <motion.button
-                  key={c.code}
-                  onClick={() => updateSettings({ country: c.code })}
-                  {...selectable}
-                  style={{
-                    background: settings.country === c.code ? 'rgba(239,68,68,0.15)' : 'rgba(255,255,255,0.04)',
-                    border: settings.country === c.code ? '2px solid #ef4444' : '2px solid rgba(255,255,255,0.07)',
-                    borderRadius: '8px',
-                    padding: '7px 4px',
-                    cursor: 'pointer',
-                    color: 'white',
-                    display: 'flex',
-                    flexDirection: 'column',
-                    alignItems: 'center',
-                    gap: '3px',
-                  }}
-                >
-                  <span style={{ fontSize: '1.1rem' }}>{c.flag}</span>
-                  <span style={{ fontSize: '0.68rem', fontFamily: 'Saira Condensed, sans-serif', fontWeight: 600 }}>{c.name}</span>
-                </motion.button>
-              ))}
-            </div>
-            </motion.div>
-
-            {/* Language */}
-            <motion.div variants={drawerSection}>
-            <SectionTitle>Idioma</SectionTitle>
-            <div style={{ display: 'flex', gap: '8px' }}>
-              {[{ code: 'es', label: 'Español' }, { code: 'en', label: 'English' }].map(lang => (
-                <motion.button
-                  key={lang.code}
-                  onClick={() => updateSettings({ language: lang.code })}
-                  {...selectable}
-                  style={{
-                    flex: 1,
-                    background: settings.language === lang.code ? 'rgba(239,68,68,0.15)' : 'rgba(255,255,255,0.04)',
-                    border: settings.language === lang.code ? '2px solid #ef4444' : '2px solid rgba(255,255,255,0.07)',
-                    borderRadius: '8px',
-                    padding: '8px',
-                    cursor: 'pointer',
-                    color: 'white',
-                    fontSize: '0.9rem',
-                    fontFamily: 'Saira Condensed, sans-serif',
-                    fontWeight: 600,
-                  }}
-                >
-                  {lang.label}
-                </motion.button>
-              ))}
-            </div>
-            </motion.div>
-
             {/* Vehicles */}
             <motion.div variants={drawerSection}>
             <SectionTitle>Mis Vehículos</SectionTitle>
@@ -275,6 +218,63 @@ const SettingsDrawer = ({ isOpen, onClose }) => {
                   </div>
                 </div>
               )}
+            </div>
+            </motion.div>
+
+            {/* Country */}
+            <motion.div variants={drawerSection}>
+            <SectionTitle>País</SectionTitle>
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '8px' }}>
+              {COUNTRIES.map(c => (
+                <motion.button
+                  key={c.code}
+                  onClick={() => updateSettings({ country: c.code })}
+                  {...selectable}
+                  style={{
+                    background: settings.country === c.code ? 'rgba(239,68,68,0.15)' : 'rgba(255,255,255,0.04)',
+                    border: settings.country === c.code ? '2px solid #ef4444' : '2px solid rgba(255,255,255,0.07)',
+                    borderRadius: '8px',
+                    padding: '7px 4px',
+                    cursor: 'pointer',
+                    color: 'white',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'center',
+                    gap: '3px',
+                  }}
+                >
+                  <span style={{ fontSize: '1.1rem' }}>{c.flag}</span>
+                  <span style={{ fontSize: '0.68rem', fontFamily: 'Saira Condensed, sans-serif', fontWeight: 600 }}>{c.name}</span>
+                </motion.button>
+              ))}
+            </div>
+            </motion.div>
+
+            {/* Language */}
+            <motion.div variants={drawerSection}>
+            <SectionTitle>Idioma</SectionTitle>
+            <div style={{ display: 'flex', gap: '8px' }}>
+              {[{ code: 'es', label: 'Español' }, { code: 'en', label: 'English' }].map(lang => (
+                <motion.button
+                  key={lang.code}
+                  onClick={() => updateSettings({ language: lang.code })}
+                  {...selectable}
+                  style={{
+                    flex: 1,
+                    background: settings.language === lang.code ? 'rgba(239,68,68,0.15)' : 'rgba(255,255,255,0.04)',
+                    border: settings.language === lang.code ? '2px solid #ef4444' : '2px solid rgba(255,255,255,0.07)',
+                    borderRadius: '8px',
+                    padding: '8px',
+                    cursor: 'pointer',
+                    color: 'white',
+                    fontSize: '0.9rem',
+                    fontFamily: 'Saira Condensed, sans-serif',
+                    fontWeight: 600,
+                  }}
+                >
+                  {lang.label}
+                </motion.button>
+              ))}
             </div>
             </motion.div>
 
