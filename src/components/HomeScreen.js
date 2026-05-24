@@ -46,27 +46,40 @@ const HomeScreen = () => {
       {/* ── HEADER ── */}
       <motion.div variants={section} style={{ padding: '20px 20px 0', flexShrink: 0 }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-          <div>
-            <h1 className="title" style={{ marginBottom: 0, fontSize: '2.8rem', lineHeight: 1 }}>
-              CarParts
-            </h1>
-            <p style={{ color: '#a0aec0', margin: '4px 0 0', fontSize: '1rem', fontFamily: 'Saira Condensed, sans-serif' }}>
-              {COUNTRY_NAMES[settings.country] || 'Sin país'}
-            </p>
+          <p style={{ color: '#a0aec0', margin: 0, fontSize: '1rem', fontFamily: 'Saira Condensed, sans-serif' }}>
+            {COUNTRY_NAMES[settings.country] || 'Sin país'}
+          </p>
+          <div style={{ display: 'flex', gap: '8px' }}>
+            {vehicles.length > 0 && (
+              <motion.button
+                onClick={() => navigate('/garage')}
+                aria-label="Mi Garaje"
+                {...gearBtn}
+                style={{
+                  background: 'rgba(255,255,255,0.07)', border: 'none', borderRadius: '20px',
+                  height: '44px', padding: '0 14px', cursor: 'pointer',
+                  display: 'flex', alignItems: 'center', gap: '6px',
+                  color: '#a0aec0', fontFamily: 'Saira Condensed, sans-serif',
+                  fontWeight: 700, fontSize: '0.9rem', flexShrink: 0,
+                }}
+              >
+                <Hammer size={16} /> Mi Garaje
+              </motion.button>
+            )}
+            <motion.button
+              onClick={() => setDrawerOpen(true)}
+              aria-label="Abrir ajustes"
+              {...gearBtn}
+              style={{
+                background: 'rgba(255,255,255,0.07)', border: 'none', borderRadius: '50%',
+                width: '44px', height: '44px', cursor: 'pointer',
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                flexShrink: 0, color: '#a0aec0',
+              }}
+            >
+              <Settings size={20} />
+            </motion.button>
           </div>
-          <motion.button
-            onClick={() => setDrawerOpen(true)}
-            aria-label="Abrir ajustes"
-            {...gearBtn}
-            style={{
-              background: 'rgba(255,255,255,0.07)', border: 'none', borderRadius: '50%',
-              width: '44px', height: '44px', cursor: 'pointer',
-              display: 'flex', alignItems: 'center', justifyContent: 'center',
-              flexShrink: 0, color: '#a0aec0',
-            }}
-          >
-            <Settings size={20} />
-          </motion.button>
         </div>
       </motion.div>
 
@@ -130,17 +143,6 @@ const HomeScreen = () => {
         >
           <ScanLine size={24} /> Escanear Pieza
         </motion.button>
-
-        {vehicles.length > 0 && (
-          <motion.button
-            className="btn btn-secondary"
-            onClick={() => navigate('/garage')}
-            {...btn}
-            style={{ marginTop: '10px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}
-          >
-            <Hammer size={18} /> Mi Garaje
-          </motion.button>
-        )}
 
         {vehicles.length === 0 && (
           <motion.button
