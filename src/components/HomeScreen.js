@@ -139,17 +139,7 @@ const HomeScreen = () => {
           className="btn"
           onClick={() => navigate('/scan', { state: { vehicle: selectedVehicle } })}
           {...scanBtn}
-          style={{
-            marginTop: 0,
-            padding: '13px 20px',
-            fontSize: '1rem',
-            fontWeight: 700,
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            gap: '8px',
-            letterSpacing: '0.04em',
-          }}
+          style={{ marginTop: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}
         >
           <ScanLine size={18} /> Escanear Pieza
         </motion.button>

@@ -290,9 +290,9 @@ code {
   background: linear-gradient(135deg, #ef4444, #dc2626);
   color: white;
   border: none;
-  padding: 18px 32px;
+  padding: 13px 20px;
   border-radius: 5px;
-  font-size: 1.5rem;
+  font-size: 1rem;
   font-weight: 700;
   font-family: "Saira Condensed", sans-serif;
   cursor: pointer;
@@ -301,7 +301,7 @@ code {
   margin-top: 12px;
   position: relative;
   overflow: hidden;
-  letter-spacing: 0.01em;
+  letter-spacing: 0.04em;
   box-shadow: 0 4px 14px rgba(239, 68, 68, 0.4);
 }
 
@@ -698,12 +698,6 @@ code {
     font-size: 1.6rem;
   }
   
-  .btn {
-    padding: 16px 28px;
-    font-size: 1.6rem;
-  }
-  
-  
   .car-info h3 {
     font-size: 1.6rem;
   }
@@ -787,13 +781,6 @@ code {
     padding: 14px 18px;
     font-size: 1.6rem;
   }
-  
-  .btn {
-    padding: 14px 24px;
-    font-size: 1.6rem;
-  }
-  
-
   
   .car-info h3 {
     font-size: 1.5rem;
