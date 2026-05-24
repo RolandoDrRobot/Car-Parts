@@ -22,7 +22,7 @@ const formatPrice = (price, currency) =>
 const AnalysisReportScreen = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const { result, vehicle } = location.state || {};
+  const { result, vehicle, fromHistory } = location.state || {};
   const { settings } = useSettings();
   const { addScan } = useHistory();
 
@@ -31,7 +31,7 @@ const AnalysisReportScreen = () => {
   const savedRef = useRef(false);
 
   useEffect(() => {
-    if (result?.isCarPart && !savedRef.current) {
+    if (result?.isCarPart && !savedRef.current && !location.state?.fromHistory) {
       savedRef.current = true;
       addScan({
         partName: result.partName,
@@ -39,6 +39,8 @@ const AnalysisReportScreen = () => {
         conditionSeverity: result.conditionSeverity,
         vehicle: vehicle || null,
         searchQuery: result.searchQuery,
+        description: result.description || null,
+        recommendedAction: result.recommendedAction || null,
       });
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -106,11 +108,11 @@ const AnalysisReportScreen = () => {
       <motion.div variants={section}
         style={{ padding: '16px 20px', borderBottom: '1px solid rgba(255,255,255,0.07)', flexShrink: 0 }}>
         <motion.button
-          onClick={() => navigate('/scan', { state: { vehicle } })}
+          onClick={() => fromHistory ? navigate('/') : navigate('/scan', { state: { vehicle } })}
           {...backBtn}
           style={{ background: 'none', border: 'none', color: '#a0aec0', cursor: 'pointer', fontSize: '0.9rem', padding: 0, display: 'flex', alignItems: 'center', gap: '6px', fontFamily: 'Saira Condensed, sans-serif', marginBottom: '10px' }}
         >
-          <ArrowLeft size={14} /> Otro escaneo
+          <ArrowLeft size={14} /> {fromHistory ? 'Volver' : 'Otro escaneo'}
         </motion.button>
 
         <div style={{ display: 'flex', alignItems: 'flex-start', gap: '10px' }}>
@@ -244,8 +246,8 @@ const AnalysisReportScreen = () => {
           <p style={{ color: '#4a5568', fontSize: '0.75rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.05em', margin: '0 0 6px', fontFamily: 'Saira Condensed, sans-serif' }}>
             Diagnóstico IA
           </p>
-          <p style={{ color: '#a0aec0', fontSize: '0.85rem', lineHeight: 1.6, margin: 0 }}>
-            {result.description}
+          <p style={{ color: result.description ? '#a0aec0' : '#4a5568', fontSize: '0.85rem', lineHeight: 1.6, margin: 0, fontStyle: result.description ? 'normal' : 'italic' }}>
+            {result.description || 'Diagnóstico no disponible para este escaneo anterior.'}
           </p>
         </motion.div>
       </motion.div>
@@ -253,14 +255,23 @@ const AnalysisReportScreen = () => {
       {/* ── FOOTER ── */}
       <motion.div variants={section}
         style={{ padding: '10px 20px 24px', borderTop: '1px solid rgba(255,255,255,0.07)', flexShrink: 0, display: 'flex', gap: '10px' }}>
-        <motion.button className="btn" style={{ marginTop: 0, flex: 1 }} {...btn}
-          onClick={() => navigate('/scan', { state: { vehicle } })}>
-          Otra Pieza
-        </motion.button>
-        <motion.button className="btn btn-secondary" style={{ marginTop: 0, flex: 1 }} {...btn}
-          onClick={() => navigate('/')}>
-          Inicio
-        </motion.button>
+        {fromHistory ? (
+          <motion.button className="btn" style={{ marginTop: 0, flex: 1 }} {...btn}
+            onClick={() => navigate('/')}>
+            Inicio
+          </motion.button>
+        ) : (
+          <>
+            <motion.button className="btn" style={{ marginTop: 0, flex: 1 }} {...btn}
+              onClick={() => navigate('/scan', { state: { vehicle } })}>
+              Otra Pieza
+            </motion.button>
+            <motion.button className="btn btn-secondary" style={{ marginTop: 0, flex: 1 }} {...btn}
+              onClick={() => navigate('/')}>
+              Inicio
+            </motion.button>
+          </>
+        )}
       </motion.div>
 
     </motion.div>

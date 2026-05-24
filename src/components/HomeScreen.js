@@ -177,14 +177,29 @@ const HomeScreen = () => {
               Escaneos Recientes
             </p>
             {history.map(scan => (
-              <motion.div
+              <motion.button
                 key={scan.id}
                 variants={item}
+                onClick={() => navigate('/results', {
+                  state: {
+                    fromHistory: true,
+                    vehicle: scan.vehicle || null,
+                    result: {
+                      isCarPart: true,
+                      partName: scan.partName,
+                      partCategory: scan.partCategory,
+                      conditionSeverity: scan.conditionSeverity,
+                      searchQuery: scan.searchQuery,
+                      description: scan.description || null,
+                      recommendedAction: scan.recommendedAction || null,
+                    },
+                  },
+                })}
                 style={{
                   background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.07)',
                   borderRadius: '10px', padding: '12px 14px',
                   display: 'flex', alignItems: 'center', gap: '10px',
-                  marginBottom: '8px',
+                  marginBottom: '8px', cursor: 'pointer', width: '100%', textAlign: 'left',
                 }}
               >
                 <span style={{ flexShrink: 0, color: '#a0aec0', display: 'flex' }}>
@@ -201,7 +216,7 @@ const HomeScreen = () => {
                 <span style={{ flexShrink: 0, display: 'flex' }}>
                   {SEVERITY_ICONS[scan.conditionSeverity] || <AlertCircle size={10} color="#a0aec0" />}
                 </span>
-              </motion.div>
+              </motion.button>
             ))}
           </>
         ) : (
