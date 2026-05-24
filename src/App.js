@@ -49,7 +49,7 @@ function App() {
               {/* App — paddingTop accounts for iOS notch/status bar in PWA mode */}
               <div style={{
                 position: 'relative', zIndex: 10,
-                height: '100%', display: 'flex', flexDirection: 'column',
+                height: '100dvh', display: 'flex', flexDirection: 'column',
                 paddingTop: 'env(safe-area-inset-top)',
                 paddingBottom: 'env(safe-area-inset-bottom)',
               }}>
