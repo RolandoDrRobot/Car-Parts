@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Trash2, Plus } from 'lucide-react';
+import { X, Trash2, Plus, Share2, Smartphone } from 'lucide-react';
 import { useSettings } from '../contexts/SettingsContext';
 import { useVehicles } from '../contexts/VehiclesContext';
 import { btn, selectable } from '../utils/animations';
@@ -278,6 +278,49 @@ const SettingsDrawer = ({ isOpen, onClose }) => {
             </div>
             </motion.div>
 
+            {/* Install PWA */}
+            <motion.div variants={drawerSection}>
+              <SectionTitle>Instalar App</SectionTitle>
+              <div style={{
+                background: 'rgba(255,255,255,0.03)',
+                border: '1px solid rgba(255,255,255,0.07)',
+                borderRadius: '10px',
+                padding: '12px 14px',
+              }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '10px' }}>
+                  <Smartphone size={16} color="#ef4444" />
+                  <span style={{ color: 'white', fontFamily: 'Saira Condensed, sans-serif', fontWeight: 700, fontSize: '0.95rem' }}>
+                    Agregar a pantalla de inicio
+                  </span>
+                </div>
+
+                {/* iOS */}
+                <div style={{ marginBottom: '8px' }}>
+                  <p style={{ color: '#6b7280', fontSize: '0.68rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.06em', margin: '0 0 4px', fontFamily: 'Saira Condensed, sans-serif' }}>
+                    iPhone / iPad (Safari)
+                  </p>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                    <Share2 size={12} color="#a0aec0" style={{ flexShrink: 0 }} />
+                    <p style={{ color: '#a0aec0', fontSize: '0.8rem', margin: 0, lineHeight: 1.4 }}>
+                      Toca <strong style={{ color: '#e2e8f0' }}>Compartir</strong> → <strong style={{ color: '#e2e8f0' }}>Agregar a inicio</strong>
+                    </p>
+                  </div>
+                </div>
+
+                {/* Android */}
+                <div style={{ borderTop: '1px solid rgba(255,255,255,0.05)', paddingTop: '8px' }}>
+                  <p style={{ color: '#6b7280', fontSize: '0.68rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.06em', margin: '0 0 4px', fontFamily: 'Saira Condensed, sans-serif' }}>
+                    Android (Chrome)
+                  </p>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                    <span style={{ color: '#a0aec0', fontSize: '0.75rem', flexShrink: 0 }}>⋮</span>
+                    <p style={{ color: '#a0aec0', fontSize: '0.8rem', margin: 0, lineHeight: 1.4 }}>
+                      Menú <strong style={{ color: '#e2e8f0' }}>⋮</strong> → <strong style={{ color: '#e2e8f0' }}>Instalar app</strong> o <strong style={{ color: '#e2e8f0' }}>Agregar a inicio</strong>
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </motion.div>
 
             </motion.div>{/* end drawerContent */}
           </motion.div>
