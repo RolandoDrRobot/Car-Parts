@@ -2,6 +2,7 @@ export const KEYS = {
   SETTINGS: 'carparts_settings',
   VEHICLES: 'carparts_vehicles',
   HISTORY: 'carparts_history',
+  GARAGE:   'carparts_garage',
 };
 
 export const getItem = (key) => {

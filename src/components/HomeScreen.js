@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { Settings, Car, ScanLine, Disc, Gauge, Layers, Zap, Filter, Thermometer, Wind, RotateCw, Wrench, CheckCircle2, AlertCircle, AlertTriangle } from 'lucide-react';
+import { Settings, Car, ScanLine, Disc, Gauge, Layers, Zap, Filter, Thermometer, Wind, RotateCw, Wrench, CheckCircle2, AlertCircle, AlertTriangle, Hammer } from 'lucide-react';
 import { useSettings } from '../contexts/SettingsContext';
 import { useVehicles } from '../contexts/VehiclesContext';
 import { useHistory } from '../contexts/HistoryContext';
@@ -130,6 +130,17 @@ const HomeScreen = () => {
         >
           <ScanLine size={24} /> Escanear Pieza
         </motion.button>
+
+        {vehicles.length > 0 && (
+          <motion.button
+            className="btn btn-secondary"
+            onClick={() => navigate('/garage')}
+            {...btn}
+            style={{ marginTop: '10px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}
+          >
+            <Hammer size={18} /> Mi Garaje
+          </motion.button>
+        )}
 
         {vehicles.length === 0 && (
           <motion.button
