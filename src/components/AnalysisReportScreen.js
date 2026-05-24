@@ -119,6 +119,7 @@ const AnalysisReportScreen = () => {
   const severity    = SEVERITY[result.conditionSeverity] || SEVERITY.warning;
   const searchLinks = getSearchLinks(result.searchQuery, settings.country);
   const typeMeta    = TYPE_META[result.type] || TYPE_META.scan;
+  const backLabel   = result.type === 'symptoms' ? 'Otro diagnóstico' : result.type === 'lights' ? 'Otra foto' : 'Otra pieza';
 
   return (
     <motion.div className="container" variants={screen} initial="initial" animate="animate">
@@ -320,7 +321,7 @@ const AnalysisReportScreen = () => {
           <>
             <motion.button className="btn" style={{ marginTop: 0, flex: 1 }} {...btn}
               onClick={() => navigate(-1)}>
-              Otra Pieza
+              {backLabel}
             </motion.button>
             <motion.button className="btn btn-secondary" style={{ marginTop: 0, flex: 1 }} {...btn}
               onClick={() => navigate('/')}>

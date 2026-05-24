@@ -186,12 +186,15 @@ const HomeScreen = () => {
                     vehicle: scan.vehicle || null,
                     result: {
                       isCarPart: true,
+                      type: scan.type || 'scan',
                       partName: scan.partName,
                       partCategory: scan.partCategory,
                       conditionSeverity: scan.conditionSeverity,
                       searchQuery: scan.searchQuery,
                       description: scan.description || null,
                       recommendedAction: scan.recommendedAction || null,
+                      causes: scan.causes || null,
+                      canDrive: scan.canDrive ?? null,
                     },
                   },
                 })}
