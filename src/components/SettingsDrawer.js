@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Trash2, Plus, CheckCircle2, AlertCircle, AlertTriangle } from 'lucide-react';
+import { X, Trash2, Plus } from 'lucide-react';
 import { useSettings } from '../contexts/SettingsContext';
 import { useVehicles } from '../contexts/VehiclesContext';
-import { useHistory } from '../contexts/HistoryContext';
 import { btn, selectable } from '../utils/animations';
 
 const drawerContent = {
@@ -40,10 +39,8 @@ const SectionTitle = ({ children }) => (
 const SettingsDrawer = ({ isOpen, onClose }) => {
   const { settings, updateSettings } = useSettings();
   const { vehicles, addVehicle, removeVehicle } = useVehicles();
-  const { history, clearHistory } = useHistory();
   const [showAddForm, setShowAddForm] = useState(false);
   const [newVehicle, setNewVehicle] = useState(emptyVehicle);
-  const [confirmClear, setConfirmClear] = useState(false);
 
   const currentYear = new Date().getFullYear();
 
@@ -60,18 +57,6 @@ const SettingsDrawer = ({ isOpen, onClose }) => {
     setNewVehicle(emptyVehicle);
     setShowAddForm(false);
   };
-
-  const handleClearHistory = () => {
-    if (confirmClear) {
-      clearHistory();
-      setConfirmClear(false);
-    } else {
-      setConfirmClear(true);
-    }
-  };
-
-  const formatDate = (iso) =>
-    new Date(iso).toLocaleDateString('es-ES', { day: '2-digit', month: 'short' });
 
   return (
     <AnimatePresence>
@@ -293,63 +278,6 @@ const SettingsDrawer = ({ isOpen, onClose }) => {
             </div>
             </motion.div>
 
-            {/* History */}
-            <motion.div variants={drawerSection}>
-            <SectionTitle>Historial de Escaneos</SectionTitle>
-            {history.length === 0 ? (
-              <p style={{ color: '#4a5568', fontSize: '0.9rem' }}>Sin escaneos aún.</p>
-            ) : (
-              <>
-                <motion.button
-                  onClick={handleClearHistory}
-                  whileTap={{ scale: 0.97 }}
-                  style={{
-                    background: confirmClear ? 'rgba(239,68,68,0.15)' : 'rgba(255,255,255,0.04)',
-                    border: confirmClear ? '1px solid #ef4444' : '1px solid rgba(255,255,255,0.07)',
-                    borderRadius: '6px',
-                    padding: '8px 14px',
-                    cursor: 'pointer',
-                    color: confirmClear ? '#ef4444' : '#a0aec0',
-                    fontSize: '0.9rem',
-                    fontFamily: 'Saira Condensed, sans-serif',
-                    fontWeight: 600,
-                    marginBottom: '12px',
-                    width: '100%',
-                  }}
-                >
-                  {confirmClear ? '¿Confirmar? Toca de nuevo' : 'Limpiar historial'}
-                </motion.button>
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '6px', maxHeight: '260px', overflowY: 'auto' }}>
-                  {history.map(s => (
-                    <div key={s.id} style={{
-                      background: 'rgba(255,255,255,0.03)',
-                      borderRadius: '6px',
-                      padding: '10px 12px',
-                      display: 'flex',
-                      justifyContent: 'space-between',
-                      alignItems: 'center',
-                    }}>
-                      <div>
-                        <div style={{ color: '#e2e8f0', fontWeight: 600, fontSize: '0.9rem', fontFamily: 'Saira Condensed, sans-serif' }}>
-                          {s.partName}
-                        </div>
-                        <div style={{ color: '#4a5568', fontSize: '0.75rem' }}>
-                          {formatDate(s.date)}{s.vehicle ? ` · ${s.vehicle.brand} ${s.vehicle.model}` : ''}
-                        </div>
-                      </div>
-                      <span style={{ flexShrink: 0, display: 'flex' }}>
-                        {s.conditionSeverity === 'ok'
-                          ? <CheckCircle2 size={12} color="#22c55e" />
-                          : s.conditionSeverity === 'warning'
-                          ? <AlertCircle size={12} color="#f59e0b" />
-                          : <AlertTriangle size={12} color="#ef4444" />}
-                      </span>
-                    </div>
-                  ))}
-                </div>
-              </>
-            )}
-            </motion.div>
 
             </motion.div>{/* end drawerContent */}
           </motion.div>
