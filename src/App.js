@@ -10,6 +10,7 @@ import HomeScreen from './components/HomeScreen';
 import PhotoUploadScreen from './components/PhotoUploadScreen';
 import AnalysisReportScreen from './components/AnalysisReportScreen';
 import GarageScreen from './components/GarageScreen';
+import SymptomsScreen from './components/SymptomsScreen';
 import useScrollToTop from './hooks/useScrollToTop';
 import useServiceWorker from './hooks/useServiceWorker';
 
@@ -25,7 +26,8 @@ const AppContent = () => {
       <Route path="/"        element={settings.setupComplete ? <HomeScreen />           : <OnboardingScreen />} />
       <Route path="/scan"    element={settings.setupComplete ? <PhotoUploadScreen />    : <Navigate to="/" />} />
       <Route path="/results" element={settings.setupComplete ? <AnalysisReportScreen /> : <Navigate to="/" />} />
-      <Route path="/garage"  element={settings.setupComplete ? <GarageScreen />         : <Navigate to="/" />} />
+      <Route path="/garage"    element={settings.setupComplete ? <GarageScreen />         : <Navigate to="/" />} />
+      <Route path="/symptoms" element={settings.setupComplete ? <SymptomsScreen />       : <Navigate to="/" />} />
       <Route path="*"        element={<Navigate to="/" />} />
     </Routes>
   );

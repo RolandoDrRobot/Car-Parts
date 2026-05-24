@@ -24,7 +24,7 @@ const COUNTRIES = [
   { code: 'US', name: 'EE.UU.', flag: '🇺🇸' },
 ];
 
-const emptyVehicle = { brand: '', model: '', year: '', color: '' };
+const emptyVehicle = { brand: '', model: '', year: '', color: '', engine: '', fuel: '', transmission: '' };
 
 const SectionTitle = ({ children }) => (
   <p style={{
@@ -198,7 +198,7 @@ const SettingsDrawer = ({ isOpen, onClose }) => {
                       {v.brand} {v.model}
                     </div>
                     <div style={{ color: '#a0aec0', fontSize: '0.85rem' }}>
-                      {v.year}{v.color ? ` · ${v.color}` : ''}
+                      {v.year}{v.color ? ` · ${v.color}` : ''}{v.engine ? ` · ${v.engine}` : ''}{v.fuel ? ` · ${v.fuel}` : ''}
                     </div>
                   </div>
                   <motion.button
@@ -235,27 +235,39 @@ const SettingsDrawer = ({ isOpen, onClose }) => {
               ) : (
                 <div style={{ background: 'rgba(255,255,255,0.04)', borderRadius: '8px', padding: '14px', display: 'flex', flexDirection: 'column', gap: '8px' }}>
                   <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px' }}>
-                    <input
-                      className="input" placeholder="Marca *" value={newVehicle.brand}
+                    <input className="input" placeholder="Marca *" value={newVehicle.brand}
                       onChange={e => setNewVehicle(p => ({ ...p, brand: e.target.value }))}
-                      style={{ padding: '10px 12px', fontSize: '1rem' }}
-                    />
-                    <input
-                      className="input" placeholder="Modelo *" value={newVehicle.model}
+                      style={{ padding: '10px 12px', fontSize: '1rem' }} />
+                    <input className="input" placeholder="Modelo *" value={newVehicle.model}
                       onChange={e => setNewVehicle(p => ({ ...p, model: e.target.value }))}
-                      style={{ padding: '10px 12px', fontSize: '1rem' }}
-                    />
-                    <input
-                      className="input" placeholder="Año *" type="number" min="1990" max={currentYear + 1}
+                      style={{ padding: '10px 12px', fontSize: '1rem' }} />
+                    <input className="input" placeholder="Año *" type="number" min="1990" max={currentYear + 1}
                       value={newVehicle.year}
                       onChange={e => setNewVehicle(p => ({ ...p, year: e.target.value }))}
-                      style={{ padding: '10px 12px', fontSize: '1rem' }}
-                    />
-                    <input
-                      className="input" placeholder="Color" value={newVehicle.color}
+                      style={{ padding: '10px 12px', fontSize: '1rem' }} />
+                    <input className="input" placeholder="Color" value={newVehicle.color}
                       onChange={e => setNewVehicle(p => ({ ...p, color: e.target.value }))}
-                      style={{ padding: '10px 12px', fontSize: '1rem' }}
-                    />
+                      style={{ padding: '10px 12px', fontSize: '1rem' }} />
+                    <input className="input" placeholder="Motor (ej. 1.5L, 2.0T)" value={newVehicle.engine}
+                      onChange={e => setNewVehicle(p => ({ ...p, engine: e.target.value }))}
+                      style={{ padding: '10px 12px', fontSize: '1rem' }} />
+                    <select className="input" value={newVehicle.fuel}
+                      onChange={e => setNewVehicle(p => ({ ...p, fuel: e.target.value }))}
+                      style={{ padding: '10px 12px', fontSize: '1rem' }}>
+                      <option value="">Combustible</option>
+                      <option value="gasolina">Gasolina</option>
+                      <option value="diésel">Diésel</option>
+                      <option value="híbrido">Híbrido</option>
+                      <option value="eléctrico">Eléctrico</option>
+                    </select>
+                    <select className="input" value={newVehicle.transmission}
+                      onChange={e => setNewVehicle(p => ({ ...p, transmission: e.target.value }))}
+                      style={{ padding: '10px 12px', fontSize: '1rem', gridColumn: '1 / -1' }}>
+                      <option value="">Transmisión</option>
+                      <option value="manual">Manual</option>
+                      <option value="automática">Automática</option>
+                      <option value="CVT">CVT</option>
+                    </select>
                   </div>
                   <div style={{ display: 'flex', gap: '8px' }}>
                     <motion.button

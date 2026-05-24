@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { Settings, Car, ScanLine, Disc, Gauge, Layers, Zap, Filter, Thermometer, Wind, RotateCw, Wrench, CheckCircle2, AlertCircle, AlertTriangle, Hammer } from 'lucide-react';
+import { Settings, Car, ScanLine, Disc, Gauge, Layers, Zap, Filter, Thermometer, Wind, RotateCw, Wrench, CheckCircle2, AlertCircle, AlertTriangle, Hammer, Stethoscope } from 'lucide-react';
 import { useSettings } from '../contexts/SettingsContext';
 import { useVehicles } from '../contexts/VehiclesContext';
 import { useHistory } from '../contexts/HistoryContext';
@@ -133,24 +133,34 @@ const HomeScreen = () => {
         </motion.div>
       )}
 
-      {/* ── SCAN CTA ── */}
+      {/* ── ACTIONS ── */}
       <motion.div variants={section} style={{ padding: '16px 20px 0', flexShrink: 0 }}>
-        <motion.button
-          className="btn"
+        <motion.button className="btn"
           onClick={() => navigate('/scan', { state: { vehicle: selectedVehicle } })}
           {...scanBtn}
-          style={{ marginTop: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}
-        >
+          style={{ marginTop: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}>
           <ScanLine size={18} /> Escanear Pieza
         </motion.button>
 
-        {vehicles.length === 0 && (
-          <motion.button
-            className="btn btn-secondary"
-            onClick={() => setDrawerOpen(true)}
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px', marginTop: '8px' }}>
+          <motion.button className="btn btn-secondary"
+            onClick={() => navigate('/symptoms', { state: { vehicle: selectedVehicle } })}
             {...btn}
-            style={{ marginTop: '10px' }}
-          >
+            style={{ marginTop: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px' }}>
+            <Stethoscope size={16} /> Describir Problema
+          </motion.button>
+          <motion.button className="btn btn-secondary"
+            onClick={() => navigate('/scan', { state: { vehicle: selectedVehicle, mode: 'lights' } })}
+            {...btn}
+            style={{ marginTop: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px' }}>
+            <AlertTriangle size={16} /> Luz de Tablero
+          </motion.button>
+        </div>
+
+        {vehicles.length === 0 && (
+          <motion.button className="btn btn-secondary"
+            onClick={() => setDrawerOpen(true)} {...btn}
+            style={{ marginTop: '8px' }}>
             + Agregar Vehículo
           </motion.button>
         )}

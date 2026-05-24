@@ -67,12 +67,24 @@ const formatAgo = (dateStr) => {
 
 const today = () => new Date().toISOString().slice(0, 10);
 
+const getNextDue = (item, record) => {
+  if (!record?.date) return null;
+  const kmDue   = item.intervalKm   && record.mileage ? record.mileage + item.intervalKm : null;
+  const dateDue = item.intervalMonths
+    ? new Date(new Date(record.date).setMonth(new Date(record.date).getMonth() + item.intervalMonths))
+    : null;
+  return { kmDue, dateDue };
+};
+
+const fmtDate = (d) => d.toLocaleDateString('es-ES', { day: '2-digit', month: 'short', year: 'numeric' });
+
 // ── MaintenanceCard ───────────────────────────────────────────────────────────
 const MaintenanceCard = ({ item, record, currentKm, onLog }) => {
   const [open, setOpen]         = useState(false);
   const [logDate, setLogDate]   = useState(today());
   const [logKm, setLogKm]       = useState(currentKm || '');
   const [logNotes, setLogNotes] = useState('');
+  const [logCost, setLogCost]   = useState('');
 
   const status   = getStatus(item, record, currentKm);
   const progress = getProgress(item, record, currentKm);
@@ -82,10 +94,13 @@ const MaintenanceCard = ({ item, record, currentKm, onLog }) => {
   const barColor = status === 'overdue' ? '#ef4444' : status === 'soon' ? '#f59e0b' : '#22c55e';
 
   const handleSave = () => {
-    onLog(item.id, { date: logDate, mileage: logKm ? Number(logKm) : null, notes: logNotes });
+    onLog(item.id, { date: logDate, mileage: logKm ? Number(logKm) : null, notes: logNotes, cost: logCost ? Number(logCost) : null });
     setOpen(false);
     setLogNotes('');
+    setLogCost('');
   };
+
+  const nextDue = getNextDue(item, record);
 
   return (
     <motion.div layout style={{
@@ -116,7 +131,10 @@ const MaintenanceCard = ({ item, record, currentKm, onLog }) => {
               {meta.label}
             </span>
           </div>
-          <div style={{ color: '#6b7280', fontSize: '0.75rem' }}>{formatAgo(record?.date)}</div>
+          <div style={{ color: '#6b7280', fontSize: '0.75rem', display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+            <span>{formatAgo(record?.date)}</span>
+            {record?.cost ? <span style={{ color: '#a0aec0' }}>· ${record.cost.toLocaleString()}</span> : null}
+          </div>
           {progress !== null && (
             <div style={{ height: '3px', background: 'rgba(255,255,255,0.08)', borderRadius: '2px', marginTop: '6px' }}>
               <div style={{ height: '100%', width: `${barW}%`, background: barColor, borderRadius: '2px', transition: 'width 0.4s ease' }} />
@@ -152,6 +170,25 @@ const MaintenanceCard = ({ item, record, currentKm, onLog }) => {
                 )}
               </div>
 
+              {/* Next due info */}
+              {nextDue && (
+                <div style={{ background: 'rgba(255,255,255,0.04)', borderRadius: '8px', padding: '8px 12px', marginBottom: '10px', display: 'flex', gap: '16px', flexWrap: 'wrap' }}>
+                  {nextDue.kmDue && (
+                    <div>
+                      <span style={{ color: '#6b7280', fontSize: '0.7rem', display: 'block', fontFamily: 'Saira Condensed, sans-serif', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.06em' }}>Próximo km</span>
+                      <span style={{ color: '#e2e8f0', fontSize: '0.9rem', fontFamily: 'Saira Condensed, sans-serif', fontWeight: 700 }}>{nextDue.kmDue.toLocaleString()} km</span>
+                      {currentKm && <span style={{ color: '#6b7280', fontSize: '0.75rem' }}> · faltan {Math.max(0, nextDue.kmDue - currentKm).toLocaleString()} km</span>}
+                    </div>
+                  )}
+                  {nextDue.dateDue && (
+                    <div>
+                      <span style={{ color: '#6b7280', fontSize: '0.7rem', display: 'block', fontFamily: 'Saira Condensed, sans-serif', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.06em' }}>Próxima fecha</span>
+                      <span style={{ color: '#e2e8f0', fontSize: '0.9rem', fontFamily: 'Saira Condensed, sans-serif', fontWeight: 700 }}>{fmtDate(nextDue.dateDue)}</span>
+                    </div>
+                  )}
+                </div>
+              )}
+
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px', marginBottom: '8px' }}>
                 <div>
                   <label style={{ color: '#6b7280', fontSize: '0.72rem', display: 'block', marginBottom: '4px' }}>Fecha</label>
@@ -166,9 +203,20 @@ const MaintenanceCard = ({ item, record, currentKm, onLog }) => {
                     style={{ padding: '8px 10px', fontSize: '0.9rem' }} />
                 </div>
               </div>
-              <input type="text" className="input" placeholder="Notas (opcional)" value={logNotes}
-                onChange={e => setLogNotes(e.target.value)}
-                style={{ padding: '8px 10px', fontSize: '0.9rem', marginBottom: '10px' }} />
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px', marginBottom: '8px' }}>
+                <div>
+                  <label style={{ color: '#6b7280', fontSize: '0.72rem', display: 'block', marginBottom: '4px' }}>Costo (opcional)</label>
+                  <input type="number" className="input" placeholder="ej. 25000" value={logCost}
+                    onChange={e => setLogCost(e.target.value)}
+                    style={{ padding: '8px 10px', fontSize: '0.9rem' }} />
+                </div>
+                <div>
+                  <label style={{ color: '#6b7280', fontSize: '0.72rem', display: 'block', marginBottom: '4px' }}>Notas</label>
+                  <input type="text" className="input" placeholder="Taller, marca..." value={logNotes}
+                    onChange={e => setLogNotes(e.target.value)}
+                    style={{ padding: '8px 10px', fontSize: '0.9rem' }} />
+                </div>
+              </div>
 
               <motion.button className="btn" onClick={handleSave} {...btn}
                 style={{ marginTop: 0, padding: '10px', fontSize: '1rem', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px' }}>
@@ -213,8 +261,9 @@ const GarageScreen = () => {
     return acc;
   }, {});
 
-  const overdue = (grouped.overdue || []).length;
-  const soon    = (grouped.soon    || []).length;
+  const overdue   = (grouped.overdue || []).length;
+  const soon      = (grouped.soon    || []).length;
+  const totalCost = Object.values(maintenance).reduce((sum, r) => sum + (r?.cost || 0), 0);
 
   // ── No vehicles ──
   if (vehicles.length === 0) {
@@ -283,7 +332,7 @@ const GarageScreen = () => {
 
       {/* ── MILEAGE + STATUS ── */}
       <motion.div variants={section} style={{ padding: '12px 20px 0', flexShrink: 0 }}>
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: totalCost > 0 ? '1fr 1fr 1fr' : '1fr 1fr', gap: '8px' }}>
           {/* Mileage */}
           <div style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.07)', borderRadius: '10px', padding: '12px 14px' }}>
             <p style={{ color: '#6b7280', fontSize: '0.72rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.07em', margin: '0 0 6px', fontFamily: 'Saira Condensed, sans-serif' }}>
@@ -309,6 +358,19 @@ const GarageScreen = () => {
               </div>
             )}
           </div>
+
+          {/* Total cost */}
+          {totalCost > 0 && (
+            <div style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.07)', borderRadius: '10px', padding: '12px 14px' }}>
+              <p style={{ color: '#6b7280', fontSize: '0.72rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.07em', margin: '0 0 6px', fontFamily: 'Saira Condensed, sans-serif' }}>
+                Invertido
+              </p>
+              <p style={{ color: 'white', fontWeight: 700, fontSize: '1.1rem', fontFamily: 'Saira Condensed, sans-serif', margin: 0 }}>
+                ${totalCost.toLocaleString()}
+              </p>
+              <p style={{ color: '#4a5568', fontSize: '0.7rem', margin: '2px 0 0' }}>total registrado</p>
+            </div>
+          )}
 
           {/* Status summary */}
           <div style={{
