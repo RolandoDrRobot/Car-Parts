@@ -1,5 +1,5 @@
 const GEMINI_API_KEY = process.env.REACT_APP_AI;
-const GEMINI_URL = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent';
+const GEMINI_URL = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent';
 
 const toBase64 = (file) =>
   new Promise((resolve, reject) => {
