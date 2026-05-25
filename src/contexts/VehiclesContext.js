@@ -16,7 +16,7 @@ export const VehiclesProvider = ({ children }) => {
       return updated;
     });
 
-    fetchVehiclePhoto(vehicle.brand, vehicle.model).then(photo => {
+    fetchVehiclePhoto(vehicle.brand, vehicle.model, vehicle.year).then(photo => {
       if (!photo) return;
       setVehicles(prev => {
         const updated = prev.map(v => v.id === id ? { ...v, photo } : v);

@@ -1,20 +1,75 @@
-// ── Vehicle photo (Wikipedia) ─────────────────────────────────────────────────
-export const fetchVehiclePhoto = async (brand, model) => {
-  const attempts = [`${brand} ${model}`, brand];
-  for (const title of attempts) {
+// ── Vehicle photo ─────────────────────────────────────────────────────────────
+const _isValidCarImage = (url) => {
+  const u = url.toLowerCase();
+  return !u.endsWith('.svg')
+    && !u.includes('logo')
+    && !u.includes('emblem')
+    && !u.includes('badge')
+    && !u.includes('icon');
+};
+
+const _isCarArticle = (title, brand) => {
+  const t = title.toLowerCase();
+  const b = brand.toLowerCase();
+  return t !== b
+    && !/\b(motor[s]?|company|corporation|group|holdings?|inc\.?|manufacturing)\b/.test(t)
+    && !/history of/.test(t)
+    && !/\bfoundry\b/.test(t);
+};
+
+const _wikiImage = async (title) => {
+  const res = await fetch(
+    'https://en.wikipedia.org/w/api.php?' + new URLSearchParams({
+      action: 'query', titles: title, prop: 'pageimages',
+      pithumbsize: '800', format: 'json', origin: '*',
+    })
+  );
+  if (!res.ok) return null;
+  const data = await res.json();
+  const page = Object.values(data.query?.pages || {})[0];
+  const src = page?.thumbnail?.source;
+  return src && _isValidCarImage(src) ? src : null;
+};
+
+export const fetchVehiclePhoto = async (brand, model, year) => {
+  if (!brand || !model) return null;
+  const yearPart = year ? ` ${year}` : '';
+
+  // 1. Direct REST summary — gives originalimage (higher res) when article is found by name
+  for (const slug of [
+    `${brand}_${model}`,
+    `${brand}_${model}${yearPart}`.replace(/\s+/g, '_'),
+  ]) {
     try {
-      const url = 'https://en.wikipedia.org/w/api.php?' + new URLSearchParams({
-        action: 'query', titles: title, prop: 'pageimages',
-        format: 'json', pithumbsize: '800', origin: '*',
-      });
-      const res = await fetch(url);
+      const res = await fetch(
+        `https://en.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(slug)}`
+      );
       if (!res.ok) continue;
-      const data = await res.json();
-      const page = Object.values(data.query?.pages || {})[0];
-      const src = page?.thumbnail?.source;
-      if (src && !src.endsWith('.svg') && !src.endsWith('.SVG')) return src;
-    } catch { /* silent — photo is optional */ }
+      const { originalimage, thumbnail } = await res.json();
+      const src = originalimage?.source || thumbnail?.source;
+      if (src && _isValidCarImage(src)) return src;
+    } catch {}
   }
+
+  // 2. Full-text search → pick the best car article → grab its image
+  try {
+    const q = `${brand} ${model}${yearPart} automobile`;
+    const sRes = await fetch(
+      'https://en.wikipedia.org/w/api.php?' + new URLSearchParams({
+        action: 'query', list: 'search', srsearch: q,
+        srlimit: 8, format: 'json', origin: '*',
+      })
+    );
+    if (sRes.ok) {
+      const { query } = await sRes.json();
+      const hit = (query?.search || []).find(r => _isCarArticle(r.title, brand));
+      if (hit) {
+        const src = await _wikiImage(hit.title);
+        if (src) return src;
+      }
+    }
+  } catch {}
+
   return null;
 };
 
