@@ -100,8 +100,8 @@ const HomeScreen = () => {
           {/* Card */}
           <div style={{
             position: 'relative',
-            height: '42dvh', minHeight: '240px', maxHeight: '400px',
-            borderRadius: '20px', overflow: 'hidden',
+            aspectRatio: '16/9',
+            borderRadius: '16px', overflow: 'hidden',
           }}>
 
             <AnimatePresence custom={direction} mode="wait">
@@ -113,11 +113,11 @@ const HomeScreen = () => {
                 style={{
                   position: 'absolute', inset: 0,
                   backgroundImage: selectedVehicle.photo
-                    ? `linear-gradient(to bottom, rgba(0,0,0,0.12) 0%, rgba(0,0,0,0) 30%, rgba(0,0,0,0.72) 65%, rgba(0,0,0,0.97) 100%), url(${selectedVehicle.photo})`
+                    ? `linear-gradient(to bottom, rgba(0,0,0,0.25) 0%, rgba(0,0,0,0) 38%, rgba(0,0,0,0.6) 62%, rgba(0,0,0,0.94) 100%), url(${selectedVehicle.photo})`
                     : 'linear-gradient(135deg, rgba(239,68,68,0.22) 0%, rgba(14,14,14,0.99) 65%)',
                   backgroundSize: 'cover',
                   backgroundPosition: 'center',
-                  borderRadius: '20px',
+                  borderRadius: '16px',
                   display: 'flex', flexDirection: 'column', justifyContent: 'space-between',
                   overflow: 'hidden',
                 }}
@@ -134,7 +134,7 @@ const HomeScreen = () => {
 
                 {/* Top bar: label + dots + add */}
                 <div style={{
-                  padding: '16px 18px 0',
+                  padding: '12px 14px 0',
                   display: 'flex', alignItems: 'center', justifyContent: 'space-between',
                   position: 'relative', zIndex: 2,
                 }}>
@@ -171,49 +171,46 @@ const HomeScreen = () => {
                 </div>
 
                 {/* Bottom info */}
-                <div style={{ padding: '0 18px 20px', position: 'relative', zIndex: 2 }}>
-                  {selectedVehicle.color && (
-                    <div style={{
-                      color: 'rgba(255,255,255,0.45)', fontSize: '0.75rem',
-                      fontFamily: 'Saira Condensed, sans-serif', marginBottom: '2px',
-                    }}>
-                      {selectedVehicle.color}
-                    </div>
-                  )}
+                <div style={{ padding: '0 14px 14px', position: 'relative', zIndex: 2 }}>
                   <div style={{
                     color: 'white', fontFamily: 'Saira Condensed, sans-serif',
-                    fontWeight: 800, fontSize: '3.4rem', lineHeight: 0.88,
+                    fontWeight: 800, fontSize: '2.4rem', lineHeight: 0.9,
                     letterSpacing: '-0.02em',
-                    textShadow: '0 2px 28px rgba(0,0,0,0.7)',
+                    textShadow: '0 2px 20px rgba(0,0,0,0.8)',
                   }}>
                     {selectedVehicle.brand}
                   </div>
                   <div style={{
                     color: '#cbd5e0', fontFamily: 'Saira Condensed, sans-serif',
-                    fontWeight: 600, fontSize: '1.55rem', lineHeight: 1.1, marginTop: '3px',
+                    fontWeight: 600, fontSize: '1.15rem', lineHeight: 1.1, marginTop: '1px',
                   }}>
                     {selectedVehicle.model}
                   </div>
-                  <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap', alignItems: 'center', marginTop: '10px' }}>
+                  <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap', alignItems: 'center', marginTop: '7px' }}>
                     <span style={{
-                      background: 'rgba(255,255,255,0.12)', borderRadius: '6px',
-                      padding: '3px 10px', color: '#e2e8f0', fontSize: '0.82rem',
+                      background: 'rgba(255,255,255,0.12)', borderRadius: '5px',
+                      padding: '2px 8px', color: '#e2e8f0', fontSize: '0.75rem',
                       fontFamily: 'Saira Condensed, sans-serif', fontWeight: 700,
                     }}>
                       {selectedVehicle.year}
                     </span>
+                    {selectedVehicle.color && (
+                      <span style={{ color: 'rgba(255,255,255,0.45)', fontSize: '0.75rem', fontFamily: 'Saira Condensed, sans-serif' }}>
+                        {selectedVehicle.color}
+                      </span>
+                    )}
                     {selectedVehicle.engine && (
-                      <span style={{ color: 'rgba(255,255,255,0.5)', fontSize: '0.8rem', fontFamily: 'Saira Condensed, sans-serif' }}>
-                        {selectedVehicle.engine}
+                      <span style={{ color: 'rgba(255,255,255,0.45)', fontSize: '0.75rem', fontFamily: 'Saira Condensed, sans-serif' }}>
+                        · {selectedVehicle.engine}
                       </span>
                     )}
                     {selectedVehicle.fuel && (
-                      <span style={{ color: 'rgba(255,255,255,0.5)', fontSize: '0.8rem', fontFamily: 'Saira Condensed, sans-serif' }}>
+                      <span style={{ color: 'rgba(255,255,255,0.45)', fontSize: '0.75rem', fontFamily: 'Saira Condensed, sans-serif' }}>
                         · {selectedVehicle.fuel}
                       </span>
                     )}
                     {selectedVehicle.transmission && (
-                      <span style={{ color: 'rgba(255,255,255,0.5)', fontSize: '0.8rem', fontFamily: 'Saira Condensed, sans-serif' }}>
+                      <span style={{ color: 'rgba(255,255,255,0.45)', fontSize: '0.75rem', fontFamily: 'Saira Condensed, sans-serif' }}>
                         · {selectedVehicle.transmission}
                       </span>
                     )}
@@ -230,7 +227,7 @@ const HomeScreen = () => {
                   background: 'linear-gradient(to right, rgba(0,0,0,0.42), transparent)',
                   border: 'none', cursor: 'pointer', color: 'rgba(255,255,255,0.65)',
                   display: 'flex', alignItems: 'center', justifyContent: 'flex-start',
-                  paddingLeft: '10px', zIndex: 10, borderRadius: '20px 0 0 20px',
+                  paddingLeft: '10px', zIndex: 10, borderRadius: '16px 0 0 16px',
                 }}>
                 <ChevronLeft size={24} />
               </button>
@@ -244,7 +241,7 @@ const HomeScreen = () => {
                   background: 'linear-gradient(to left, rgba(0,0,0,0.42), transparent)',
                   border: 'none', cursor: 'pointer', color: 'rgba(255,255,255,0.65)',
                   display: 'flex', alignItems: 'center', justifyContent: 'flex-end',
-                  paddingRight: '10px', zIndex: 10, borderRadius: '0 20px 20px 0',
+                  paddingRight: '10px', zIndex: 10, borderRadius: '0 16px 16px 0',
                 }}>
                 <ChevronRight size={24} />
               </button>
