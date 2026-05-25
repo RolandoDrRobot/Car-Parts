@@ -92,6 +92,7 @@ const MaintenanceCard = ({ item, record, currentKm, onLog }) => {
   const { Icon } = item;
   const barW     = progress !== null ? Math.min(progress, 1) * 100 : 0;
   const barColor = status === 'overdue' ? '#ef4444' : status === 'soon' ? '#f59e0b' : '#22c55e';
+  const accentColor = meta.color;
 
   const handleSave = () => {
     onLog(item.id, { date: logDate, mileage: logKm ? Number(logKm) : null, notes: logNotes, cost: logCost ? Number(logCost) : null });
@@ -104,48 +105,51 @@ const MaintenanceCard = ({ item, record, currentKm, onLog }) => {
 
   return (
     <motion.div layout style={{
-      background: open ? 'rgba(255,255,255,0.07)' : 'rgba(255,255,255,0.04)',
-      border: `1px solid ${open ? meta.color + '55' : 'rgba(255,255,255,0.07)'}`,
-      borderRadius: '12px', overflow: 'hidden', marginBottom: '8px',
+      background: open ? 'rgba(255,255,255,0.06)' : 'rgba(255,255,255,0.03)',
+      border: `1px solid ${open ? accentColor + '40' : 'rgba(255,255,255,0.07)'}`,
+      borderLeft: `3px solid ${accentColor}`,
+      borderRadius: '14px', overflow: 'hidden', marginBottom: '8px',
     }}>
       {/* Row */}
       <div onClick={() => setOpen(o => !o)}
-        style={{ padding: '12px 14px', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '12px' }}>
+        style={{ padding: '13px 14px 0', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '12px' }}>
         <div style={{
-          width: '38px', height: '38px', borderRadius: '10px', flexShrink: 0,
+          width: '40px', height: '40px', borderRadius: '10px', flexShrink: 0,
           background: meta.bg, display: 'flex', alignItems: 'center', justifyContent: 'center', color: meta.color,
         }}>
           <Icon size={18} />
         </div>
 
         <div style={{ flex: 1, minWidth: 0 }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '3px' }}>
-            <span style={{ color: 'white', fontWeight: 700, fontSize: '0.95rem', fontFamily: 'Saira Condensed, sans-serif' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '2px' }}>
+            <span style={{ color: 'white', fontWeight: 700, fontSize: '0.95rem', fontFamily: 'Saira Condensed, sans-serif', letterSpacing: '0.01em' }}>
               {item.name}
             </span>
             <span style={{
-              background: meta.bg, color: meta.color, border: `1px solid ${meta.color}44`,
-              borderRadius: '20px', padding: '1px 7px', fontSize: '0.68rem', fontWeight: 700,
-              fontFamily: 'Saira Condensed, sans-serif', flexShrink: 0,
+              background: meta.bg, color: meta.color, border: `1px solid ${meta.color}33`,
+              borderRadius: '20px', padding: '2px 9px', fontSize: '0.65rem', fontWeight: 700,
+              fontFamily: 'Saira Condensed, sans-serif', flexShrink: 0, letterSpacing: '0.04em',
             }}>
               {meta.label}
             </span>
           </div>
-          <div style={{ color: '#6b7280', fontSize: '0.75rem', display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+          <div style={{ color: '#6b7280', fontSize: '0.73rem', display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
             <span>{formatAgo(record?.date)}</span>
             {record?.cost ? <span style={{ color: '#a0aec0' }}>· ${record.cost.toLocaleString()}</span> : null}
           </div>
-          {progress !== null && (
-            <div style={{ height: '3px', background: 'rgba(255,255,255,0.08)', borderRadius: '2px', marginTop: '6px' }}>
-              <div style={{ height: '100%', width: `${barW}%`, background: barColor, borderRadius: '2px', transition: 'width 0.4s ease' }} />
-            </div>
-          )}
         </div>
 
         <div style={{ color: '#4a5568', flexShrink: 0 }}>
           {open ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
         </div>
       </div>
+
+      {/* Progress bar — edge to edge */}
+      {progress !== null && (
+        <div style={{ height: '2px', background: 'rgba(255,255,255,0.06)', margin: '10px 0 0' }}>
+          <div style={{ height: '100%', width: `${barW}%`, background: barColor, transition: 'width 0.5s ease' }} />
+        </div>
+      )}
 
       {/* Expanded form */}
       <AnimatePresence>
@@ -347,8 +351,8 @@ const GarageScreen = () => {
       <motion.div variants={section} style={{ padding: '12px 20px 0', flexShrink: 0 }}>
         <div style={{ display: 'grid', gridTemplateColumns: totalCost > 0 ? '1fr 1fr 1fr' : '1fr 1fr', gap: '8px' }}>
           {/* Mileage */}
-          <div style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.07)', borderRadius: '10px', padding: '12px 14px' }}>
-            <p style={{ color: '#6b7280', fontSize: '0.72rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.07em', margin: '0 0 6px', fontFamily: 'Saira Condensed, sans-serif' }}>
+          <div style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.07)', borderRadius: '12px', padding: '14px 14px 12px' }}>
+            <p style={{ color: '#6b7280', fontSize: '0.65rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em', margin: '0 0 6px', fontFamily: 'Saira Condensed, sans-serif' }}>
               Kilometraje
             </p>
             {editingKm ? (
@@ -358,56 +362,57 @@ const GarageScreen = () => {
                   onKeyDown={e => e.key === 'Enter' && handleKmSave()}
                   style={{ padding: '6px 8px', fontSize: '0.9rem', flex: 1 }} />
                 <button onClick={handleKmSave}
-                  style={{ background: '#ef4444', border: 'none', borderRadius: '6px', color: 'white', padding: '6px 10px', cursor: 'pointer', fontSize: '0.8rem', fontWeight: 700, fontFamily: 'Saira Condensed, sans-serif' }}>
+                  style={{ background: '#ef4444', border: 'none', borderRadius: '8px', color: 'white', padding: '7px 12px', cursor: 'pointer', fontSize: '0.85rem', fontWeight: 700, fontFamily: 'Saira Condensed, sans-serif' }}>
                   OK
                 </button>
               </div>
             ) : (
               <div onClick={() => { setEditingKm(true); setKmInput(currentKm || ''); }} style={{ cursor: 'pointer' }}>
-                <p style={{ color: 'white', fontWeight: 700, fontSize: '1.1rem', fontFamily: 'Saira Condensed, sans-serif', margin: 0 }}>
-                  {currentKm ? `${currentKm.toLocaleString()} km` : '—'}
+                <p style={{ color: 'white', fontWeight: 800, fontSize: '1.45rem', fontFamily: 'Saira Condensed, sans-serif', margin: 0, lineHeight: 1, letterSpacing: '-0.01em' }}>
+                  {currentKm ? currentKm.toLocaleString() : '—'}
                 </p>
-                <p style={{ color: '#4a5568', fontSize: '0.7rem', margin: '2px 0 0' }}>Toca para actualizar</p>
+                {currentKm && <p style={{ color: '#6b7280', fontSize: '0.68rem', margin: '2px 0 0', fontFamily: 'Saira Condensed, sans-serif' }}>km · toca para editar</p>}
+                {!currentKm && <p style={{ color: '#4a5568', fontSize: '0.68rem', margin: '2px 0 0' }}>Toca para registrar</p>}
               </div>
             )}
           </div>
 
           {/* Total cost */}
           {totalCost > 0 && (
-            <div style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.07)', borderRadius: '10px', padding: '12px 14px' }}>
-              <p style={{ color: '#6b7280', fontSize: '0.72rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.07em', margin: '0 0 6px', fontFamily: 'Saira Condensed, sans-serif' }}>
+            <div style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.07)', borderRadius: '12px', padding: '14px 14px 12px' }}>
+              <p style={{ color: '#6b7280', fontSize: '0.65rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em', margin: '0 0 6px', fontFamily: 'Saira Condensed, sans-serif' }}>
                 Invertido
               </p>
-              <p style={{ color: 'white', fontWeight: 700, fontSize: '1.1rem', fontFamily: 'Saira Condensed, sans-serif', margin: 0 }}>
+              <p style={{ color: 'white', fontWeight: 800, fontSize: '1.45rem', fontFamily: 'Saira Condensed, sans-serif', margin: 0, lineHeight: 1, letterSpacing: '-0.01em' }}>
                 ${totalCost.toLocaleString()}
               </p>
-              <p style={{ color: '#4a5568', fontSize: '0.7rem', margin: '2px 0 0' }}>total registrado</p>
+              <p style={{ color: '#6b7280', fontSize: '0.68rem', margin: '2px 0 0', fontFamily: 'Saira Condensed, sans-serif' }}>total registrado</p>
             </div>
           )}
 
           {/* Status summary */}
           <div style={{
-            background: overdue > 0 ? 'rgba(239,68,68,0.08)' : soon > 0 ? 'rgba(245,158,11,0.08)' : 'rgba(34,197,94,0.08)',
-            border: `1px solid ${overdue > 0 ? 'rgba(239,68,68,0.25)' : soon > 0 ? 'rgba(245,158,11,0.25)' : 'rgba(34,197,94,0.25)'}`,
-            borderRadius: '10px', padding: '12px 14px',
+            background: overdue > 0 ? 'rgba(239,68,68,0.07)' : soon > 0 ? 'rgba(245,158,11,0.07)' : 'rgba(34,197,94,0.07)',
+            border: `1px solid ${overdue > 0 ? 'rgba(239,68,68,0.2)' : soon > 0 ? 'rgba(245,158,11,0.2)' : 'rgba(34,197,94,0.2)'}`,
+            borderRadius: '12px', padding: '14px 14px 12px',
           }}>
-            <p style={{ color: '#6b7280', fontSize: '0.72rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.07em', margin: '0 0 6px', fontFamily: 'Saira Condensed, sans-serif' }}>
+            <p style={{ color: '#6b7280', fontSize: '0.65rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em', margin: '0 0 6px', fontFamily: 'Saira Condensed, sans-serif' }}>
               Estado
             </p>
             {overdue > 0 ? (
               <>
-                <p style={{ color: '#ef4444', fontWeight: 700, fontSize: '1.1rem', fontFamily: 'Saira Condensed, sans-serif', margin: 0 }}>{overdue} vencido{overdue > 1 ? 's' : ''}</p>
-                {soon > 0 && <p style={{ color: '#f59e0b', fontSize: '0.72rem', margin: '2px 0 0' }}>{soon} próximo{soon > 1 ? 's' : ''}</p>}
+                <p style={{ color: '#ef4444', fontWeight: 800, fontSize: '1.45rem', fontFamily: 'Saira Condensed, sans-serif', margin: 0, lineHeight: 1 }}>{overdue}</p>
+                <p style={{ color: '#ef4444', fontSize: '0.68rem', margin: '2px 0 0', fontFamily: 'Saira Condensed, sans-serif' }}>vencido{overdue > 1 ? 's' : ''}{soon > 0 ? ` · ${soon} próx.` : ''}</p>
               </>
             ) : soon > 0 ? (
               <>
-                <p style={{ color: '#f59e0b', fontWeight: 700, fontSize: '1.1rem', fontFamily: 'Saira Condensed, sans-serif', margin: 0 }}>{soon} próximo{soon > 1 ? 's' : ''}</p>
-                <p style={{ color: '#22c55e', fontSize: '0.72rem', margin: '2px 0 0' }}>Resto al día</p>
+                <p style={{ color: '#f59e0b', fontWeight: 800, fontSize: '1.45rem', fontFamily: 'Saira Condensed, sans-serif', margin: 0, lineHeight: 1 }}>{soon}</p>
+                <p style={{ color: '#f59e0b', fontSize: '0.68rem', margin: '2px 0 0', fontFamily: 'Saira Condensed, sans-serif' }}>próximo{soon > 1 ? 's' : ''}</p>
               </>
             ) : (
               <>
-                <p style={{ color: '#22c55e', fontWeight: 700, fontSize: '1.1rem', fontFamily: 'Saira Condensed, sans-serif', margin: 0 }}>Todo al día</p>
-                <p style={{ color: '#4a5568', fontSize: '0.72rem', margin: '2px 0 0' }}>Buen trabajo</p>
+                <p style={{ color: '#22c55e', fontWeight: 800, fontSize: '1.45rem', fontFamily: 'Saira Condensed, sans-serif', margin: 0, lineHeight: 1 }}>✓</p>
+                <p style={{ color: '#22c55e', fontSize: '0.68rem', margin: '2px 0 0', fontFamily: 'Saira Condensed, sans-serif' }}>Todo al día</p>
               </>
             )}
           </div>

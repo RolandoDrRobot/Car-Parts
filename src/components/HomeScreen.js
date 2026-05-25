@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   Settings, Car, ScanLine, Disc, Gauge, Layers, Zap, Filter,
-  Thermometer, Wind, RotateCw, Wrench, CheckCircle2, AlertCircle,
+  Thermometer, Wind, RotateCw, Wrench,
   AlertTriangle, Stethoscope, ChevronLeft, ChevronRight, Plus,
 } from 'lucide-react';
 import { useSettings } from '../contexts/SettingsContext';
@@ -17,11 +17,6 @@ const COUNTRY_NAMES = {
   AR: 'Argentina',  CL: 'Chile',  US: 'Estados Unidos',
 };
 
-const SEVERITY_ICONS = {
-  ok:       <CheckCircle2 size={10} color="#22c55e" />,
-  warning:  <AlertCircle size={10} color="#f59e0b" />,
-  critical: <AlertTriangle size={10} color="#ef4444" />,
-};
 
 const CATEGORY_ICONS = {
   frenos: <Disc size={18} />, motor: <Gauge size={18} />, 'suspensión': <Layers size={18} />,
@@ -277,10 +272,12 @@ const HomeScreen = () => {
         style={{ flex: 1, overflowY: 'auto', padding: '20px', minHeight: 0 }}>
         {history.length > 0 ? (
           <>
-            <p style={{ color: '#a0aec0', fontSize: '0.75rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', margin: '0 0 10px', fontFamily: 'Saira Condensed, sans-serif' }}>
+            <p style={{ color: '#6b7280', fontSize: '0.68rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em', margin: '0 0 10px', fontFamily: 'Saira Condensed, sans-serif' }}>
               Escaneos Recientes
             </p>
-            {history.map(scan => (
+            {history.map(scan => {
+              const severityColor = scan.conditionSeverity === 'critical' ? '#ef4444' : scan.conditionSeverity === 'warning' ? '#f59e0b' : '#22c55e';
+              return (
               <motion.button key={scan.id} variants={item}
                 onClick={() => navigate('/results', {
                   state: {
@@ -301,27 +298,33 @@ const HomeScreen = () => {
                   },
                 })}
                 style={{
-                  background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.07)',
-                  borderRadius: '10px', padding: '12px 14px',
-                  display: 'flex', alignItems: 'center', gap: '10px',
+                  background: 'rgba(255,255,255,0.04)',
+                  border: '1px solid rgba(255,255,255,0.07)',
+                  borderLeft: `3px solid ${severityColor}`,
+                  borderRadius: '12px', padding: '12px 14px',
+                  display: 'flex', alignItems: 'center', gap: '12px',
                   marginBottom: '8px', cursor: 'pointer', width: '100%', textAlign: 'left',
                 }}>
-                <span style={{ flexShrink: 0, color: '#a0aec0', display: 'flex' }}>
-                  {CATEGORY_ICONS[scan.partCategory] || <Wrench size={18} />}
-                </span>
+                <div style={{
+                  width: '36px', height: '36px', borderRadius: '10px', flexShrink: 0,
+                  background: `${severityColor}14`,
+                  display: 'flex', alignItems: 'center', justifyContent: 'center',
+                  color: severityColor,
+                }}>
+                  {CATEGORY_ICONS[scan.partCategory] || <Wrench size={16} />}
+                </div>
                 <div style={{ flex: 1, minWidth: 0 }}>
-                  <div style={{ color: 'white', fontWeight: 700, fontSize: '0.95rem', fontFamily: 'Saira Condensed, sans-serif', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                  <div style={{ color: 'white', fontWeight: 700, fontSize: '0.95rem', fontFamily: 'Saira Condensed, sans-serif', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', letterSpacing: '0.01em' }}>
                     {scan.partName}
                   </div>
-                  <div style={{ color: '#4a5568', fontSize: '0.75rem' }}>
+                  <div style={{ color: '#4a5568', fontSize: '0.73rem', marginTop: '1px' }}>
                     {formatDate(scan.date)}{scan.vehicle ? ` · ${scan.vehicle.brand} ${scan.vehicle.model}` : ''}
                   </div>
                 </div>
-                <span style={{ flexShrink: 0, display: 'flex' }}>
-                  {SEVERITY_ICONS[scan.conditionSeverity] || <AlertCircle size={10} color="#a0aec0" />}
-                </span>
+                <ChevronRight size={14} color="#4a5568" style={{ flexShrink: 0 }} />
               </motion.button>
-            ))}
+              );
+            })}
           </>
         ) : (
           <motion.div variants={item}
