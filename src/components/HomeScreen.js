@@ -113,7 +113,7 @@ const HomeScreen = () => {
                 style={{
                   position: 'absolute', inset: 0,
                   backgroundImage: selectedVehicle.photo
-                    ? `linear-gradient(to bottom, rgba(0,0,0,0.25) 0%, rgba(0,0,0,0) 38%, rgba(0,0,0,0.6) 62%, rgba(0,0,0,0.94) 100%), url(${selectedVehicle.photo})`
+                    ? `linear-gradient(to top right, rgba(0,0,0,0.92) 0%, rgba(0,0,0,0.5) 40%, transparent 70%), url(${selectedVehicle.photo})`
                     : 'linear-gradient(135deg, rgba(239,68,68,0.22) 0%, rgba(14,14,14,0.99) 65%)',
                   backgroundSize: 'cover',
                   backgroundPosition: 'center',
