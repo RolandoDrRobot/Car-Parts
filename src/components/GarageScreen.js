@@ -5,7 +5,6 @@ import {
   ArrowLeft, Droplets, Filter, Wind, Disc, Gauge, Thermometer,
   Zap, RotateCw, Battery, Timer, Eye, CheckCircle2, AlertCircle,
   AlertTriangle, HelpCircle, ChevronDown, ChevronUp, Car, Wrench,
-  ChevronLeft, ChevronRight,
 } from 'lucide-react';
 import { useVehicles } from '../contexts/VehiclesContext';
 import { useGarage } from '../contexts/GarageContext';
@@ -231,12 +230,6 @@ const MaintenanceCard = ({ item, record, currentKm, onLog }) => {
   );
 };
 
-const slideVariants = {
-  enter: (dir) => ({ x: dir > 0 ? '60%' : '-60%', opacity: 0 }),
-  center: { x: 0, opacity: 1, transition: { duration: 0.28, ease: [0.25, 0.1, 0.25, 1] } },
-  exit:  (dir) => ({ x: dir > 0 ? '-60%' : '60%', opacity: 0, transition: { duration: 0.2 } }),
-};
-
 // ── GarageScreen ──────────────────────────────────────────────────────────────
 const GarageScreen = () => {
   const navigate  = useNavigate();
@@ -244,24 +237,15 @@ const GarageScreen = () => {
   const { vehicles } = useVehicles();
   const { updateMileage, logMaintenance, getVehicleData } = useGarage();
 
-  // Pre-select vehicle passed from HomeScreen, fallback to first
+  // Vehicle passed from HomeScreen, fallback to first
   const initIdx = Math.max(0, vehicles.findIndex(v => v.id === (location.state?.vehicleId || '')));
-  const [carouselIndex, setCarouselIndex] = useState(initIdx);
-  const [direction, setDirection]         = useState(0);
-  const [editingKm, setEditingKm]         = useState(false);
-  const [kmInput, setKmInput]             = useState('');
+  const [editingKm, setEditingKm] = useState(false);
+  const [kmInput, setKmInput]     = useState('');
 
-  const safeIndex  = Math.min(carouselIndex, Math.max(0, vehicles.length - 1));
-  const vehicle    = vehicles[safeIndex] || null;
+  const vehicle    = vehicles[initIdx] || vehicles[0] || null;
   const vData      = vehicle ? getVehicleData(vehicle.id) : {};
   const currentKm  = vData.currentMileage || null;
   const maintenance = vData.maintenance || {};
-
-  const goTo = (dir) => {
-    setDirection(dir);
-    setCarouselIndex(i => (i + dir + vehicles.length) % vehicles.length);
-    setEditingKm(false);
-  };
 
   const handleKmSave = () => {
     if (vehicle && kmInput) updateMileage(vehicle.id, kmInput);
@@ -313,87 +297,49 @@ const GarageScreen = () => {
         </span>
       </motion.div>
 
-      {/* ── VEHICLE CAROUSEL CARD ── */}
+      {/* ── VEHICLE CARD ── */}
       <motion.div variants={section} style={{ padding: '10px 16px 0', flexShrink: 0 }}>
-        <div style={{ position: 'relative', aspectRatio: '16/9', borderRadius: '16px', overflow: 'hidden' }}>
+        <div style={{
+          position: 'relative', aspectRatio: '16/9', borderRadius: '16px', overflow: 'hidden',
+          backgroundImage: vehicle.photo
+            ? `linear-gradient(to top right, rgba(0,0,0,0.92) 0%, rgba(0,0,0,0.5) 40%, transparent 70%), url(${vehicle.photo})`
+            : 'linear-gradient(135deg, rgba(239,68,68,0.22) 0%, rgba(14,14,14,0.99) 65%)',
+          backgroundSize: 'cover', backgroundPosition: 'center',
+          display: 'flex', flexDirection: 'column', justifyContent: 'space-between',
+        }}>
+          {!vehicle.photo && (
+            <div style={{ position: 'absolute', right: '-24px', bottom: '30px', color: '#ef4444', opacity: 0.06, pointerEvents: 'none' }}>
+              <Car size={260} strokeWidth={0.7} />
+            </div>
+          )}
 
-          <AnimatePresence custom={direction} mode="wait">
-            <motion.div
-              key={safeIndex}
-              custom={direction}
-              variants={slideVariants}
-              initial="enter" animate="center" exit="exit"
-              style={{
-                position: 'absolute', inset: 0,
-                backgroundImage: vehicle.photo
-                  ? `linear-gradient(to top right, rgba(0,0,0,0.92) 0%, rgba(0,0,0,0.5) 40%, transparent 70%), url(${vehicle.photo})`
-                  : 'linear-gradient(135deg, rgba(239,68,68,0.22) 0%, rgba(14,14,14,0.99) 65%)',
-                backgroundSize: 'cover', backgroundPosition: 'center',
-                borderRadius: '16px',
-                display: 'flex', flexDirection: 'column', justifyContent: 'space-between',
-                overflow: 'hidden',
-              }}
-            >
-              {!vehicle.photo && (
-                <div style={{ position: 'absolute', right: '-24px', bottom: '30px', color: '#ef4444', opacity: 0.06, pointerEvents: 'none' }}>
-                  <Car size={260} strokeWidth={0.7} />
-                </div>
-              )}
+          <div style={{ padding: '12px 14px 0', position: 'relative', zIndex: 2 }}>
+            <span style={{ color: '#ef4444', fontSize: '0.65rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.14em', fontFamily: 'Saira Condensed, sans-serif', textShadow: '0 1px 8px rgba(0,0,0,0.9)' }}>
+              Mi Garaje
+            </span>
+          </div>
 
-              {/* Top bar */}
-              <div style={{ padding: '12px 14px 0', display: 'flex', alignItems: 'center', justifyContent: 'space-between', position: 'relative', zIndex: 2 }}>
-                <span style={{ color: '#ef4444', fontSize: '0.65rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.14em', fontFamily: 'Saira Condensed, sans-serif', textShadow: '0 1px 8px rgba(0,0,0,0.9)' }}>
-                  Mi Garaje {vehicles.length > 1 ? `${safeIndex + 1} / ${vehicles.length}` : ''}
+          <div style={{ padding: '0 14px 14px', position: 'relative', zIndex: 2 }}>
+            <div style={{ color: 'white', fontFamily: 'Saira Condensed, sans-serif', fontWeight: 800, fontSize: '2.4rem', lineHeight: 0.9, letterSpacing: '-0.02em', textShadow: '0 2px 20px rgba(0,0,0,0.8)' }}>
+              {vehicle.brand}
+            </div>
+            <div style={{ color: '#cbd5e0', fontFamily: 'Saira Condensed, sans-serif', fontWeight: 600, fontSize: '1.15rem', lineHeight: 1.1, marginTop: '1px' }}>
+              {vehicle.model}
+            </div>
+            <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap', alignItems: 'center', marginTop: '7px' }}>
+              <span style={{ background: 'rgba(255,255,255,0.12)', borderRadius: '5px', padding: '2px 8px', color: '#e2e8f0', fontSize: '0.75rem', fontFamily: 'Saira Condensed, sans-serif', fontWeight: 700 }}>
+                {vehicle.year}
+              </span>
+              {currentKm && (
+                <span style={{ background: 'rgba(239,68,68,0.18)', border: '1px solid rgba(239,68,68,0.35)', borderRadius: '5px', padding: '2px 8px', color: '#fca5a5', fontSize: '0.75rem', fontFamily: 'Saira Condensed, sans-serif', fontWeight: 700 }}>
+                  {currentKm.toLocaleString()} km
                 </span>
-                {vehicles.length > 1 && (
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
-                    {vehicles.map((_, i) => (
-                      <button key={i}
-                        onClick={() => { setDirection(i > safeIndex ? 1 : -1); setCarouselIndex(i); setEditingKm(false); }}
-                        style={{ width: i === safeIndex ? '16px' : '5px', height: '5px', borderRadius: '3px', border: 'none', cursor: 'pointer', padding: 0, background: i === safeIndex ? '#ef4444' : 'rgba(255,255,255,0.4)', transition: 'width 0.2s ease' }} />
-                    ))}
-                  </div>
-                )}
-              </div>
-
-              {/* Bottom info */}
-              <div style={{ padding: '0 14px 14px', position: 'relative', zIndex: 2 }}>
-                <div style={{ color: 'white', fontFamily: 'Saira Condensed, sans-serif', fontWeight: 800, fontSize: '2.4rem', lineHeight: 0.9, letterSpacing: '-0.02em', textShadow: '0 2px 20px rgba(0,0,0,0.8)' }}>
-                  {vehicle.brand}
-                </div>
-                <div style={{ color: '#cbd5e0', fontFamily: 'Saira Condensed, sans-serif', fontWeight: 600, fontSize: '1.15rem', lineHeight: 1.1, marginTop: '1px' }}>
-                  {vehicle.model}
-                </div>
-                <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap', alignItems: 'center', marginTop: '7px' }}>
-                  <span style={{ background: 'rgba(255,255,255,0.12)', borderRadius: '5px', padding: '2px 8px', color: '#e2e8f0', fontSize: '0.75rem', fontFamily: 'Saira Condensed, sans-serif', fontWeight: 700 }}>
-                    {vehicle.year}
-                  </span>
-                  {currentKm && (
-                    <span style={{ background: 'rgba(239,68,68,0.18)', border: '1px solid rgba(239,68,68,0.35)', borderRadius: '5px', padding: '2px 8px', color: '#fca5a5', fontSize: '0.75rem', fontFamily: 'Saira Condensed, sans-serif', fontWeight: 700 }}>
-                      {currentKm.toLocaleString()} km
-                    </span>
-                  )}
-                  {vehicle.engine && <span style={{ color: 'rgba(255,255,255,0.45)', fontSize: '0.75rem', fontFamily: 'Saira Condensed, sans-serif' }}>{vehicle.engine}</span>}
-                  {vehicle.fuel && <span style={{ color: 'rgba(255,255,255,0.45)', fontSize: '0.75rem', fontFamily: 'Saira Condensed, sans-serif' }}>· {vehicle.fuel}</span>}
-                  {vehicle.transmission && <span style={{ color: 'rgba(255,255,255,0.45)', fontSize: '0.75rem', fontFamily: 'Saira Condensed, sans-serif' }}>· {vehicle.transmission}</span>}
-                </div>
-              </div>
-            </motion.div>
-          </AnimatePresence>
-
-          {/* Arrows */}
-          {vehicles.length > 1 && (
-            <button onClick={() => goTo(-1)}
-              style={{ position: 'absolute', left: 0, top: 0, bottom: 0, width: '52px', background: 'linear-gradient(to right, rgba(0,0,0,0.42), transparent)', border: 'none', cursor: 'pointer', color: 'rgba(255,255,255,0.65)', display: 'flex', alignItems: 'center', justifyContent: 'flex-start', paddingLeft: '10px', zIndex: 10, borderRadius: '16px 0 0 16px' }}>
-              <ChevronLeft size={24} />
-            </button>
-          )}
-          {vehicles.length > 1 && (
-            <button onClick={() => goTo(1)}
-              style={{ position: 'absolute', right: 0, top: 0, bottom: 0, width: '52px', background: 'linear-gradient(to left, rgba(0,0,0,0.42), transparent)', border: 'none', cursor: 'pointer', color: 'rgba(255,255,255,0.65)', display: 'flex', alignItems: 'center', justifyContent: 'flex-end', paddingRight: '10px', zIndex: 10, borderRadius: '0 16px 16px 0' }}>
-              <ChevronRight size={24} />
-            </button>
-          )}
+              )}
+              {vehicle.engine && <span style={{ color: 'rgba(255,255,255,0.45)', fontSize: '0.75rem', fontFamily: 'Saira Condensed, sans-serif' }}>{vehicle.engine}</span>}
+              {vehicle.fuel && <span style={{ color: 'rgba(255,255,255,0.45)', fontSize: '0.75rem', fontFamily: 'Saira Condensed, sans-serif' }}>· {vehicle.fuel}</span>}
+              {vehicle.transmission && <span style={{ color: 'rgba(255,255,255,0.45)', fontSize: '0.75rem', fontFamily: 'Saira Condensed, sans-serif' }}>· {vehicle.transmission}</span>}
+            </div>
+          </div>
         </div>
       </motion.div>
 
