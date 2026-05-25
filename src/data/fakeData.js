@@ -1,3 +1,23 @@
+// ── Vehicle photo (Wikipedia) ─────────────────────────────────────────────────
+export const fetchVehiclePhoto = async (brand, model) => {
+  const attempts = [`${brand} ${model}`, brand];
+  for (const title of attempts) {
+    try {
+      const url = 'https://en.wikipedia.org/w/api.php?' + new URLSearchParams({
+        action: 'query', titles: title, prop: 'pageimages',
+        format: 'json', pithumbsize: '800', origin: '*',
+      });
+      const res = await fetch(url);
+      if (!res.ok) continue;
+      const data = await res.json();
+      const page = Object.values(data.query?.pages || {})[0];
+      const src = page?.thumbnail?.source;
+      if (src && !src.endsWith('.svg') && !src.endsWith('.SVG')) return src;
+    } catch { /* silent — photo is optional */ }
+  }
+  return null;
+};
+
 const GEMINI_API_KEY = process.env.REACT_APP_AI;
 const GEMINI_URL = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent';
 const TIMEOUT_MS = 30000;

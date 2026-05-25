@@ -111,7 +111,11 @@ const HomeScreen = () => {
                 exit="exit"
                 style={{
                   position: 'absolute', inset: 0,
-                  background: 'linear-gradient(120deg, rgba(239,68,68,0.18) 0%, rgba(20,20,20,0.97) 55%)',
+                  background: selectedVehicle.photo
+                    ? `linear-gradient(120deg, rgba(239,68,68,0.55) 0%, rgba(0,0,0,0.82) 50%), url(${selectedVehicle.photo})`
+                    : 'linear-gradient(120deg, rgba(239,68,68,0.18) 0%, rgba(20,20,20,0.97) 55%)',
+                  backgroundSize: 'cover',
+                  backgroundPosition: 'center',
                   border: '1px solid rgba(239,68,68,0.25)',
                   borderRadius: '16px',
                   padding: '18px 20px',
