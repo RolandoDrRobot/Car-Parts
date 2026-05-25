@@ -40,8 +40,11 @@ const HomeScreen = () => {
   const [carouselIndex, setCarouselIndex] = useState(0);
   const [direction, setDirection] = useState(0);
 
-  const safeIndex     = vehicles.length > 0 ? Math.min(carouselIndex, vehicles.length - 1) : 0;
+  const safeIndex       = vehicles.length > 0 ? Math.min(carouselIndex, vehicles.length - 1) : 0;
   const selectedVehicle = vehicles[safeIndex] || null;
+  const vehicleHistory  = selectedVehicle
+    ? history.filter(s => s.vehicle?.id === selectedVehicle.id)
+    : [];
 
   const goTo = (dir) => {
     setDirection(dir);
@@ -270,12 +273,12 @@ const HomeScreen = () => {
       {/* ── HISTORY ── */}
       <motion.div variants={sectionStagger}
         style={{ flex: 1, overflowY: 'auto', padding: '20px', minHeight: 0 }}>
-        {history.length > 0 ? (
+        {vehicleHistory.length > 0 ? (
           <>
             <p style={{ color: '#6b7280', fontSize: '0.68rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em', margin: '0 0 10px', fontFamily: 'Saira Condensed, sans-serif' }}>
               Escaneos Recientes
             </p>
-            {history.map(scan => {
+            {vehicleHistory.map(scan => {
               const severityColor = scan.conditionSeverity === 'critical' ? '#ef4444' : scan.conditionSeverity === 'warning' ? '#f59e0b' : '#22c55e';
               return (
               <motion.button key={scan.id} variants={item}
@@ -331,7 +334,7 @@ const HomeScreen = () => {
             style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '100%', color: '#4a5568', textAlign: 'center', gap: '8px' }}>
             <ScanLine size={40} color="#4a5568" />
             <p style={{ fontFamily: 'Saira Condensed, sans-serif', fontSize: '1rem', margin: 0, color: '#4a5568' }}>
-              Tus escaneos aparecerán aquí
+              {selectedVehicle ? `Sin escaneos para ${selectedVehicle.brand} ${selectedVehicle.model}` : 'Agrega un vehículo para empezar'}
             </p>
           </motion.div>
         )}

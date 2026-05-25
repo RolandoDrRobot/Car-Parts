@@ -37,7 +37,7 @@ const AnalysisReportScreen = () => {
   const savedRef = useRef(false);
 
   useEffect(() => {
-    if (result?.isCarPart && !savedRef.current && !fromHistory) {
+    if (result?.isCarPart && vehicle && !savedRef.current && !fromHistory) {
       savedRef.current = true;
       addScan({
         partName:          result.partName,
