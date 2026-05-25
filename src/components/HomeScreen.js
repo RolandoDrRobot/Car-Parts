@@ -4,7 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import {
   Settings, Car, ScanLine, Disc, Gauge, Layers, Zap, Filter,
   Thermometer, Wind, RotateCw, Wrench, CheckCircle2, AlertCircle,
-  AlertTriangle, Hammer, Stethoscope, ChevronLeft, ChevronRight, Plus,
+  AlertTriangle, Stethoscope, ChevronLeft, ChevronRight, Plus,
 } from 'lucide-react';
 import { useSettings } from '../contexts/SettingsContext';
 import { useVehicles } from '../contexts/VehiclesContext';
@@ -66,20 +66,6 @@ const HomeScreen = () => {
             {COUNTRY_NAMES[settings.country] || 'Sin país'}
           </p>
           <div style={{ display: 'flex', gap: '8px' }}>
-            {vehicles.length > 0 && (
-              <motion.button
-                onClick={() => navigate('/garage', { state: { vehicleId: selectedVehicle?.id } })}
-                aria-label="Mi Garaje" {...gearBtn}
-                style={{
-                  background: 'rgba(255,255,255,0.07)', border: 'none', borderRadius: '20px',
-                  height: '44px', padding: '0 14px', cursor: 'pointer',
-                  display: 'flex', alignItems: 'center', gap: '6px',
-                  color: '#a0aec0', fontFamily: 'Saira Condensed, sans-serif',
-                  fontWeight: 700, fontSize: '0.9rem', flexShrink: 0,
-                }}>
-                <Hammer size={16} /> Mi Garaje
-              </motion.button>
-            )}
             <motion.button onClick={() => setDrawerOpen(true)} aria-label="Abrir ajustes" {...gearBtn}
               style={{
                 background: 'rgba(255,255,255,0.07)', border: 'none', borderRadius: '50%',
@@ -97,12 +83,15 @@ const HomeScreen = () => {
       {vehicles.length > 0 && (
         <motion.div variants={section} style={{ padding: '10px 16px 0', flexShrink: 0 }}>
 
-          {/* Card */}
-          <div style={{
-            position: 'relative',
-            aspectRatio: '16/9',
-            borderRadius: '16px', overflow: 'hidden',
-          }}>
+          {/* Card — tap to open garage */}
+          <div
+            onClick={() => navigate('/garage', { state: { vehicleId: selectedVehicle?.id } })}
+            style={{
+              position: 'relative',
+              aspectRatio: '16/9',
+              borderRadius: '16px', overflow: 'hidden',
+              cursor: 'pointer',
+            }}>
 
             <AnimatePresence custom={direction} mode="wait">
               <motion.div
@@ -149,7 +138,7 @@ const HomeScreen = () => {
                   <div style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
                     {vehicles.length > 1 && vehicles.map((_, i) => (
                       <button key={i}
-                        onClick={() => { setDirection(i > safeIndex ? 1 : -1); setCarouselIndex(i); }}
+                        onClick={(e) => { e.stopPropagation(); setDirection(i > safeIndex ? 1 : -1); setCarouselIndex(i); }}
                         style={{
                           width: i === safeIndex ? '16px' : '5px', height: '5px',
                           borderRadius: '3px', border: 'none', cursor: 'pointer', padding: 0,
@@ -157,7 +146,7 @@ const HomeScreen = () => {
                           transition: 'width 0.2s ease, background 0.2s ease',
                         }} />
                     ))}
-                    <button onClick={() => setDrawerOpen(true)}
+                    <button onClick={(e) => { e.stopPropagation(); setDrawerOpen(true); }}
                       style={{
                         background: 'rgba(255,255,255,0.12)', border: '1px dashed rgba(255,255,255,0.28)',
                         borderRadius: '5px', padding: '2px 8px', cursor: 'pointer',
@@ -221,7 +210,7 @@ const HomeScreen = () => {
 
             {/* Left arrow */}
             {vehicles.length > 1 && (
-              <button onClick={() => goTo(-1)}
+              <button onClick={(e) => { e.stopPropagation(); goTo(-1); }}
                 style={{
                   position: 'absolute', left: 0, top: 0, bottom: 0, width: '52px',
                   background: 'linear-gradient(to right, rgba(0,0,0,0.42), transparent)',
@@ -235,7 +224,7 @@ const HomeScreen = () => {
 
             {/* Right arrow */}
             {vehicles.length > 1 && (
-              <button onClick={() => goTo(1)}
+              <button onClick={(e) => { e.stopPropagation(); goTo(1); }}
                 style={{
                   position: 'absolute', right: 0, top: 0, bottom: 0, width: '52px',
                   background: 'linear-gradient(to left, rgba(0,0,0,0.42), transparent)',
