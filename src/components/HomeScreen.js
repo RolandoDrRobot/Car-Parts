@@ -95,100 +95,129 @@ const HomeScreen = () => {
 
       {/* ── VEHICLE CAROUSEL ── */}
       {vehicles.length > 0 && (
-        <motion.div variants={section} style={{ padding: '14px 20px 0', flexShrink: 0 }}>
+        <motion.div variants={section} style={{ padding: '10px 16px 0', flexShrink: 0 }}>
 
           {/* Card */}
-          <div style={{ position: 'relative', height: '158px', borderRadius: '16px', overflow: 'hidden' }}>
+          <div style={{
+            position: 'relative',
+            height: '42dvh', minHeight: '240px', maxHeight: '400px',
+            borderRadius: '20px', overflow: 'hidden',
+          }}>
 
-            {/* Animated card content */}
             <AnimatePresence custom={direction} mode="wait">
               <motion.div
                 key={safeIndex}
                 custom={direction}
                 variants={slideVariants}
-                initial="enter"
-                animate="center"
-                exit="exit"
+                initial="enter" animate="center" exit="exit"
                 style={{
                   position: 'absolute', inset: 0,
-                  background: selectedVehicle.photo
-                    ? `linear-gradient(120deg, rgba(239,68,68,0.55) 0%, rgba(0,0,0,0.82) 50%), url(${selectedVehicle.photo})`
-                    : 'linear-gradient(120deg, rgba(239,68,68,0.18) 0%, rgba(20,20,20,0.97) 55%)',
+                  backgroundImage: selectedVehicle.photo
+                    ? `linear-gradient(to bottom, rgba(0,0,0,0.12) 0%, rgba(0,0,0,0) 30%, rgba(0,0,0,0.72) 65%, rgba(0,0,0,0.97) 100%), url(${selectedVehicle.photo})`
+                    : 'linear-gradient(135deg, rgba(239,68,68,0.22) 0%, rgba(14,14,14,0.99) 65%)',
                   backgroundSize: 'cover',
                   backgroundPosition: 'center',
-                  border: '1px solid rgba(239,68,68,0.25)',
-                  borderRadius: '16px',
-                  padding: '18px 20px',
+                  borderRadius: '20px',
                   display: 'flex', flexDirection: 'column', justifyContent: 'space-between',
                   overflow: 'hidden',
                 }}
               >
-                {/* Background watermark car */}
-                <div style={{
-                  position: 'absolute', right: '-18px', top: '50%',
-                  transform: 'translateY(-50%)',
-                  color: '#ef4444', opacity: 0.07, pointerEvents: 'none',
-                }}>
-                  <Car size={180} strokeWidth={1} />
-                </div>
+                {/* Watermark (only when no photo) */}
+                {!selectedVehicle.photo && (
+                  <div style={{
+                    position: 'absolute', right: '-24px', bottom: '36px',
+                    color: '#ef4444', opacity: 0.06, pointerEvents: 'none',
+                  }}>
+                    <Car size={300} strokeWidth={0.7} />
+                  </div>
+                )}
 
-                {/* Top row: label + status */}
-                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                {/* Top bar: label + dots + add */}
+                <div style={{
+                  padding: '16px 18px 0',
+                  display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+                  position: 'relative', zIndex: 2,
+                }}>
                   <span style={{
                     color: '#ef4444', fontSize: '0.65rem', fontWeight: 700,
-                    textTransform: 'uppercase', letterSpacing: '0.12em',
+                    textTransform: 'uppercase', letterSpacing: '0.14em',
                     fontFamily: 'Saira Condensed, sans-serif',
+                    textShadow: '0 1px 8px rgba(0,0,0,0.9)',
                   }}>
-                    Mi Vehículo {vehicles.length > 1 ? `${safeIndex + 1}/${vehicles.length}` : ''}
+                    Mi Vehículo {vehicles.length > 1 ? `${safeIndex + 1} / ${vehicles.length}` : ''}
                   </span>
-                  {selectedVehicle.color && (
-                    <span style={{ color: '#6b7280', fontSize: '0.72rem', fontFamily: 'Saira Condensed, sans-serif' }}>
-                      {selectedVehicle.color}
-                    </span>
-                  )}
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
+                    {vehicles.length > 1 && vehicles.map((_, i) => (
+                      <button key={i}
+                        onClick={() => { setDirection(i > safeIndex ? 1 : -1); setCarouselIndex(i); }}
+                        style={{
+                          width: i === safeIndex ? '16px' : '5px', height: '5px',
+                          borderRadius: '3px', border: 'none', cursor: 'pointer', padding: 0,
+                          background: i === safeIndex ? '#ef4444' : 'rgba(255,255,255,0.4)',
+                          transition: 'width 0.2s ease, background 0.2s ease',
+                        }} />
+                    ))}
+                    <button onClick={() => setDrawerOpen(true)}
+                      style={{
+                        background: 'rgba(255,255,255,0.12)', border: '1px dashed rgba(255,255,255,0.28)',
+                        borderRadius: '5px', padding: '2px 8px', cursor: 'pointer',
+                        color: 'rgba(255,255,255,0.65)', fontSize: '0.65rem',
+                        fontFamily: 'Saira Condensed, sans-serif', fontWeight: 700,
+                        display: 'flex', alignItems: 'center', gap: '3px', marginLeft: '3px',
+                      }}>
+                      <Plus size={9} /> Agregar
+                    </button>
+                  </div>
                 </div>
 
-                {/* Main info */}
-                <div>
+                {/* Bottom info */}
+                <div style={{ padding: '0 18px 20px', position: 'relative', zIndex: 2 }}>
+                  {selectedVehicle.color && (
+                    <div style={{
+                      color: 'rgba(255,255,255,0.45)', fontSize: '0.75rem',
+                      fontFamily: 'Saira Condensed, sans-serif', marginBottom: '2px',
+                    }}>
+                      {selectedVehicle.color}
+                    </div>
+                  )}
                   <div style={{
                     color: 'white', fontFamily: 'Saira Condensed, sans-serif',
-                    fontWeight: 800, fontSize: '2.2rem', lineHeight: 1, letterSpacing: '-0.01em',
-                    textShadow: '0 2px 20px rgba(239,68,68,0.3)',
+                    fontWeight: 800, fontSize: '3.4rem', lineHeight: 0.88,
+                    letterSpacing: '-0.02em',
+                    textShadow: '0 2px 28px rgba(0,0,0,0.7)',
                   }}>
                     {selectedVehicle.brand}
                   </div>
                   <div style={{
                     color: '#cbd5e0', fontFamily: 'Saira Condensed, sans-serif',
-                    fontWeight: 600, fontSize: '1.25rem', lineHeight: 1.1, marginTop: '1px',
+                    fontWeight: 600, fontSize: '1.55rem', lineHeight: 1.1, marginTop: '3px',
                   }}>
                     {selectedVehicle.model}
                   </div>
-                </div>
-
-                {/* Bottom row: year / details */}
-                <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap', alignItems: 'center' }}>
-                  <span style={{
-                    background: 'rgba(255,255,255,0.08)', borderRadius: '6px',
-                    padding: '2px 8px', color: '#a0aec0', fontSize: '0.78rem',
-                    fontFamily: 'Saira Condensed, sans-serif', fontWeight: 700,
-                  }}>
-                    {selectedVehicle.year}
-                  </span>
-                  {selectedVehicle.engine && (
-                    <span style={{ color: '#6b7280', fontSize: '0.78rem', fontFamily: 'Saira Condensed, sans-serif' }}>
-                      {selectedVehicle.engine}
+                  <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap', alignItems: 'center', marginTop: '10px' }}>
+                    <span style={{
+                      background: 'rgba(255,255,255,0.12)', borderRadius: '6px',
+                      padding: '3px 10px', color: '#e2e8f0', fontSize: '0.82rem',
+                      fontFamily: 'Saira Condensed, sans-serif', fontWeight: 700,
+                    }}>
+                      {selectedVehicle.year}
                     </span>
-                  )}
-                  {selectedVehicle.fuel && (
-                    <span style={{ color: '#6b7280', fontSize: '0.78rem', fontFamily: 'Saira Condensed, sans-serif' }}>
-                      · {selectedVehicle.fuel}
-                    </span>
-                  )}
-                  {selectedVehicle.transmission && (
-                    <span style={{ color: '#6b7280', fontSize: '0.78rem', fontFamily: 'Saira Condensed, sans-serif' }}>
-                      · {selectedVehicle.transmission}
-                    </span>
-                  )}
+                    {selectedVehicle.engine && (
+                      <span style={{ color: 'rgba(255,255,255,0.5)', fontSize: '0.8rem', fontFamily: 'Saira Condensed, sans-serif' }}>
+                        {selectedVehicle.engine}
+                      </span>
+                    )}
+                    {selectedVehicle.fuel && (
+                      <span style={{ color: 'rgba(255,255,255,0.5)', fontSize: '0.8rem', fontFamily: 'Saira Condensed, sans-serif' }}>
+                        · {selectedVehicle.fuel}
+                      </span>
+                    )}
+                    {selectedVehicle.transmission && (
+                      <span style={{ color: 'rgba(255,255,255,0.5)', fontSize: '0.8rem', fontFamily: 'Saira Condensed, sans-serif' }}>
+                        · {selectedVehicle.transmission}
+                      </span>
+                    )}
+                  </div>
                 </div>
               </motion.div>
             </AnimatePresence>
@@ -197,13 +226,13 @@ const HomeScreen = () => {
             {vehicles.length > 1 && (
               <button onClick={() => goTo(-1)}
                 style={{
-                  position: 'absolute', left: 0, top: 0, bottom: 0, width: '40px',
-                  background: 'linear-gradient(to right, rgba(0,0,0,0.5), transparent)',
-                  border: 'none', cursor: 'pointer', color: 'rgba(255,255,255,0.5)',
+                  position: 'absolute', left: 0, top: 0, bottom: 0, width: '52px',
+                  background: 'linear-gradient(to right, rgba(0,0,0,0.42), transparent)',
+                  border: 'none', cursor: 'pointer', color: 'rgba(255,255,255,0.65)',
                   display: 'flex', alignItems: 'center', justifyContent: 'flex-start',
-                  paddingLeft: '6px', zIndex: 10, borderRadius: '16px 0 0 16px',
+                  paddingLeft: '10px', zIndex: 10, borderRadius: '20px 0 0 20px',
                 }}>
-                <ChevronLeft size={20} />
+                <ChevronLeft size={24} />
               </button>
             )}
 
@@ -211,38 +240,15 @@ const HomeScreen = () => {
             {vehicles.length > 1 && (
               <button onClick={() => goTo(1)}
                 style={{
-                  position: 'absolute', right: 0, top: 0, bottom: 0, width: '40px',
-                  background: 'linear-gradient(to left, rgba(0,0,0,0.5), transparent)',
-                  border: 'none', cursor: 'pointer', color: 'rgba(255,255,255,0.5)',
+                  position: 'absolute', right: 0, top: 0, bottom: 0, width: '52px',
+                  background: 'linear-gradient(to left, rgba(0,0,0,0.42), transparent)',
+                  border: 'none', cursor: 'pointer', color: 'rgba(255,255,255,0.65)',
                   display: 'flex', alignItems: 'center', justifyContent: 'flex-end',
-                  paddingRight: '6px', zIndex: 10, borderRadius: '0 16px 16px 0',
+                  paddingRight: '10px', zIndex: 10, borderRadius: '0 20px 20px 0',
                 }}>
-                <ChevronRight size={20} />
+                <ChevronRight size={24} />
               </button>
             )}
-          </div>
-
-          {/* Dots + add button */}
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px', marginTop: '10px' }}>
-            {vehicles.length > 1 && vehicles.map((_, i) => (
-              <button key={i} onClick={() => { setDirection(i > safeIndex ? 1 : -1); setCarouselIndex(i); }}
-                style={{
-                  width: i === safeIndex ? '18px' : '6px', height: '6px',
-                  borderRadius: '3px', border: 'none', cursor: 'pointer', padding: 0,
-                  background: i === safeIndex ? '#ef4444' : 'rgba(255,255,255,0.2)',
-                  transition: 'width 0.2s ease, background 0.2s ease',
-                }} />
-            ))}
-            <button onClick={() => setDrawerOpen(true)}
-              style={{
-                background: 'rgba(255,255,255,0.06)', border: '1px dashed rgba(255,255,255,0.15)',
-                borderRadius: '6px', padding: '2px 8px', cursor: 'pointer',
-                color: '#6b7280', fontSize: '0.72rem', fontFamily: 'Saira Condensed, sans-serif',
-                fontWeight: 700, display: 'flex', alignItems: 'center', gap: '3px',
-                marginLeft: vehicles.length > 1 ? '4px' : 0,
-              }}>
-              <Plus size={10} /> Agregar
-            </button>
           </div>
         </motion.div>
       )}
