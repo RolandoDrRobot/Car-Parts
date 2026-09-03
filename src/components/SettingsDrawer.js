@@ -4,6 +4,7 @@ import { X, Trash2, Plus, Share2, Smartphone } from 'lucide-react';
 import { useSettings } from '../contexts/SettingsContext';
 import { useVehicles } from '../contexts/VehiclesContext';
 import { btn, selectable } from '../utils/animations';
+import Toast from './Toast';
 
 const drawerContent = {
   animate: { transition: { staggerChildren: 0.07, delayChildren: 0.15 } },
@@ -36,11 +37,22 @@ const SectionTitle = ({ children }) => (
   </p>
 );
 
+const FieldLabel = ({ children }) => (
+  <label style={{
+    display: 'block', color: '#6b7280', fontSize: '0.68rem', fontWeight: 700,
+    textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: '4px',
+    fontFamily: 'Saira Condensed, sans-serif',
+  }}>
+    {children}
+  </label>
+);
+
 const SettingsDrawer = ({ isOpen, onClose }) => {
   const { settings, updateSettings } = useSettings();
   const { vehicles, addVehicle, removeVehicle } = useVehicles();
   const [showAddForm, setShowAddForm] = useState(false);
   const [newVehicle, setNewVehicle] = useState(emptyVehicle);
+  const [toast, setToast] = useState(null);
 
   const currentYear = new Date().getFullYear();
 
@@ -56,9 +68,11 @@ const SettingsDrawer = ({ isOpen, onClose }) => {
     addVehicle(newVehicle);
     setNewVehicle(emptyVehicle);
     setShowAddForm(false);
+    setToast('Vehículo agregado');
   };
 
   return (
+    <>
     <AnimatePresence>
       {isOpen && (
         <>
@@ -145,7 +159,7 @@ const SettingsDrawer = ({ isOpen, onClose }) => {
                   style={{
                     background: 'rgba(255,255,255,0.03)',
                     border: '2px dashed rgba(255,255,255,0.12)',
-                    borderRadius: '8px',
+                    borderRadius: '4px',
                     padding: '12px',
                     cursor: 'pointer',
                     color: '#a0aec0',
@@ -163,39 +177,60 @@ const SettingsDrawer = ({ isOpen, onClose }) => {
               ) : (
                 <div style={{ background: 'rgba(255,255,255,0.04)', borderRadius: '8px', padding: '14px', display: 'flex', flexDirection: 'column', gap: '8px' }}>
                   <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px' }}>
-                    <input className="input" placeholder="Marca *" value={newVehicle.brand}
-                      onChange={e => setNewVehicle(p => ({ ...p, brand: e.target.value }))}
-                      style={{ padding: '10px 12px', fontSize: '1rem' }} />
-                    <input className="input" placeholder="Modelo *" value={newVehicle.model}
-                      onChange={e => setNewVehicle(p => ({ ...p, model: e.target.value }))}
-                      style={{ padding: '10px 12px', fontSize: '1rem' }} />
-                    <input className="input" placeholder="Año *" type="number" min="1990" max={currentYear + 1}
-                      value={newVehicle.year}
-                      onChange={e => setNewVehicle(p => ({ ...p, year: e.target.value }))}
-                      style={{ padding: '10px 12px', fontSize: '1rem' }} />
-                    <input className="input" placeholder="Color" value={newVehicle.color}
-                      onChange={e => setNewVehicle(p => ({ ...p, color: e.target.value }))}
-                      style={{ padding: '10px 12px', fontSize: '1rem' }} />
-                    <input className="input" placeholder="Motor (ej. 1.5L, 2.0T)" value={newVehicle.engine}
-                      onChange={e => setNewVehicle(p => ({ ...p, engine: e.target.value }))}
-                      style={{ padding: '10px 12px', fontSize: '1rem' }} />
-                    <select className="input" value={newVehicle.fuel}
-                      onChange={e => setNewVehicle(p => ({ ...p, fuel: e.target.value }))}
-                      style={{ padding: '10px 12px', fontSize: '1rem' }}>
-                      <option value="">Combustible</option>
-                      <option value="gasolina">Gasolina</option>
-                      <option value="diésel">Diésel</option>
-                      <option value="híbrido">Híbrido</option>
-                      <option value="eléctrico">Eléctrico</option>
-                    </select>
-                    <select className="input" value={newVehicle.transmission}
-                      onChange={e => setNewVehicle(p => ({ ...p, transmission: e.target.value }))}
-                      style={{ padding: '10px 12px', fontSize: '1rem', gridColumn: '1 / -1' }}>
-                      <option value="">Transmisión</option>
-                      <option value="manual">Manual</option>
-                      <option value="automática">Automática</option>
-                      <option value="CVT">CVT</option>
-                    </select>
+                    <div>
+                      <FieldLabel>Marca *</FieldLabel>
+                      <input className="input" placeholder="Toyota" value={newVehicle.brand} autoFocus
+                        onChange={e => setNewVehicle(p => ({ ...p, brand: e.target.value }))}
+                        style={{ padding: '10px 12px', fontSize: '1rem' }} />
+                    </div>
+                    <div>
+                      <FieldLabel>Modelo *</FieldLabel>
+                      <input className="input" placeholder="Corolla" value={newVehicle.model}
+                        onChange={e => setNewVehicle(p => ({ ...p, model: e.target.value }))}
+                        style={{ padding: '10px 12px', fontSize: '1rem' }} />
+                    </div>
+                    <div>
+                      <FieldLabel>Año *</FieldLabel>
+                      <input className="input" placeholder="2020" type="number" inputMode="numeric" min="1990" max={currentYear + 1}
+                        value={newVehicle.year}
+                        onChange={e => setNewVehicle(p => ({ ...p, year: e.target.value }))}
+                        style={{ padding: '10px 12px', fontSize: '1rem' }} />
+                    </div>
+                    <div>
+                      <FieldLabel>Color</FieldLabel>
+                      <input className="input" placeholder="Blanco" value={newVehicle.color}
+                        onChange={e => setNewVehicle(p => ({ ...p, color: e.target.value }))}
+                        style={{ padding: '10px 12px', fontSize: '1rem' }} />
+                    </div>
+                    <div>
+                      <FieldLabel>Motor</FieldLabel>
+                      <input className="input" placeholder="ej. 1.5L, 2.0T" value={newVehicle.engine}
+                        onChange={e => setNewVehicle(p => ({ ...p, engine: e.target.value }))}
+                        style={{ padding: '10px 12px', fontSize: '1rem' }} />
+                    </div>
+                    <div>
+                      <FieldLabel>Combustible</FieldLabel>
+                      <select className="input" value={newVehicle.fuel}
+                        onChange={e => setNewVehicle(p => ({ ...p, fuel: e.target.value }))}
+                        style={{ padding: '10px 12px', fontSize: '1rem' }}>
+                        <option value="">Selecciona</option>
+                        <option value="gasolina">Gasolina</option>
+                        <option value="diésel">Diésel</option>
+                        <option value="híbrido">Híbrido</option>
+                        <option value="eléctrico">Eléctrico</option>
+                      </select>
+                    </div>
+                    <div style={{ gridColumn: '1 / -1' }}>
+                      <FieldLabel>Transmisión</FieldLabel>
+                      <select className="input" value={newVehicle.transmission}
+                        onChange={e => setNewVehicle(p => ({ ...p, transmission: e.target.value }))}
+                        style={{ padding: '10px 12px', fontSize: '1rem', width: '100%' }}>
+                        <option value="">Selecciona</option>
+                        <option value="manual">Manual</option>
+                        <option value="automática">Automática</option>
+                        <option value="CVT">CVT</option>
+                      </select>
+                    </div>
                   </div>
                   <div style={{ display: 'flex', gap: '8px' }}>
                     <motion.button
@@ -233,7 +268,7 @@ const SettingsDrawer = ({ isOpen, onClose }) => {
                   style={{
                     background: settings.country === c.code ? 'rgba(239,68,68,0.15)' : 'rgba(255,255,255,0.04)',
                     border: settings.country === c.code ? '2px solid #ef4444' : '2px solid rgba(255,255,255,0.07)',
-                    borderRadius: '8px',
+                    borderRadius: '4px',
                     padding: '7px 4px',
                     cursor: 'pointer',
                     color: 'white',
@@ -263,7 +298,7 @@ const SettingsDrawer = ({ isOpen, onClose }) => {
                     flex: 1,
                     background: settings.language === lang.code ? 'rgba(239,68,68,0.15)' : 'rgba(255,255,255,0.04)',
                     border: settings.language === lang.code ? '2px solid #ef4444' : '2px solid rgba(255,255,255,0.07)',
-                    borderRadius: '8px',
+                    borderRadius: '4px',
                     padding: '8px',
                     cursor: 'pointer',
                     color: 'white',
@@ -327,6 +362,8 @@ const SettingsDrawer = ({ isOpen, onClose }) => {
         </>
       )}
     </AnimatePresence>
+    <Toast message={toast} onDone={() => setToast(null)} />
+    </>
   );
 };
 

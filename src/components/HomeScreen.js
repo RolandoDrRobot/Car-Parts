@@ -9,8 +9,10 @@ import {
 import { useSettings } from '../contexts/SettingsContext';
 import { useVehicles } from '../contexts/VehiclesContext';
 import { useHistory } from '../contexts/HistoryContext';
+import { useGarage } from '../contexts/GarageContext';
 import SettingsDrawer from './SettingsDrawer';
 import { screen, section, sectionStagger, item, btn, scanBtn, gearBtn } from '../utils/animations';
+import { getHealthSummary } from '../utils/maintenance';
 
 const COUNTRY_NAMES = {
   CR: 'Costa Rica', MX: 'México', CO: 'Colombia',
@@ -36,6 +38,7 @@ const HomeScreen = () => {
   const { settings } = useSettings();
   const { vehicles } = useVehicles();
   const { history } = useHistory();
+  const { getVehicleData } = useGarage();
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [carouselIndex, setCarouselIndex] = useState(0);
   const [direction, setDirection] = useState(0);
@@ -45,6 +48,11 @@ const HomeScreen = () => {
   const vehicleHistory  = selectedVehicle
     ? history.filter(s => s.vehicle?.id === selectedVehicle.id)
     : [];
+
+  const vData  = selectedVehicle ? getVehicleData(selectedVehicle.id) : {};
+  const health = selectedVehicle
+    ? getHealthSummary({ maintenance: vData.maintenance || {}, currentKm: vData.currentMileage || null, scans: vehicleHistory })
+    : null;
 
   const goTo = (dir) => {
     setDirection(dir);
@@ -66,7 +74,7 @@ const HomeScreen = () => {
           <div style={{ display: 'flex', gap: '8px' }}>
             <motion.button onClick={() => setDrawerOpen(true)} aria-label="Abrir ajustes" {...gearBtn}
               style={{
-                background: 'rgba(255,255,255,0.07)', border: 'none', borderRadius: '50%',
+                background: 'rgba(255,255,255,0.07)', border: 'none', borderRadius: '4px',
                 width: '44px', height: '44px', cursor: 'pointer',
                 display: 'flex', alignItems: 'center', justifyContent: 'center',
                 flexShrink: 0, color: '#a0aec0',
@@ -139,15 +147,15 @@ const HomeScreen = () => {
                         onClick={(e) => { e.stopPropagation(); setDirection(i > safeIndex ? 1 : -1); setCarouselIndex(i); }}
                         style={{
                           width: i === safeIndex ? '16px' : '5px', height: '5px',
-                          borderRadius: '3px', border: 'none', cursor: 'pointer', padding: 0,
+                          borderRadius: '4px', border: 'none', cursor: 'pointer', padding: 0,
                           background: i === safeIndex ? '#ef4444' : 'rgba(255,255,255,0.4)',
                           transition: 'width 0.2s ease, background 0.2s ease',
                         }} />
                     ))}
                     <button onClick={(e) => { e.stopPropagation(); setDrawerOpen(true); }}
                       style={{
-                        background: 'rgba(255,255,255,0.12)', border: '1px dashed rgba(255,255,255,0.28)',
-                        borderRadius: '5px', padding: '2px 8px', cursor: 'pointer',
+                        background: 'rgba(255,255,255,0.12)', border: '2px dashed rgba(255,255,255,0.28)',
+                        borderRadius: '4px', padding: '2px 8px', cursor: 'pointer',
                         color: 'rgba(255,255,255,0.65)', fontSize: '0.65rem',
                         fontFamily: 'Saira Condensed, sans-serif', fontWeight: 700,
                         display: 'flex', alignItems: 'center', gap: '3px', marginLeft: '3px',
@@ -214,7 +222,7 @@ const HomeScreen = () => {
                   background: 'linear-gradient(to right, rgba(0,0,0,0.42), transparent)',
                   border: 'none', cursor: 'pointer', color: 'rgba(255,255,255,0.65)',
                   display: 'flex', alignItems: 'center', justifyContent: 'flex-start',
-                  paddingLeft: '10px', zIndex: 10, borderRadius: '16px 0 0 16px',
+                  paddingLeft: '10px', zIndex: 10, borderRadius: '4px',
                 }}>
                 <ChevronLeft size={24} />
               </button>
@@ -228,11 +236,57 @@ const HomeScreen = () => {
                   background: 'linear-gradient(to left, rgba(0,0,0,0.42), transparent)',
                   border: 'none', cursor: 'pointer', color: 'rgba(255,255,255,0.65)',
                   display: 'flex', alignItems: 'center', justifyContent: 'flex-end',
-                  paddingRight: '10px', zIndex: 10, borderRadius: '0 16px 16px 0',
+                  paddingRight: '10px', zIndex: 10, borderRadius: '4px',
                 }}>
                 <ChevronRight size={24} />
               </button>
             )}
+          </div>
+        </motion.div>
+      )}
+
+      {/* ── HEALTH STATUS ── */}
+      {selectedVehicle && health && (
+        <motion.div variants={section} style={{ padding: '10px 16px 0', flexShrink: 0 }}>
+          <div
+            onClick={() => navigate('/garage', { state: { vehicleId: selectedVehicle.id } })}
+            style={{
+              background: health.bg,
+              border: `1px solid ${health.color}33`,
+              borderRadius: '12px', padding: '12px 14px',
+              display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+              gap: '10px', cursor: 'pointer',
+            }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '9px', minWidth: 0 }}>
+              <span
+                className={health.status === 'critical' || health.status === 'warning' ? 'pulse-animation' : ''}
+                style={{
+                  width: '9px', height: '9px', borderRadius: '50%', flexShrink: 0,
+                  background: health.color, boxShadow: `0 0 8px ${health.color}`,
+                }} />
+              <span style={{
+                color: health.color, fontWeight: 700, fontSize: '0.95rem',
+                fontFamily: 'Saira Condensed, sans-serif', letterSpacing: '0.01em',
+                whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis',
+              }}>
+                {health.label}
+              </span>
+            </div>
+            <AnimatePresence mode="wait">
+              <motion.span key={`${health.status}-${health.pendingCount}`}
+                initial={{ opacity: 0, y: 4 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -4 }}
+                transition={{ duration: 0.18 }}
+                style={{
+                  color: '#a0aec0', fontSize: '0.78rem', fontFamily: 'Saira Condensed, sans-serif',
+                  flexShrink: 0, textAlign: 'right',
+                }}>
+                {health.status === 'unknown'
+                  ? 'Registra tu kilometraje en Mi Garaje'
+                  : health.pendingCount > 0
+                    ? `${health.pendingCount} chequeo${health.pendingCount > 1 ? 's' : ''} pendiente${health.pendingCount > 1 ? 's' : ''}`
+                    : 'Todo en orden'}
+              </motion.span>
+            </AnimatePresence>
           </div>
         </motion.div>
       )}
@@ -276,7 +330,7 @@ const HomeScreen = () => {
         {vehicleHistory.length > 0 ? (
           <>
             <p style={{ color: '#6b7280', fontSize: '0.68rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em', margin: '0 0 10px', fontFamily: 'Saira Condensed, sans-serif' }}>
-              Escaneos Recientes
+              Historial Médico
             </p>
             {vehicleHistory.map(scan => {
               const severityColor = scan.conditionSeverity === 'critical' ? '#ef4444' : scan.conditionSeverity === 'warning' ? '#f59e0b' : '#22c55e';
@@ -302,9 +356,11 @@ const HomeScreen = () => {
                 })}
                 style={{
                   background: 'rgba(255,255,255,0.04)',
-                  border: '1px solid rgba(255,255,255,0.07)',
+                  borderTop: '2px solid rgba(255,255,255,0.07)',
+                  borderRight: '2px solid rgba(255,255,255,0.07)',
+                  borderBottom: '2px solid rgba(255,255,255,0.07)',
                   borderLeft: `3px solid ${severityColor}`,
-                  borderRadius: '12px', padding: '12px 14px',
+                  borderRadius: '4px', padding: '12px 14px',
                   display: 'flex', alignItems: 'center', gap: '12px',
                   marginBottom: '8px', cursor: 'pointer', width: '100%', textAlign: 'left',
                 }}>
@@ -320,7 +376,7 @@ const HomeScreen = () => {
                   <div style={{ color: 'white', fontWeight: 700, fontSize: '0.95rem', fontFamily: 'Saira Condensed, sans-serif', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', letterSpacing: '0.01em' }}>
                     {scan.partName}
                   </div>
-                  <div style={{ color: '#4a5568', fontSize: '0.73rem', marginTop: '1px' }}>
+                  <div style={{ color: '#6b7280', fontSize: '0.8rem', marginTop: '1px' }}>
                     {formatDate(scan.date)}{scan.vehicle ? ` · ${scan.vehicle.brand} ${scan.vehicle.model}` : ''}
                   </div>
                 </div>
@@ -334,7 +390,7 @@ const HomeScreen = () => {
             style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '100%', color: '#4a5568', textAlign: 'center', gap: '8px' }}>
             <ScanLine size={40} color="#4a5568" />
             <p style={{ fontFamily: 'Saira Condensed, sans-serif', fontSize: '1rem', margin: 0, color: '#4a5568' }}>
-              {selectedVehicle ? `Sin escaneos para ${selectedVehicle.brand} ${selectedVehicle.model}` : 'Agrega un vehículo para empezar'}
+              {selectedVehicle ? `Sin chequeos para ${selectedVehicle.brand} ${selectedVehicle.model}` : 'Agrega un vehículo para empezar'}
             </p>
           </motion.div>
         )}

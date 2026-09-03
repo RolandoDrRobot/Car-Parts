@@ -29,7 +29,7 @@ class ErrorBoundary extends React.Component {
             onClick={() => window.location.reload()}
             style={{
               background: 'linear-gradient(135deg,#ef4444,#dc2626)',
-              color: 'white', border: 'none', borderRadius: '6px',
+              color: 'white', border: 'none', borderRadius: '4px',
               padding: '12px 24px', cursor: 'pointer',
               fontFamily: 'Saira Condensed, sans-serif',
               fontWeight: 700, fontSize: '1rem',

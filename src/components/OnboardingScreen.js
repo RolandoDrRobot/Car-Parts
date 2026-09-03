@@ -18,6 +18,16 @@ const emptyVehicle = { brand: '', model: '', year: '', color: '', engine: '', fu
 
 const inputStyle = { padding: '12px 14px', fontSize: '1rem' };
 
+const FieldLabel = ({ children }) => (
+  <label style={{
+    display: 'block', color: '#6b7280', fontSize: '0.7rem', fontWeight: 700,
+    textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: '4px',
+    fontFamily: 'Saira Condensed, sans-serif',
+  }}>
+    {children}
+  </label>
+);
+
 const OnboardingScreen = () => {
   const [step, setStep]       = useState(1);
   const [country, setCountry] = useState(null);
@@ -43,7 +53,7 @@ const OnboardingScreen = () => {
         <motion.div variants={section} style={{ paddingTop: '32px', textAlign: 'center', flexShrink: 0 }}>
           <h1 className="title" style={{ marginBottom: '4px' }}>CarDoctor</h1>
           <p style={{ color: '#a0aec0', fontSize: '1.1rem', margin: '0 0 6px', fontFamily: 'Saira Condensed, sans-serif' }}>
-            Tu mecánico personal con IA
+            Tu doctor de confianza para tu auto
           </p>
           <p style={{ color: '#4a5568', fontSize: '0.9rem', margin: 0 }}>Selecciona tu país para empezar:</p>
         </motion.div>
@@ -59,7 +69,7 @@ const OnboardingScreen = () => {
                 style={{
                   background: country === c.code ? 'rgba(239,68,68,0.15)' : 'rgba(255,255,255,0.04)',
                   border: country === c.code ? '2px solid #ef4444' : '2px solid rgba(255,255,255,0.07)',
-                  borderRadius: '10px', cursor: 'pointer', color: 'white',
+                  borderRadius: '4px', cursor: 'pointer', color: 'white',
                   display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
                   gap: '4px', padding: '14px 6px',
                 }}>
@@ -107,21 +117,33 @@ const OnboardingScreen = () => {
           <p style={{ color: '#6b7280', fontSize: '0.72rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.07em', margin: '0 0 8px', fontFamily: 'Saira Condensed, sans-serif' }}>
             Datos básicos *
           </p>
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px', marginBottom: '8px' }}>
-            <input className="input" placeholder="Marca (Toyota)" value={vehicle.brand}
-              onChange={e => setVehicle(p => ({ ...p, brand: e.target.value }))}
-              style={inputStyle} />
-            <input className="input" placeholder="Modelo (Corolla)" value={vehicle.model}
-              onChange={e => setVehicle(p => ({ ...p, model: e.target.value }))}
-              style={inputStyle} />
-            <input className="input" type="number" placeholder="Año (2020)"
-              min="1990" max={new Date().getFullYear() + 1}
-              value={vehicle.year}
-              onChange={e => setVehicle(p => ({ ...p, year: e.target.value }))}
-              style={inputStyle} />
-            <input className="input" placeholder="Color (opcional)" value={vehicle.color}
-              onChange={e => setVehicle(p => ({ ...p, color: e.target.value }))}
-              style={inputStyle} />
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px', marginBottom: '8px' }}>
+            <div>
+              <FieldLabel>Marca *</FieldLabel>
+              <input className="input" placeholder="Toyota" value={vehicle.brand} autoFocus
+                onChange={e => setVehicle(p => ({ ...p, brand: e.target.value }))}
+                style={inputStyle} />
+            </div>
+            <div>
+              <FieldLabel>Modelo *</FieldLabel>
+              <input className="input" placeholder="Corolla" value={vehicle.model}
+                onChange={e => setVehicle(p => ({ ...p, model: e.target.value }))}
+                style={inputStyle} />
+            </div>
+            <div>
+              <FieldLabel>Año *</FieldLabel>
+              <input className="input" type="number" inputMode="numeric" placeholder="2020"
+                min="1990" max={new Date().getFullYear() + 1}
+                value={vehicle.year}
+                onChange={e => setVehicle(p => ({ ...p, year: e.target.value }))}
+                style={inputStyle} />
+            </div>
+            <div>
+              <FieldLabel>Color</FieldLabel>
+              <input className="input" placeholder="Blanco" value={vehicle.color}
+                onChange={e => setVehicle(p => ({ ...p, color: e.target.value }))}
+                style={inputStyle} />
+            </div>
           </div>
         </motion.div>
 
@@ -130,27 +152,36 @@ const OnboardingScreen = () => {
           <p style={{ color: '#6b7280', fontSize: '0.72rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.07em', margin: '16px 0 8px', fontFamily: 'Saira Condensed, sans-serif' }}>
             Detalles del motor (opcional)
           </p>
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px' }}>
-            <input className="input" placeholder="Motor (ej. 1.5L, 2.0T)" value={vehicle.engine}
-              onChange={e => setVehicle(p => ({ ...p, engine: e.target.value }))}
-              style={inputStyle} />
-            <select className="input" value={vehicle.fuel}
-              onChange={e => setVehicle(p => ({ ...p, fuel: e.target.value }))}
-              style={inputStyle}>
-              <option value="">Combustible</option>
-              <option value="gasolina">Gasolina</option>
-              <option value="diésel">Diésel</option>
-              <option value="híbrido">Híbrido</option>
-              <option value="eléctrico">Eléctrico</option>
-            </select>
-            <select className="input" value={vehicle.transmission}
-              onChange={e => setVehicle(p => ({ ...p, transmission: e.target.value }))}
-              style={{ ...inputStyle, gridColumn: '1 / -1' }}>
-              <option value="">Transmisión</option>
-              <option value="manual">Manual</option>
-              <option value="automática">Automática</option>
-              <option value="CVT">CVT</option>
-            </select>
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
+            <div>
+              <FieldLabel>Motor</FieldLabel>
+              <input className="input" placeholder="ej. 1.5L, 2.0T" value={vehicle.engine}
+                onChange={e => setVehicle(p => ({ ...p, engine: e.target.value }))}
+                style={inputStyle} />
+            </div>
+            <div>
+              <FieldLabel>Combustible</FieldLabel>
+              <select className="input" value={vehicle.fuel}
+                onChange={e => setVehicle(p => ({ ...p, fuel: e.target.value }))}
+                style={inputStyle}>
+                <option value="">Selecciona</option>
+                <option value="gasolina">Gasolina</option>
+                <option value="diésel">Diésel</option>
+                <option value="híbrido">Híbrido</option>
+                <option value="eléctrico">Eléctrico</option>
+              </select>
+            </div>
+            <div style={{ gridColumn: '1 / -1' }}>
+              <FieldLabel>Transmisión</FieldLabel>
+              <select className="input" value={vehicle.transmission}
+                onChange={e => setVehicle(p => ({ ...p, transmission: e.target.value }))}
+                style={{ ...inputStyle, width: '100%' }}>
+                <option value="">Selecciona</option>
+                <option value="manual">Manual</option>
+                <option value="automática">Automática</option>
+                <option value="CVT">CVT</option>
+              </select>
+            </div>
           </div>
         </motion.div>
 

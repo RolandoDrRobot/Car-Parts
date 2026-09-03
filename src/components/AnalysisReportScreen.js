@@ -6,7 +6,7 @@ import { useSettings } from '../contexts/SettingsContext';
 import { useHistory } from '../contexts/HistoryContext';
 import { searchParts } from '../utils/mercadolibreAPI';
 import { getSearchLinks } from '../utils/searchLinks';
-import { screen, section, sectionStagger, item, badge, btn, backBtn } from '../utils/animations';
+import { screen, section, sectionStagger, item, badge, btn, backBtn, selectable } from '../utils/animations';
 
 const SEVERITY = {
   ok:       { label: 'Buen estado', color: '#22c55e', bg: 'rgba(34,197,94,0.12)'  },
@@ -137,7 +137,7 @@ const AnalysisReportScreen = () => {
           </motion.button>
           {navigator.share && (
             <motion.button onClick={handleShare} {...backBtn}
-              style={{ background: 'rgba(255,255,255,0.06)', border: 'none', borderRadius: '8px', color: '#a0aec0', cursor: 'pointer', padding: '6px 10px', display: 'flex', alignItems: 'center', gap: '5px', fontSize: '0.8rem', fontFamily: 'Saira Condensed, sans-serif', fontWeight: 600 }}>
+              style={{ background: 'rgba(255,255,255,0.06)', border: 'none', borderRadius: '4px', color: '#a0aec0', cursor: 'pointer', padding: '6px 10px', display: 'flex', alignItems: 'center', gap: '5px', fontSize: '0.8rem', fontFamily: 'Saira Condensed, sans-serif', fontWeight: 600 }}>
               <Share2 size={14} /> Compartir
             </motion.button>
           )}
@@ -228,14 +228,25 @@ const AnalysisReportScreen = () => {
         </p>
 
         {mlLoading ? (
-          <motion.div variants={item}
-            style={{ display: 'flex', gap: '10px', alignItems: 'center', padding: '16px 0', color: '#a0aec0', fontSize: '0.9rem' }}>
-            <span className="loading" /> Buscando en MercadoLibre...
-          </motion.div>
+          <div style={{ marginBottom: '20px' }}>
+            {[0, 1, 2].map(i => (
+              <div key={i} style={{
+                background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.06)',
+                borderRadius: '10px', padding: '10px', display: 'flex', gap: '10px',
+                alignItems: 'center', marginBottom: '8px',
+              }}>
+                <div className="shimmer" style={{ width: '56px', height: '56px', borderRadius: '6px', flexShrink: 0 }} />
+                <div style={{ flex: 1, minWidth: 0, display: 'flex', flexDirection: 'column', gap: '6px' }}>
+                  <div className="shimmer" style={{ height: '12px', borderRadius: '4px', width: '85%' }} />
+                  <div className="shimmer" style={{ height: '12px', borderRadius: '4px', width: '45%' }} />
+                </div>
+              </div>
+            ))}
+          </div>
         ) : listings.length > 0 ? (
           <div style={{ marginBottom: '20px' }}>
             {listings.map(listing => (
-              <motion.a key={listing.id} variants={item}
+              <motion.a key={listing.id} variants={item} {...selectable}
                 href={listing.url} target="_blank" rel="noopener noreferrer"
                 style={{
                   background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)',
@@ -281,8 +292,8 @@ const AnalysisReportScreen = () => {
           <motion.a key={link.name} variants={item}
             href={link.url} target="_blank" rel="noopener noreferrer"
             style={{
-              background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.07)',
-              borderRadius: '8px', padding: '11px 14px', color: '#a0aec0',
+              background: 'rgba(255,255,255,0.03)', border: '2px solid rgba(255,255,255,0.07)',
+              borderRadius: '4px', padding: '11px 14px', color: '#a0aec0',
               textDecoration: 'none', display: 'flex', justifyContent: 'space-between',
               alignItems: 'center', fontSize: '1rem',
               fontFamily: 'Saira Condensed, sans-serif', fontWeight: 600,
@@ -299,7 +310,7 @@ const AnalysisReportScreen = () => {
           <p style={{ color: '#4a5568', fontSize: '0.75rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.05em', margin: '0 0 6px', fontFamily: 'Saira Condensed, sans-serif' }}>
             Diagnóstico IA
           </p>
-          <p style={{ color: result.description ? '#a0aec0' : '#4a5568', fontSize: '0.85rem', lineHeight: 1.6, margin: 0, fontStyle: result.description ? 'normal' : 'italic' }}>
+          <p style={{ color: result.description ? '#a0aec0' : '#4a5568', fontSize: '0.92rem', lineHeight: 1.6, margin: 0, fontStyle: result.description ? 'normal' : 'italic' }}>
             {result.description || 'Diagnóstico no disponible para este escaneo anterior.'}
           </p>
           {result.recommendedAction && result.conditionSeverity === 'ok' && (
