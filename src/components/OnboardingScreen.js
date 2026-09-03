@@ -41,7 +41,7 @@ const OnboardingScreen = () => {
         variants={screen} initial="initial" animate="animate">
 
         <motion.div variants={section} style={{ paddingTop: '32px', textAlign: 'center', flexShrink: 0 }}>
-          <h1 className="title" style={{ marginBottom: '4px' }}>CarParts</h1>
+          <h1 className="title" style={{ marginBottom: '4px' }}>CarDoctor</h1>
           <p style={{ color: '#a0aec0', fontSize: '1.1rem', margin: '0 0 6px', fontFamily: 'Saira Condensed, sans-serif' }}>
             Tu mecánico personal con IA
           </p>

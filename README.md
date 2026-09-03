@@ -1,4 +1,4 @@
-# 🚗 CarParts - MVP de Identificación de Repuestos con IA
+# 🚗 CarDoctor - MVP de Identificación de Repuestos con IA
 
 Una aplicación React que permite identificar repuestos de vehículos usando inteligencia artificial.
 

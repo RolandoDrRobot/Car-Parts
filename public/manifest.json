@@ -1,6 +1,6 @@
 {
-  "short_name": "CarParts",
-  "name": "CarParts - Identificación de Piezas Automotrices",
+  "short_name": "CarDoctor",
+  "name": "CarDoctor - Identificación de Piezas Automotrices",
   "description": "Identifica las piezas de tu vehículo con inteligencia artificial",
   "icons": [
     {
