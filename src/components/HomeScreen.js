@@ -6,19 +6,12 @@ import {
   Thermometer, Wind, RotateCw, Wrench,
   AlertTriangle, Stethoscope, ChevronLeft, ChevronRight, Plus,
 } from 'lucide-react';
-import { useSettings } from '../contexts/SettingsContext';
 import { useVehicles } from '../contexts/VehiclesContext';
 import { useHistory } from '../contexts/HistoryContext';
 import { useGarage } from '../contexts/GarageContext';
 import SettingsDrawer from './SettingsDrawer';
-import { screen, section, sectionStagger, item, btn, scanBtn, gearBtn } from '../utils/animations';
+import { screen, section, sectionStagger, item, btn, scanBtn } from '../utils/animations';
 import { getHealthSummary } from '../utils/maintenance';
-
-const COUNTRY_NAMES = {
-  CR: 'Costa Rica', MX: 'México', CO: 'Colombia',
-  AR: 'Argentina',  CL: 'Chile',  US: 'Estados Unidos',
-};
-
 
 const CATEGORY_ICONS = {
   frenos: <Disc size={18} />, motor: <Gauge size={18} />, 'suspensión': <Layers size={18} />,
@@ -26,6 +19,18 @@ const CATEGORY_ICONS = {
   enfriamiento: <Thermometer size={18} />, escape: <Wind size={18} />,
   'transmisión': <RotateCw size={18} />, otro: <Wrench size={18} />,
 };
+
+const TabButton = ({ icon, label, onClick }) => (
+  <motion.button onClick={onClick} whileTap={{ scale: 0.9 }} whileHover={{ color: '#e2e8f0' }}
+    style={{
+      background: 'none', border: 'none', cursor: 'pointer', flex: 1,
+      display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '4px',
+      color: '#a0aec0', padding: '6px 4px', fontFamily: 'Saira Condensed, sans-serif',
+    }}>
+    {icon}
+    <span style={{ fontSize: '0.64rem', fontWeight: 600, letterSpacing: '0.01em' }}>{label}</span>
+  </motion.button>
+);
 
 const slideVariants = {
   enter: (dir) => ({ x: dir > 0 ? '60%' : '-60%', opacity: 0 }),
@@ -35,7 +40,6 @@ const slideVariants = {
 
 const HomeScreen = () => {
   const navigate = useNavigate();
-  const { settings } = useSettings();
   const { vehicles } = useVehicles();
   const { history } = useHistory();
   const { getVehicleData } = useGarage();
@@ -65,29 +69,9 @@ const HomeScreen = () => {
   return (
     <motion.div className="container" variants={screen} initial="initial" animate="animate">
 
-      {/* ── HEADER ── */}
-      <motion.div variants={section} style={{ padding: '20px 20px 0', flexShrink: 0 }}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-          <p style={{ color: '#a0aec0', margin: 0, fontSize: '1rem', fontFamily: 'Saira Condensed, sans-serif' }}>
-            {COUNTRY_NAMES[settings.country] || 'Sin país'}
-          </p>
-          <div style={{ display: 'flex', gap: '8px' }}>
-            <motion.button onClick={() => setDrawerOpen(true)} aria-label="Abrir ajustes" {...gearBtn}
-              style={{
-                background: 'rgba(255,255,255,0.07)', border: 'none', borderRadius: '4px',
-                width: '44px', height: '44px', cursor: 'pointer',
-                display: 'flex', alignItems: 'center', justifyContent: 'center',
-                flexShrink: 0, color: '#a0aec0',
-              }}>
-              <Settings size={20} />
-            </motion.button>
-          </div>
-        </div>
-      </motion.div>
-
       {/* ── VEHICLE CAROUSEL ── */}
       {vehicles.length > 0 && (
-        <motion.div variants={section} style={{ padding: '10px 16px 0', flexShrink: 0 }}>
+        <motion.div variants={section} style={{ padding: '18px 16px 0', flexShrink: 0 }}>
 
           {/* Card — tap to open garage */}
           <div
@@ -291,38 +275,16 @@ const HomeScreen = () => {
         </motion.div>
       )}
 
-      {/* ── ACTIONS ── */}
-      <motion.div variants={section} style={{ padding: '14px 20px 0', flexShrink: 0 }}>
-        <motion.button className="btn"
-          onClick={() => navigate('/scan', { state: { vehicle: selectedVehicle } })}
-          {...scanBtn}
-          style={{ marginTop: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}>
-          <ScanLine size={18} /> Escanear Pieza
-        </motion.button>
-
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px', marginTop: '8px' }}>
-          <motion.button className="btn btn-secondary"
-            onClick={() => navigate('/symptoms', { state: { vehicle: selectedVehicle } })}
-            {...btn}
-            style={{ marginTop: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px' }}>
-            <Stethoscope size={16} /> Describir Problema
-          </motion.button>
-          <motion.button className="btn btn-secondary"
-            onClick={() => navigate('/scan', { state: { vehicle: selectedVehicle, mode: 'lights' } })}
-            {...btn}
-            style={{ marginTop: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px' }}>
-            <AlertTriangle size={16} /> Luz de Tablero
-          </motion.button>
-        </div>
-
-        {vehicles.length === 0 && (
+      {/* ── NO VEHICLE YET ── */}
+      {vehicles.length === 0 && (
+        <motion.div variants={section} style={{ padding: '18px 20px 0', flexShrink: 0 }}>
           <motion.button className="btn btn-secondary"
             onClick={() => setDrawerOpen(true)} {...btn}
-            style={{ marginTop: '8px' }}>
-            + Agregar Vehículo
+            style={{ marginTop: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px' }}>
+            <Plus size={16} /> Agregar Vehículo
           </motion.button>
-        )}
-      </motion.div>
+        </motion.div>
+      )}
 
       {/* ── HISTORY ── */}
       <motion.div variants={sectionStagger}
@@ -394,6 +356,44 @@ const HomeScreen = () => {
             </p>
           </motion.div>
         )}
+      </motion.div>
+
+      {/* ── BOTTOM BAR ── */}
+      <motion.div variants={section} style={{
+        flexShrink: 0, position: 'relative', zIndex: 5,
+        borderTop: '1px solid rgba(255,255,255,0.08)',
+        background: 'rgba(10,10,10,0.82)',
+        backdropFilter: 'blur(16px)', WebkitBackdropFilter: 'blur(16px)',
+      }}>
+        <div style={{
+          display: 'flex', alignItems: 'flex-end',
+          padding: '8px 6px calc(8px + env(safe-area-inset-bottom))',
+        }}>
+          <TabButton icon={<Settings size={21} />} label="Ajustes" onClick={() => setDrawerOpen(true)} />
+          <TabButton icon={<Stethoscope size={21} />} label="Síntomas"
+            onClick={() => navigate('/symptoms', { state: { vehicle: selectedVehicle } })} />
+
+          <div style={{ flex: 1, display: 'flex', justifyContent: 'center' }}>
+            <motion.button
+              onClick={() => navigate('/scan', { state: { vehicle: selectedVehicle } })}
+              {...scanBtn}
+              aria-label="Escanear pieza"
+              style={{
+                width: '56px', height: '56px', marginTop: '-18px', flexShrink: 0,
+                borderRadius: '4px',
+                background: 'linear-gradient(160deg, #f05252 0%, #dc2626 55%, #b91c1c 100%)',
+                border: 'none', borderBottom: '2px solid rgba(0,0,0,0.25)',
+                boxShadow: '0 4px 20px rgba(239,68,68,0.4), inset 0 1px 0 rgba(255,255,255,0.14)',
+                color: 'white', cursor: 'pointer',
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+              }}>
+              <ScanLine size={25} />
+            </motion.button>
+          </div>
+
+          <TabButton icon={<AlertTriangle size={21} />} label="Luz"
+            onClick={() => navigate('/scan', { state: { vehicle: selectedVehicle, mode: 'lights' } })} />
+        </div>
       </motion.div>
 
       <SettingsDrawer isOpen={drawerOpen} onClose={() => setDrawerOpen(false)} />
