@@ -4,6 +4,7 @@ import { motion } from 'framer-motion';
 import { useSettings } from '../contexts/SettingsContext';
 import { useVehicles } from '../contexts/VehiclesContext';
 import { screen, section, sectionStagger, item, btn, selectable } from '../utils/animations';
+import { BrandSelect, ModelSelect, EngineSelect } from './VehicleFields';
 
 const COUNTRIES = [
   { code: 'CR', name: 'Costa Rica', flag: '🇨🇷' },
@@ -118,18 +119,10 @@ const OnboardingScreen = () => {
             Datos básicos *
           </p>
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px', marginBottom: '8px' }}>
-            <div>
-              <FieldLabel>Marca *</FieldLabel>
-              <input className="input" placeholder="Toyota" value={vehicle.brand} autoFocus
-                onChange={e => setVehicle(p => ({ ...p, brand: e.target.value }))}
-                style={inputStyle} />
-            </div>
-            <div>
-              <FieldLabel>Modelo *</FieldLabel>
-              <input className="input" placeholder="Corolla" value={vehicle.model}
-                onChange={e => setVehicle(p => ({ ...p, model: e.target.value }))}
-                style={inputStyle} />
-            </div>
+            <BrandSelect label="Marca *" country={country} value={vehicle.brand}
+              onChange={brand => setVehicle(p => ({ ...p, brand, model: '' }))} />
+            <ModelSelect label="Modelo *" brand={vehicle.brand} value={vehicle.model}
+              onChange={model => setVehicle(p => ({ ...p, model }))} />
             <div>
               <FieldLabel>Año *</FieldLabel>
               <input className="input" type="number" inputMode="numeric" placeholder="2020"
@@ -153,12 +146,8 @@ const OnboardingScreen = () => {
             Detalles del motor (opcional)
           </p>
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
-            <div>
-              <FieldLabel>Motor</FieldLabel>
-              <input className="input" placeholder="ej. 1.5L, 2.0T" value={vehicle.engine}
-                onChange={e => setVehicle(p => ({ ...p, engine: e.target.value }))}
-                style={inputStyle} />
-            </div>
+            <EngineSelect label="Motor" value={vehicle.engine}
+              onChange={engine => setVehicle(p => ({ ...p, engine }))} />
             <div>
               <FieldLabel>Combustible</FieldLabel>
               <select className="input" value={vehicle.fuel}

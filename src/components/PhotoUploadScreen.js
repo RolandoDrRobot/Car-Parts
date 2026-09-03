@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { ArrowLeft, ScanLine, Camera, AlertTriangle } from 'lucide-react';
 import { useVehicles } from '../contexts/VehiclesContext';
@@ -23,14 +22,11 @@ const MODES = {
   },
 };
 
-const PhotoUploadScreen = () => {
-  const navigate = useNavigate();
-  const location = useLocation();
+const PhotoUploadScreen = ({ vehicle: passedVehicle = null, mode: modeProp, onClose, onAnalyzed }) => {
   const { vehicles } = useVehicles();
 
-  const mode          = MODES[location.state?.mode] ? location.state.mode : 'scan';
-  const cfg           = MODES[mode];
-  const passedVehicle = location.state?.vehicle || null;
+  const mode = MODES[modeProp] ? modeProp : 'scan';
+  const cfg  = MODES[mode];
 
   const [selectedVehicleId, setSelectedVehicleId] = useState(passedVehicle?.id || '');
   const [file, setFile]         = useState(null);
@@ -56,7 +52,7 @@ const PhotoUploadScreen = () => {
     setError('');
     try {
       const result = await cfg.analyze(file, selectedVehicle);
-      navigate('/results', { state: { result, vehicle: selectedVehicle } });
+      onAnalyzed(result, selectedVehicle);
     } catch (err) {
       setError('Error al analizar. Verifica tu conexión e intenta de nuevo.');
     } finally {
@@ -69,7 +65,7 @@ const PhotoUploadScreen = () => {
 
       {/* ── HEADER ── */}
       <motion.div variants={section} style={{ padding: '20px 20px 0', flexShrink: 0 }}>
-        <motion.button onClick={() => navigate('/')} {...backBtn}
+        <motion.button onClick={onClose} {...backBtn}
           style={{ background: 'none', border: 'none', color: '#a0aec0', cursor: 'pointer', fontSize: '1rem', padding: 0, display: 'flex', alignItems: 'center', gap: '6px', fontFamily: 'Saira Condensed, sans-serif', marginBottom: '14px' }}>
           <ArrowLeft size={16} /> Volver
         </motion.button>

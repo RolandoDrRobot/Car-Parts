@@ -5,6 +5,7 @@ import { useSettings } from '../contexts/SettingsContext';
 import { useVehicles } from '../contexts/VehiclesContext';
 import { btn, selectable } from '../utils/animations';
 import Toast from './Toast';
+import { BrandSelect, ModelSelect, EngineSelect } from './VehicleFields';
 
 const drawerContent = {
   animate: { transition: { staggerChildren: 0.07, delayChildren: 0.15 } },
@@ -177,18 +178,10 @@ const SettingsDrawer = ({ isOpen, onClose }) => {
               ) : (
                 <div style={{ background: 'rgba(255,255,255,0.04)', borderRadius: '8px', padding: '14px', display: 'flex', flexDirection: 'column', gap: '8px' }}>
                   <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px' }}>
-                    <div>
-                      <FieldLabel>Marca *</FieldLabel>
-                      <input className="input" placeholder="Toyota" value={newVehicle.brand} autoFocus
-                        onChange={e => setNewVehicle(p => ({ ...p, brand: e.target.value }))}
-                        style={{ padding: '10px 12px', fontSize: '1rem' }} />
-                    </div>
-                    <div>
-                      <FieldLabel>Modelo *</FieldLabel>
-                      <input className="input" placeholder="Corolla" value={newVehicle.model}
-                        onChange={e => setNewVehicle(p => ({ ...p, model: e.target.value }))}
-                        style={{ padding: '10px 12px', fontSize: '1rem' }} />
-                    </div>
+                    <BrandSelect label="Marca *" country={settings.country} value={newVehicle.brand}
+                      onChange={brand => setNewVehicle(p => ({ ...p, brand, model: '' }))} />
+                    <ModelSelect label="Modelo *" brand={newVehicle.brand} value={newVehicle.model}
+                      onChange={model => setNewVehicle(p => ({ ...p, model }))} />
                     <div>
                       <FieldLabel>Año *</FieldLabel>
                       <input className="input" placeholder="2020" type="number" inputMode="numeric" min="1990" max={currentYear + 1}
@@ -202,12 +195,8 @@ const SettingsDrawer = ({ isOpen, onClose }) => {
                         onChange={e => setNewVehicle(p => ({ ...p, color: e.target.value }))}
                         style={{ padding: '10px 12px', fontSize: '1rem' }} />
                     </div>
-                    <div>
-                      <FieldLabel>Motor</FieldLabel>
-                      <input className="input" placeholder="ej. 1.5L, 2.0T" value={newVehicle.engine}
-                        onChange={e => setNewVehicle(p => ({ ...p, engine: e.target.value }))}
-                        style={{ padding: '10px 12px', fontSize: '1rem' }} />
-                    </div>
+                    <EngineSelect label="Motor" value={newVehicle.engine}
+                      onChange={engine => setNewVehicle(p => ({ ...p, engine }))} />
                     <div>
                       <FieldLabel>Combustible</FieldLabel>
                       <select className="input" value={newVehicle.fuel}

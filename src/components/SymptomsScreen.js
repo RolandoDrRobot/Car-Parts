@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { ArrowLeft, Stethoscope } from 'lucide-react';
 import { useVehicles } from '../contexts/VehiclesContext';
@@ -14,12 +13,9 @@ const EXAMPLES = [
   'Huele a quemado cuando enciendo el A/C',
 ];
 
-const SymptomsScreen = () => {
-  const navigate = useNavigate();
-  const location = useLocation();
+const SymptomsScreen = ({ vehicle: passedVehicle = null, onClose, onAnalyzed }) => {
   const { vehicles } = useVehicles();
 
-  const passedVehicle      = location.state?.vehicle || null;
   const [selectedVehicleId, setSelectedVehicleId] = useState(passedVehicle?.id || '');
   const [text, setText]     = useState('');
   const [analyzing, setAnalyzing] = useState(false);
@@ -33,7 +29,7 @@ const SymptomsScreen = () => {
     setError('');
     try {
       const result = await analyzeSymptomsText(text.trim(), selectedVehicle);
-      navigate('/results', { state: { result, vehicle: selectedVehicle } });
+      onAnalyzed(result, selectedVehicle);
     } catch (err) {
       setError('Error al analizar. Verifica tu conexión e intenta de nuevo.');
     } finally {
@@ -46,7 +42,7 @@ const SymptomsScreen = () => {
 
       {/* ── HEADER ── */}
       <motion.div variants={section} style={{ padding: '20px 20px 0', flexShrink: 0 }}>
-        <motion.button onClick={() => navigate('/')} {...backBtn}
+        <motion.button onClick={onClose} {...backBtn}
           style={{ background: 'none', border: 'none', color: '#a0aec0', cursor: 'pointer', fontSize: '1rem', padding: 0, display: 'flex', alignItems: 'center', gap: '6px', fontFamily: 'Saira Condensed, sans-serif', marginBottom: '14px' }}>
           <ArrowLeft size={16} /> Volver
         </motion.button>

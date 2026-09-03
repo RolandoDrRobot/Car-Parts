@@ -1,5 +1,4 @@
 import React, { useEffect, useState, useRef } from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { ArrowLeft, AlertTriangle, Car, ExternalLink, Share2, CheckCircle2, XCircle, Stethoscope, ScanLine } from 'lucide-react';
 import { useSettings } from '../contexts/SettingsContext';
@@ -25,10 +24,7 @@ const CURRENCY_SYMBOLS = { CRC: '₡', MXN: '$', COP: '$', ARS: '$', CLP: '$', U
 const formatPrice = (price, currency) =>
   `${CURRENCY_SYMBOLS[currency] || '$'}${price?.toLocaleString('es-ES') ?? '—'}`;
 
-const AnalysisReportScreen = () => {
-  const navigate  = useNavigate();
-  const location  = useLocation();
-  const { result, vehicle, fromHistory } = location.state || {};
+const AnalysisReportScreen = ({ result, vehicle, fromHistory, onClose, onRetry }) => {
   const { settings } = useSettings();
   const { addScan }  = useHistory();
 
@@ -78,7 +74,7 @@ const AnalysisReportScreen = () => {
         variants={screen} initial="initial" animate="animate">
         <motion.div variants={section} style={{ textAlign: 'center', padding: '20px' }}>
           <p style={{ color: '#a0aec0', fontSize: '1.2rem', marginBottom: '16px' }}>Sin datos de análisis.</p>
-          <motion.button className="btn" style={{ marginTop: 0 }} {...btn} onClick={() => navigate('/')}>
+          <motion.button className="btn" style={{ marginTop: 0 }} {...btn} onClick={onClose}>
             Volver al Inicio
           </motion.button>
         </motion.div>
@@ -102,12 +98,10 @@ const AnalysisReportScreen = () => {
             {result.message || 'La imagen no parece ser de una pieza de vehículo.'}
           </p>
           <div style={{ display: 'flex', gap: '10px', justifyContent: 'center' }}>
-            <motion.button className="btn" style={{ marginTop: 0 }} {...btn}
-              onClick={() => navigate('/scan', { state: { vehicle } })}>
+            <motion.button className="btn" style={{ marginTop: 0 }} {...btn} onClick={onRetry}>
               Intentar Nuevamente
             </motion.button>
-            <motion.button className="btn btn-secondary" style={{ marginTop: 0 }} {...btn}
-              onClick={() => navigate('/')}>
+            <motion.button className="btn btn-secondary" style={{ marginTop: 0 }} {...btn} onClick={onClose}>
               Inicio
             </motion.button>
           </div>
@@ -130,7 +124,7 @@ const AnalysisReportScreen = () => {
 
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '10px' }}>
           <motion.button
-            onClick={() => fromHistory ? navigate('/') : navigate(-1)}
+            onClick={fromHistory ? onClose : onRetry}
             {...backBtn}
             style={{ background: 'none', border: 'none', color: '#a0aec0', cursor: 'pointer', fontSize: '0.9rem', padding: 0, display: 'flex', alignItems: 'center', gap: '6px', fontFamily: 'Saira Condensed, sans-serif' }}>
             <ArrowLeft size={14} /> {fromHistory ? 'Volver' : 'Atrás'}
@@ -325,17 +319,15 @@ const AnalysisReportScreen = () => {
       <motion.div variants={section}
         style={{ padding: '10px 20px 24px', borderTop: '1px solid rgba(255,255,255,0.07)', flexShrink: 0, display: 'flex', gap: '10px' }}>
         {fromHistory ? (
-          <motion.button className="btn" style={{ marginTop: 0, flex: 1 }} {...btn} onClick={() => navigate('/')}>
+          <motion.button className="btn" style={{ marginTop: 0, flex: 1 }} {...btn} onClick={onClose}>
             Inicio
           </motion.button>
         ) : (
           <>
-            <motion.button className="btn" style={{ marginTop: 0, flex: 1 }} {...btn}
-              onClick={() => navigate(-1)}>
+            <motion.button className="btn" style={{ marginTop: 0, flex: 1 }} {...btn} onClick={onRetry}>
               {backLabel}
             </motion.button>
-            <motion.button className="btn btn-secondary" style={{ marginTop: 0, flex: 1 }} {...btn}
-              onClick={() => navigate('/')}>
+            <motion.button className="btn btn-secondary" style={{ marginTop: 0, flex: 1 }} {...btn} onClick={onClose}>
               Inicio
             </motion.button>
           </>

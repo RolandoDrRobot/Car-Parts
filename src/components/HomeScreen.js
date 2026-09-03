@@ -10,6 +10,10 @@ import { useVehicles } from '../contexts/VehiclesContext';
 import { useHistory } from '../contexts/HistoryContext';
 import { useGarage } from '../contexts/GarageContext';
 import SettingsDrawer from './SettingsDrawer';
+import Sheet from './Sheet';
+import PhotoUploadScreen from './PhotoUploadScreen';
+import SymptomsScreen from './SymptomsScreen';
+import AnalysisReportScreen from './AnalysisReportScreen';
 import { screen, section, sectionStagger, item, btn, scanBtn } from '../utils/animations';
 import { getHealthSummary } from '../utils/maintenance';
 
@@ -46,6 +50,16 @@ const HomeScreen = () => {
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [carouselIndex, setCarouselIndex] = useState(0);
   const [direction, setDirection] = useState(0);
+  const [flow, setFlow] = useState(null);
+  // flow: { type: 'scan'|'lights'|'symptoms', vehicle } | { type: 'result', result, vehicle, fromHistory }
+
+  const closeFlow = () => setFlow(null);
+  const handleAnalyzed = (result, vehicle) => setFlow({ type: 'result', result, vehicle, fromHistory: false });
+  const handleRetry = () => {
+    if (!flow?.result) { closeFlow(); return; }
+    const inputType = flow.result.type === 'symptoms' ? 'symptoms' : flow.result.type === 'lights' ? 'lights' : 'scan';
+    setFlow({ type: inputType, vehicle: flow.vehicle });
+  };
 
   const safeIndex       = vehicles.length > 0 ? Math.min(carouselIndex, vehicles.length - 1) : 0;
   const selectedVehicle = vehicles[safeIndex] || null;
@@ -125,28 +139,20 @@ const HomeScreen = () => {
                   }}>
                     Mi Vehículo {vehicles.length > 1 ? `${safeIndex + 1} / ${vehicles.length}` : ''}
                   </span>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
-                    {vehicles.length > 1 && vehicles.map((_, i) => (
-                      <button key={i}
-                        onClick={(e) => { e.stopPropagation(); setDirection(i > safeIndex ? 1 : -1); setCarouselIndex(i); }}
-                        style={{
-                          width: i === safeIndex ? '16px' : '5px', height: '5px',
-                          borderRadius: '4px', border: 'none', cursor: 'pointer', padding: 0,
-                          background: i === safeIndex ? '#ef4444' : 'rgba(255,255,255,0.4)',
-                          transition: 'width 0.2s ease, background 0.2s ease',
-                        }} />
-                    ))}
-                    <button onClick={(e) => { e.stopPropagation(); setDrawerOpen(true); }}
-                      style={{
-                        background: 'rgba(255,255,255,0.12)', border: '2px dashed rgba(255,255,255,0.28)',
-                        borderRadius: '4px', padding: '2px 8px', cursor: 'pointer',
-                        color: 'rgba(255,255,255,0.65)', fontSize: '0.65rem',
-                        fontFamily: 'Saira Condensed, sans-serif', fontWeight: 700,
-                        display: 'flex', alignItems: 'center', gap: '3px', marginLeft: '3px',
-                      }}>
-                      <Plus size={9} /> Agregar
-                    </button>
-                  </div>
+                  {vehicles.length > 1 && (
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
+                      {vehicles.map((_, i) => (
+                        <button key={i}
+                          onClick={(e) => { e.stopPropagation(); setDirection(i > safeIndex ? 1 : -1); setCarouselIndex(i); }}
+                          style={{
+                            width: i === safeIndex ? '16px' : '5px', height: '5px',
+                            borderRadius: '4px', border: 'none', cursor: 'pointer', padding: 0,
+                            background: i === safeIndex ? '#ef4444' : 'rgba(255,255,255,0.4)',
+                            transition: 'width 0.2s ease, background 0.2s ease',
+                          }} />
+                      ))}
+                    </div>
+                  )}
                 </div>
 
                 {/* Bottom info */}
@@ -298,22 +304,21 @@ const HomeScreen = () => {
               const severityColor = scan.conditionSeverity === 'critical' ? '#ef4444' : scan.conditionSeverity === 'warning' ? '#f59e0b' : '#22c55e';
               return (
               <motion.button key={scan.id} variants={item}
-                onClick={() => navigate('/results', {
-                  state: {
-                    fromHistory: true,
-                    vehicle: scan.vehicle || null,
-                    result: {
-                      isCarPart: true,
-                      type: scan.type || 'scan',
-                      partName: scan.partName,
-                      partCategory: scan.partCategory,
-                      conditionSeverity: scan.conditionSeverity,
-                      searchQuery: scan.searchQuery,
-                      description: scan.description || null,
-                      recommendedAction: scan.recommendedAction || null,
-                      causes: scan.causes || null,
-                      canDrive: scan.canDrive ?? null,
-                    },
+                onClick={() => setFlow({
+                  type: 'result',
+                  fromHistory: true,
+                  vehicle: scan.vehicle || null,
+                  result: {
+                    isCarPart: true,
+                    type: scan.type || 'scan',
+                    partName: scan.partName,
+                    partCategory: scan.partCategory,
+                    conditionSeverity: scan.conditionSeverity,
+                    searchQuery: scan.searchQuery,
+                    description: scan.description || null,
+                    recommendedAction: scan.recommendedAction || null,
+                    causes: scan.causes || null,
+                    canDrive: scan.canDrive ?? null,
                   },
                 })}
                 style={{
@@ -347,15 +352,15 @@ const HomeScreen = () => {
               );
             })}
           </>
-        ) : (
+        ) : !selectedVehicle ? (
           <motion.div variants={item}
             style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '100%', color: '#4a5568', textAlign: 'center', gap: '8px' }}>
             <ScanLine size={40} color="#4a5568" />
             <p style={{ fontFamily: 'Saira Condensed, sans-serif', fontSize: '1rem', margin: 0, color: '#4a5568' }}>
-              {selectedVehicle ? `Sin chequeos para ${selectedVehicle.brand} ${selectedVehicle.model}` : 'Agrega un vehículo para empezar'}
+              Agrega un vehículo para empezar
             </p>
           </motion.div>
-        )}
+        ) : null}
       </motion.div>
 
       {/* ── BOTTOM BAR ── */}
@@ -371,11 +376,11 @@ const HomeScreen = () => {
         }}>
           <TabButton icon={<Settings size={21} />} label="Ajustes" onClick={() => setDrawerOpen(true)} />
           <TabButton icon={<Stethoscope size={21} />} label="Síntomas"
-            onClick={() => navigate('/symptoms', { state: { vehicle: selectedVehicle } })} />
+            onClick={() => setFlow({ type: 'symptoms', vehicle: selectedVehicle })} />
 
           <div style={{ flex: 1, display: 'flex', justifyContent: 'center' }}>
             <motion.button
-              onClick={() => navigate('/scan', { state: { vehicle: selectedVehicle } })}
+              onClick={() => setFlow({ type: 'scan', vehicle: selectedVehicle })}
               {...scanBtn}
               aria-label="Escanear pieza"
               style={{
@@ -392,11 +397,24 @@ const HomeScreen = () => {
           </div>
 
           <TabButton icon={<AlertTriangle size={21} />} label="Luz"
-            onClick={() => navigate('/scan', { state: { vehicle: selectedVehicle, mode: 'lights' } })} />
+            onClick={() => setFlow({ type: 'lights', vehicle: selectedVehicle })} />
         </div>
       </motion.div>
 
       <SettingsDrawer isOpen={drawerOpen} onClose={() => setDrawerOpen(false)} />
+
+      <Sheet isOpen={!!flow} onClose={closeFlow}>
+        {(flow?.type === 'scan' || flow?.type === 'lights') && (
+          <PhotoUploadScreen mode={flow.type} vehicle={flow.vehicle} onClose={closeFlow} onAnalyzed={handleAnalyzed} />
+        )}
+        {flow?.type === 'symptoms' && (
+          <SymptomsScreen vehicle={flow.vehicle} onClose={closeFlow} onAnalyzed={handleAnalyzed} />
+        )}
+        {flow?.type === 'result' && (
+          <AnalysisReportScreen result={flow.result} vehicle={flow.vehicle} fromHistory={flow.fromHistory}
+            onClose={closeFlow} onRetry={handleRetry} />
+        )}
+      </Sheet>
     </motion.div>
   );
 };
